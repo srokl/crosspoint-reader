@@ -75,6 +75,9 @@ inline const std::vector<SettingInfo>& getSettingsList() {
                         StrId::STR_CAT_CONTROLS),
 
       // --- System ---
+      // STR_NONE_OPT: serialized by JsonSettingsIO but UI ordering is handled in SettingsActivity
+      SettingInfo::Toggle(StrId::STR_SHOW_FULL_PATH, &CrossPointSettings::showFullPath, "showFullPath",
+                          StrId::STR_NONE_OPT),
       SettingInfo::Enum(StrId::STR_TIME_TO_SLEEP, &CrossPointSettings::sleepTimeout,
                         {StrId::STR_MIN_1, StrId::STR_MIN_5, StrId::STR_MIN_10, StrId::STR_MIN_15, StrId::STR_MIN_30},
                         "sleepTimeout", StrId::STR_CAT_SYSTEM),
