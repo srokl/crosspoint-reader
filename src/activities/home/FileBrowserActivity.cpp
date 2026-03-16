@@ -254,8 +254,11 @@ void FileBrowserActivity::render(RenderLock&&) {
   std::string folderName = (basepath == "/") ? tr(STR_SD_CARD) : basepath.substr(basepath.rfind('/') + 1);
   GUI.drawHeader(renderer, Rect{0, metrics.topPadding, pageWidth, metrics.headerHeight}, folderName.c_str());
 
+  const bool showPath = SETTINGS.showFullPath;
+  const int pathLineHeight = showPath ? renderer.getLineHeight(SMALL_FONT_ID) : 0;
+  const int pathReserved = showPath ? (pathLineHeight + metrics.verticalSpacing) : 0;
   const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
-  const int contentHeight = pageHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
+  const int contentHeight = pageHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing - pathReserved;
   if (files.empty()) {
     renderer.drawText(UI_10_FONT_ID, metrics.contentSidePadding, contentTop + 20, tr(STR_NO_FILES_FOUND));
   } else {
@@ -263,6 +266,32 @@ void FileBrowserActivity::render(RenderLock&&) {
         renderer, Rect{0, contentTop, pageWidth, contentHeight}, files.size(), selectorIndex,
         [this](int index) { return getFileName(files[index]); }, nullptr,
         [this](int index) { return UITheme::getFileIcon(files[index]); });
+  }
+
+  // Full path display
+  if (showPath) {
+    const int pathY = pageHeight - metrics.buttonHintsHeight - metrics.verticalSpacing - pathLineHeight;
+    const int separatorY = pathY - metrics.verticalSpacing / 2;
+    renderer.drawLine(0, separatorY, pageWidth - 1, separatorY, 3, true);
+    const int pathMaxWidth = pageWidth - metrics.contentSidePadding * 2;
+    // Left-truncate so the deepest directory is always visible
+    const char* pathStr = basepath.c_str();
+    const char* display = pathStr;
+    char leftTruncBuf[256];
+    if (renderer.getTextWidth(SMALL_FONT_ID, pathStr) > pathMaxWidth) {
+      const char ellipsis[] = "\xe2\x80\xa6";  // UTF-8 ellipsis (…)
+      const int ellipsisWidth = renderer.getTextWidth(SMALL_FONT_ID, ellipsis);
+      const int available = pathMaxWidth - ellipsisWidth;
+      // Walk forward from the end until the suffix fits
+      const char* p = pathStr + strlen(pathStr);
+      while (p > pathStr) {
+        if (renderer.getTextWidth(SMALL_FONT_ID, p) <= available) break;
+        --p;
+      }
+      snprintf(leftTruncBuf, sizeof(leftTruncBuf), "%s%s", ellipsis, p);
+      display = leftTruncBuf;
+    }
+    renderer.drawText(SMALL_FONT_ID, metrics.contentSidePadding, pathY, display);
   }
 
   // Help text
