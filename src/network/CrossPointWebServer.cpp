@@ -350,6 +350,8 @@ void CrossPointWebServer::handleStatus() const {
   doc["rssi"] = apMode ? 0 : WiFi.RSSI();
   doc["freeHeap"] = ESP.getFreeHeap();
   doc["uptime"] = millis() / 1000;
+  doc["sdTotal"] = Storage.sdTotalBytes();
+  doc["sdUsed"] = Storage.sdUsedBytes();
 
   String json;
   serializeJson(doc, json);
