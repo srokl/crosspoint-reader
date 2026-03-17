@@ -136,7 +136,8 @@ void FileBrowserActivity::loop() {
     return;
   }
 
-  const int pageItems = UITheme::getInstance().getNumberOfItemsPerPage(renderer, true, false, true, false);
+  const int pathReserved = renderer.getLineHeight(SMALL_FONT_ID) + UITheme::getInstance().getMetrics().verticalSpacing;
+  const int pageItems = UITheme::getNumberOfItemsPerPage(renderer, true, false, true, false, pathReserved);
 
   if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
     if (files.empty()) return;
@@ -254,9 +255,8 @@ void FileBrowserActivity::render(RenderLock&&) {
   std::string folderName = (basepath == "/") ? tr(STR_SD_CARD) : basepath.substr(basepath.rfind('/') + 1);
   GUI.drawHeader(renderer, Rect{0, metrics.topPadding, pageWidth, metrics.headerHeight}, folderName.c_str());
 
-  const bool showPath = SETTINGS.showFullPath;
-  const int pathLineHeight = showPath ? renderer.getLineHeight(SMALL_FONT_ID) : 0;
-  const int pathReserved = showPath ? (pathLineHeight + metrics.verticalSpacing) : 0;
+  const int pathLineHeight = renderer.getLineHeight(SMALL_FONT_ID);
+  const int pathReserved = pathLineHeight + metrics.verticalSpacing;
   const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
   const int contentHeight =
       pageHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing - pathReserved;
@@ -270,7 +270,7 @@ void FileBrowserActivity::render(RenderLock&&) {
   }
 
   // Full path display
-  if (showPath) {
+  {
     const int pathY = pageHeight - metrics.buttonHintsHeight - metrics.verticalSpacing - pathLineHeight;
     const int separatorY = pathY - metrics.verticalSpacing / 2;
     renderer.drawLine(0, separatorY, pageWidth - 1, separatorY, 3, true);
@@ -283,11 +283,12 @@ void FileBrowserActivity::render(RenderLock&&) {
       const char ellipsis[] = "\xe2\x80\xa6";  // UTF-8 ellipsis (…)
       const int ellipsisWidth = renderer.getTextWidth(SMALL_FONT_ID, ellipsis);
       const int available = pathMaxWidth - ellipsisWidth;
-      // Walk forward from the end until the suffix fits
-      const char* p = pathStr + strlen(pathStr);
-      while (p > pathStr) {
+      // Walk forward from the start until the suffix fits, skipping UTF-8 continuation bytes
+      const char* p = pathStr;
+      while (*p) {
         if (renderer.getTextWidth(SMALL_FONT_ID, p) <= available) break;
-        --p;
+        ++p;
+        while (*p && (static_cast<unsigned char>(*p) & 0xC0) == 0x80) ++p;
       }
       snprintf(leftTruncBuf, sizeof(leftTruncBuf), "%s%s", ellipsis, p);
       display = leftTruncBuf;

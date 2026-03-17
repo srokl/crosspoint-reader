@@ -197,8 +197,6 @@ class CrossPointSettings {
   uint8_t embeddedStyle = 1;
   // Show hidden files/directories (starting with '.') in the file browser (0 = hidden, 1 = show)
   uint8_t showHiddenFiles = 0;
-  // Show full path bar at the bottom of the file browser (1 = show, 0 = hide)
-  uint8_t showFullPath = 1;
   // Image rendering mode in EPUB reader
   uint8_t imageRendering = IMAGES_DISPLAY;
 
