@@ -287,8 +287,8 @@ void FileBrowserActivity::render(RenderLock&&) {
       const char* p = pathStr;
       while (*p) {
         if (renderer.getTextWidth(SMALL_FONT_ID, p) <= available) break;
-        ++p;
-        while (*p && (static_cast<unsigned char>(*p) & 0xC0) == 0x80) ++p;
+        --p;
+        while (p > pathStr && (static_cast<unsigned char>(*p) & 0xC0) == 0x80) --p;
       }
       snprintf(leftTruncBuf, sizeof(leftTruncBuf), "%s%s", ellipsis, p);
       display = leftTruncBuf;
