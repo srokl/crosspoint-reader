@@ -16,62 +16,77 @@
 
 namespace {
 constexpr unsigned long GO_HOME_MS = 1000;
+
+bool isSupportedFile(std::string_view name) {
+  return FsHelpers::hasEpubExtension(name) || FsHelpers::hasXtcExtension(name) ||
+         FsHelpers::hasTxtExtension(name) || FsHelpers::hasMarkdownExtension(name) ||
+         FsHelpers::hasBmpExtension(name);
+}
 }  // namespace
 
-void sortFileList(std::vector<std::string>& strs) {
-  std::sort(begin(strs), end(strs), [](const std::string& str1, const std::string& str2) {
-    // Directories first
-    bool isDir1 = str1.back() == '/';
-    bool isDir2 = str2.back() == '/';
-    if (isDir1 != isDir2) return isDir1;
+// Natural case-insensitive string compare: returns negative/zero/positive
+static int naturalCompare(const std::string& str1, const std::string& str2) {
+  const char* s1 = str1.c_str();
+  const char* s2 = str2.c_str();
 
-    // Start naive natural sort
-    const char* s1 = str1.c_str();
-    const char* s2 = str2.c_str();
+  while (*s1 && *s2) {
+    if (isdigit(*s1) && isdigit(*s2)) {
+      while (*s1 == '0') s1++;
+      while (*s2 == '0') s2++;
 
-    // Iterate while both strings have characters
-    while (*s1 && *s2) {
-      // Check if both are at the start of a number
-      if (isdigit(*s1) && isdigit(*s2)) {
-        // Skip leading zeros and track them
-        const char* start1 = s1;
-        const char* start2 = s2;
-        while (*s1 == '0') s1++;
-        while (*s2 == '0') s2++;
+      int len1 = 0, len2 = 0;
+      while (isdigit(s1[len1])) len1++;
+      while (isdigit(s2[len2])) len2++;
 
-        // Count digits to compare lengths first
-        int len1 = 0, len2 = 0;
-        while (isdigit(s1[len1])) len1++;
-        while (isdigit(s2[len2])) len2++;
+      if (len1 != len2) return len1 - len2;
 
-        // Different length so return smaller integer value
-        if (len1 != len2) return len1 < len2;
-
-        // Same length so compare digit by digit
-        for (int i = 0; i < len1; i++) {
-          if (s1[i] != s2[i]) return s1[i] < s2[i];
-        }
-
-        // Numbers equal so advance pointers
-        s1 += len1;
-        s2 += len2;
-      } else {
-        // Regular case-insensitive character comparison
-        char c1 = tolower(*s1);
-        char c2 = tolower(*s2);
-        if (c1 != c2) return c1 < c2;
-        s1++;
-        s2++;
+      for (int i = 0; i < len1; i++) {
+        if (s1[i] != s2[i]) return s1[i] - s2[i];
       }
+      s1 += len1;
+      s2 += len2;
+    } else {
+      char c1 = tolower(*s1);
+      char c2 = tolower(*s2);
+      if (c1 != c2) return c1 - c2;
+      s1++;
+      s2++;
+    }
+  }
+
+  if (*s1 == '\0' && *s2 == '\0') return 0;
+  return (*s1 == '\0') ? -1 : 1;
+}
+
+void FileBrowserActivity::sortFileList(std::vector<FileEntry>& entries) {
+  const auto mode = SETTINGS.fileSortMode;
+  const bool descending = SETTINGS.fileSortDirection == CrossPointSettings::SORT_DESC;
+
+  std::sort(begin(entries), end(entries), [mode, descending](const FileEntry& a, const FileEntry& b) {
+    const bool aDir = a.name.back() == '/';
+    const bool bDir = b.name.back() == '/';
+    if (aDir != bDir) return aDir;
+
+    int cmp = 0;
+    switch (mode) {
+      case CrossPointSettings::SORT_DATE:
+        cmp = (a.dirIndex != b.dirIndex) ? (a.dirIndex < b.dirIndex ? -1 : 1) : naturalCompare(a.name, b.name);
+        break;
+      case CrossPointSettings::SORT_SIZE:
+        cmp = (a.size != b.size) ? (a.size < b.size ? -1 : 1) : naturalCompare(a.name, b.name);
+        break;
+      default:  // SORT_NAME
+        cmp = naturalCompare(a.name, b.name);
+        break;
     }
 
-    // One string is prefix of other
-    return *s1 == '\0' && *s2 != '\0';
+    return descending ? (cmp > 0) : (cmp < 0);
   });
 }
 
 void FileBrowserActivity::loadFiles() {
   files.clear();
+  files.reserve(64);
 
   auto root = Storage.open(basepath.c_str());
   if (!root || !root.isDirectory()) {
@@ -82,22 +97,29 @@ void FileBrowserActivity::loadFiles() {
   root.rewindDirectory();
 
   char name[500];
+  uint32_t idx = 0;
   for (auto file = root.openNextFile(); file; file = root.openNextFile()) {
     file.getName(name, sizeof(name));
-    if ((!SETTINGS.showHiddenFiles && name[0] == '.') || strcmp(name, "System Volume Information") == 0) {
+
+    if (strcmp(name, "System Volume Information") == 0) {
       file.close();
       continue;
     }
 
+    // Hidden files always reserve a FAT slot so dirIndex is stable
+    // regardless of the showHiddenFiles setting.
+    if (!SETTINGS.showHiddenFiles && name[0] == '.') {
+      idx++;
+      file.close();
+      continue;
+    }
+
+    // idx is claimed only when an entry is actually pushed, so
+    // unsupported-extension files never consume a slot.
     if (file.isDirectory()) {
-      files.emplace_back(std::string(name) + "/");
-    } else {
-      std::string_view filename{name};
-      if (FsHelpers::hasEpubExtension(filename) || FsHelpers::hasXtcExtension(filename) ||
-          FsHelpers::hasTxtExtension(filename) || FsHelpers::hasMarkdownExtension(filename) ||
-          FsHelpers::hasBmpExtension(filename)) {
-        files.emplace_back(filename);
-      }
+      files.push_back({std::string(name) + "/", 0, idx++});
+    } else if (isSupportedFile(name)) {
+      files.push_back({std::string(name), static_cast<uint32_t>(file.fileSize()), idx++});
     }
     file.close();
   }
@@ -142,7 +164,7 @@ void FileBrowserActivity::loop() {
   if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
     if (files.empty()) return;
 
-    const std::string& entry = files[selectorIndex];
+    const std::string& entry = files[selectorIndex].name;
     bool isDirectory = (entry.back() == '/');
 
     if (mappedInput.getHeldTime() >= GO_HOME_MS && !isDirectory) {
@@ -237,7 +259,7 @@ void FileBrowserActivity::loop() {
   });
 }
 
-std::string getFileName(std::string filename) {
+std::string getFileName(const std::string& filename) {
   if (filename.back() == '/') {
     return filename.substr(0, filename.length() - 1);
   }
@@ -262,8 +284,8 @@ void FileBrowserActivity::render(RenderLock&&) {
   } else {
     GUI.drawList(
         renderer, Rect{0, contentTop, pageWidth, contentHeight}, files.size(), selectorIndex,
-        [this](int index) { return getFileName(files[index]); }, nullptr,
-        [this](int index) { return UITheme::getFileIcon(files[index]); });
+        [this](int index) { return getFileName(files[index].name); }, nullptr,
+        [this](int index) { return UITheme::getFileIcon(files[index].name); });
   }
 
   // Help text
@@ -277,6 +299,6 @@ void FileBrowserActivity::render(RenderLock&&) {
 
 size_t FileBrowserActivity::findEntry(const std::string& name) const {
   for (size_t i = 0; i < files.size(); i++)
-    if (files[i] == name) return i;
+    if (files[i].name == name) return i;
   return 0;
 }
