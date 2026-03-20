@@ -18,9 +18,8 @@ namespace {
 constexpr unsigned long GO_HOME_MS = 1000;
 
 bool isSupportedFile(std::string_view name) {
-  return FsHelpers::hasEpubExtension(name) || FsHelpers::hasXtcExtension(name) ||
-         FsHelpers::hasTxtExtension(name) || FsHelpers::hasMarkdownExtension(name) ||
-         FsHelpers::hasBmpExtension(name);
+  return FsHelpers::hasEpubExtension(name) || FsHelpers::hasXtcExtension(name) || FsHelpers::hasTxtExtension(name) ||
+         FsHelpers::hasMarkdownExtension(name) || FsHelpers::hasBmpExtension(name);
 }
 }  // namespace
 

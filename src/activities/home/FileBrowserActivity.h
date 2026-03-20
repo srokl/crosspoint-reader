@@ -11,8 +11,8 @@
 class FileBrowserActivity final : public Activity {
  private:
   struct FileEntry {
-    std::string name;       // filename; trailing '/' = directory
-    uint32_t size;          // file size in bytes; 0 for directories
+    std::string name;   // filename; trailing '/' = directory
+    uint32_t size;      // file size in bytes; 0 for directories
     uint32_t dirIndex;  // position in FAT directory — reflects the order files were added to the card
   };
 
