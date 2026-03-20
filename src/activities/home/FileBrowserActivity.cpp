@@ -115,11 +115,15 @@ void FileBrowserActivity::loadFiles() {
     }
 
     // idx is claimed only when an entry is actually pushed, so
-    // unsupported-extension files never consume a slot.
+    // unsupported-extension files never consume a slot — except hidden ones,
+    // which always reserve a FAT slot to keep dirIndex stable across setting changes.
+    const bool isHidden = (name[0] == '.');
     if (file.isDirectory()) {
       files.push_back({std::string(name) + "/", 0, idx++});
     } else if (isSupportedFile(name)) {
       files.push_back({std::string(name), static_cast<uint32_t>(file.fileSize()), idx++});
+    } else if (isHidden) {
+      idx++;
     }
     file.close();
   }
