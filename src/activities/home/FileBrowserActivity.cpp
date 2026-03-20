@@ -7,6 +7,7 @@
 #include <I18n.h>
 
 #include <algorithm>
+#include <cctype>
 
 #include "../util/ConfirmationActivity.h"
 #include "CrossPointSettings.h"
@@ -29,13 +30,13 @@ static int naturalCompare(const std::string& str1, const std::string& str2) {
   const char* s2 = str2.c_str();
 
   while (*s1 && *s2) {
-    if (isdigit(*s1) && isdigit(*s2)) {
+    if (isdigit(static_cast<unsigned char>(*s1)) && isdigit(static_cast<unsigned char>(*s2))) {
       while (*s1 == '0') s1++;
       while (*s2 == '0') s2++;
 
       int len1 = 0, len2 = 0;
-      while (isdigit(s1[len1])) len1++;
-      while (isdigit(s2[len2])) len2++;
+      while (isdigit(static_cast<unsigned char>(s1[len1]))) len1++;
+      while (isdigit(static_cast<unsigned char>(s2[len2]))) len2++;
 
       if (len1 != len2) return len1 - len2;
 
@@ -45,8 +46,8 @@ static int naturalCompare(const std::string& str1, const std::string& str2) {
       s1 += len1;
       s2 += len2;
     } else {
-      char c1 = tolower(*s1);
-      char c2 = tolower(*s2);
+      char c1 = static_cast<char>(tolower(static_cast<unsigned char>(*s1)));
+      char c2 = static_cast<char>(tolower(static_cast<unsigned char>(*s2)));
       if (c1 != c2) return c1 - c2;
       s1++;
       s2++;
