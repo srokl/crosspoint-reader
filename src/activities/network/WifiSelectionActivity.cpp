@@ -4,6 +4,7 @@
 #include <I18n.h>
 #include <Logging.h>
 #include <WiFi.h>
+#include <esp_sntp.h>
 
 #include <map>
 
@@ -240,8 +241,25 @@ void WifiSelectionActivity::checkConnectionStatus() {
   const wl_status_t status = WiFi.status();
 
   if (status == WL_CONNECTED) {
-    // Successfully connected — kick off NTP sync so FAT timestamps are accurate
-    configTime(0, 0, "pool.ntp.org");
+    // Kick off NTP sync so FAT timestamps are accurate for the session.
+    // Use esp_sntp directly (same pattern as KOReaderSyncActivity) so we
+    // can poll for completion before handing off to the web server.
+    if (esp_sntp_enabled()) esp_sntp_stop();
+    esp_sntp_setoperatingmode(ESP_SNTP_OPMODE_POLL);
+    esp_sntp_setservername(0, "pool.ntp.org");
+    esp_sntp_init();
+
+    int retry = 0;
+    constexpr int maxRetries = 50;  // 5 seconds max (50 × 100 ms)
+    while (sntp_get_sync_status() != SNTP_SYNC_STATUS_COMPLETED && retry < maxRetries) {
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      retry++;
+    }
+    if (retry < maxRetries) {
+      LOG_DBG("WIFI", "NTP time synced");
+    } else {
+      LOG_DBG("WIFI", "NTP sync timeout, continuing without sync");
+    }
 
     IPAddress ip = WiFi.localIP();
     char ipStr[16];

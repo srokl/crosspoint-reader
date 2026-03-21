@@ -6,6 +6,7 @@
 #include <HalStorage.h>
 #include <Logging.h>
 #include <WiFi.h>
+#include <esp_sntp.h>
 #include <esp_task_wdt.h>
 #include <sys/time.h>
 
@@ -27,10 +28,15 @@ constexpr uint16_t UDP_PORTS[] = {54982, 48123, 39001, 44044, 59678};
 constexpr uint16_t LOCAL_UDP_PORT = 8134;
 
 // Set device clock from a Unix timestamp supplied by the browser.
-// Only applied if the value is plausible (>= 2020-01-01) so a
-// misconfigured client cannot corrupt the clock.
+// Only used in AP/hotspot mode when SNTP is not active; in STA mode the
+// NTP-synced clock is authoritative and must not be overwritten by a
+// browser-supplied value.
 static void applyClientTime(long unixTs) {
   if (unixTs < 1577836800L) return;  // sanity: reject anything before 2020
+  if (esp_sntp_enabled() || (WiFi.getMode() & WIFI_MODE_STA)) {
+    LOG_DBG("WEB", "Clock sync from client skipped (SNTP active or STA mode)");
+    return;
+  }
   const struct timeval tv = {.tv_sec = static_cast<time_t>(unixTs), .tv_usec = 0};
   settimeofday(&tv, nullptr);
   LOG_DBG("WEB", "Clock set from client: %ld", unixTs);
