@@ -10,10 +10,9 @@
 #include <esp_task_wdt.h>
 #include <sys/time.h>
 
+#include <algorithm>
 #include <cerrno>
 #include <cstdlib>
-
-#include <algorithm>
 
 #include "CrossPointSettings.h"
 #include "SettingsList.h"
