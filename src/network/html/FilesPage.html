@@ -1017,6 +1017,17 @@ let wsConnection = null;
 const WS_PORT = 81;
 const WS_CHUNK_SIZE = 4096; // 4KB chunks - smaller for ESP32 stability
 
+// Returns a Unix timestamp (seconds) guaranteed to be at least 2 seconds
+// after the previous call. FAT modify-time resolution is 2 seconds, so
+// this ensures sequential uploads in a batch always get distinct timestamps
+// and sort in upload order even when each file transfers in under 2 seconds.
+let _lastUploadTs = 0;
+function nextUploadTimestamp() {
+  const now = Math.floor(Date.now() / 1000);
+  _lastUploadTs = Math.max(now, _lastUploadTs + 2);
+  return _lastUploadTs;
+}
+
 // Get WebSocket URL based on current page location
 function getWsUrl() {
   const host = window.location.hostname;
@@ -1034,8 +1045,8 @@ function uploadFileWebSocket(file, onProgress, onComplete, onError) {
 
     ws.onopen = function() {
       console.log('[WS] Connected, starting upload:', file.name);
-      // Send start message: START:<filename>:<size>:<path>
-      ws.send(`START:${file.name}:${file.size}:${currentPath}`);
+      // Send start message: START:<filename>:<size>:<path>:<unix_ts>
+      ws.send(`START:${file.name}:${file.size}:${currentPath}:${nextUploadTimestamp()}`);
     };
 
     ws.onmessage = async function(event) {
@@ -1130,7 +1141,7 @@ function uploadFileHTTP(file, onProgress, onComplete, onError) {
     formData.append('file', file);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/upload?path=' + encodeURIComponent(currentPath), true);
+    xhr.open('POST', '/upload?path=' + encodeURIComponent(currentPath) + '&t=' + nextUploadTimestamp(), true);
 
     xhr.upload.onprogress = function(e) {
       if (e.lengthComputable && onProgress) {

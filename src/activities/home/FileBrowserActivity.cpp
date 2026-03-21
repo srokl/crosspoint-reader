@@ -25,6 +25,7 @@ bool isSupportedFile(std::string_view name) {
 }
 }  // namespace
 
+// Natural case-insensitive string compare: returns negative/zero/positive
 static int naturalCompare(const std::string& str1, const std::string& str2) {
   const char* s1 = str1.c_str();
   const char* s2 = str2.c_str();
@@ -38,18 +39,17 @@ static int naturalCompare(const std::string& str1, const std::string& str2) {
       while (isdigit(static_cast<unsigned char>(s1[len1]))) len1++;
       while (isdigit(static_cast<unsigned char>(s2[len2]))) len2++;
 
-      if (len1 != len2) return len1 < len2 ? -1 : 1;
+      if (len1 != len2) return len1 - len2;
 
       for (int i = 0; i < len1; i++) {
-        if (s1[i] != s2[i]) return s1[i] < s2[i] ? -1 : 1;
+        if (s1[i] != s2[i]) return s1[i] - s2[i];
       }
-
       s1 += len1;
       s2 += len2;
     } else {
       char c1 = static_cast<char>(tolower(static_cast<unsigned char>(*s1)));
       char c2 = static_cast<char>(tolower(static_cast<unsigned char>(*s2)));
-      if (c1 != c2) return c1 < c2 ? -1 : 1;
+      if (c1 != c2) return c1 - c2;
       s1++;
       s2++;
     }
@@ -71,12 +71,12 @@ void FileBrowserActivity::sortFileList(std::vector<FileEntry>& entries) {
     int cmp = 0;
     switch (mode) {
       case CrossPointSettings::SORT_DATE:
-        cmp = (a.dirIndex != b.dirIndex) ? (a.dirIndex < b.dirIndex ? -1 : 1) : naturalCompare(a.name, b.name);
+        cmp = (a.dateTime != b.dateTime) ? (a.dateTime < b.dateTime ? -1 : 1) : naturalCompare(a.name, b.name);
         break;
       case CrossPointSettings::SORT_SIZE:
         cmp = (a.size != b.size) ? (a.size < b.size ? -1 : 1) : naturalCompare(a.name, b.name);
         break;
-      default:
+      default:  // SORT_NAME
         cmp = naturalCompare(a.name, b.name);
         break;
     }
@@ -96,7 +96,6 @@ void FileBrowserActivity::loadFiles() {
 
   root.rewindDirectory();
 
-  uint32_t idx = 0;
   char name[500];
   for (auto file = root.openNextFile(); file; file = root.openNextFile()) {
     file.getName(name, sizeof(name));
@@ -107,18 +106,21 @@ void FileBrowserActivity::loadFiles() {
     }
 
     if (!SETTINGS.showHiddenFiles && name[0] == '.') {
-      idx++;
       file.close();
       continue;
     }
 
-    const bool isHidden = (name[0] == '.');
+    uint16_t mdate = 0, mtime = 0, cdate = 0, ctime = 0;
+    file.getModifyDateTime(&mdate, &mtime);
+    file.getCreateDateTime(&cdate, &ctime);
+    const uint32_t modTs = (static_cast<uint32_t>(mdate) << 16) | mtime;
+    const uint32_t crtTs = (static_cast<uint32_t>(cdate) << 16) | ctime;
+    const uint32_t dateTime = modTs > crtTs ? modTs : crtTs;
+
     if (file.isDirectory()) {
-      files.push_back({std::string(name) + "/", 0, idx++});
+      files.push_back({std::string(name) + "/", 0, dateTime});
     } else if (isSupportedFile(name)) {
-      files.push_back({std::string(name), static_cast<uint32_t>(file.fileSize()), idx++});
-    } else if (isHidden) {
-      idx++;
+      files.push_back({std::string(name), static_cast<uint32_t>(file.fileSize()), dateTime});
     }
     file.close();
   }
@@ -259,7 +261,7 @@ void FileBrowserActivity::loop() {
   });
 }
 
-std::string getFileName(std::string filename) {
+std::string getFileName(const std::string& filename) {
   if (filename.back() == '/') {
     return filename.substr(0, filename.length() - 1);
   }
