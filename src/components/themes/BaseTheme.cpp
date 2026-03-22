@@ -21,7 +21,7 @@ constexpr int homeMenuMargin = 20;
 constexpr int homeMarginTop = 30;
 constexpr int subtitleY = 738;
 
-// Format as "112.5 MB / 59.4 GB" (used/total) using binary units (1024-based), matching formatBytes().
+// Format as "112.5MB/59.4GB" (used/total) using binary units (1024-based), matching formatBytes().
 void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len) {
   if (freeBytes > totalBytes) freeBytes = totalBytes;
   const uint64_t usedBytes = totalBytes - freeBytes;
@@ -30,12 +30,12 @@ void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len
   const uint32_t totalTenths = (uint32_t)(totalBytes * 10 / GiB);
   if (usedBytes >= GiB) {
     const uint32_t usedTenths = (uint32_t)(usedBytes * 10 / GiB);
-    snprintf(buf, len, "%lu.%lu GB / %lu.%lu GB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
+    snprintf(buf, len, "%lu.%luGB/%lu.%luGB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
              (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   } else {
-    const uint32_t mb = (uint32_t)(usedBytes / MiB);
-    snprintf(buf, len, "%lu MB / %lu.%lu GB", (unsigned long)mb, (unsigned long)(totalTenths / 10),
-             (unsigned long)(totalTenths % 10));
+    const uint32_t mbTenths = (uint32_t)(usedBytes * 10 / MiB);
+    snprintf(buf, len, "%lu.%luMB/%lu.%luGB", (unsigned long)(mbTenths / 10), (unsigned long)(mbTenths % 10),
+             (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   }
 }
 
