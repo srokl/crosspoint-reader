@@ -21,21 +21,21 @@ constexpr int homeMenuMargin = 20;
 constexpr int homeMarginTop = 30;
 constexpr int subtitleY = 738;
 
-// Format as "1.2GB/64GB" (used/total) using the FAT partition's own byte counts.
-// Both values come from clusterCount/freeClusterCount × bytesPerCluster so units are consistent.
+// Format as "112.5MB/59.4GB" (used/total) using binary units (1024-based), matching formatBytes().
 void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len) {
   if (freeBytes > totalBytes) freeBytes = totalBytes;
   const uint64_t usedBytes = totalBytes - freeBytes;
-  constexpr uint64_t GB = 1000000000ULL;
-  constexpr uint64_t MB = 1000000ULL;
-  const uint32_t totalGb = (uint32_t)(totalBytes / GB);
-  if (usedBytes >= GB) {
-    const uint32_t tenths = (uint32_t)(usedBytes / (GB / 10));
-    snprintf(buf, len, "%lu.%luGB/%luGB", (unsigned long)(tenths / 10), (unsigned long)(tenths % 10),
-             (unsigned long)totalGb);
+  constexpr uint64_t GiB = 1024ULL * 1024 * 1024;
+  constexpr uint64_t MiB = 1024ULL * 1024;
+  const uint32_t totalTenths = (uint32_t)(totalBytes * 10 / GiB);
+  if (usedBytes >= GiB) {
+    const uint32_t usedTenths = (uint32_t)(usedBytes * 10 / GiB);
+    snprintf(buf, len, "%lu.%luGB/%lu.%luGB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
+             (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   } else {
-    const uint32_t mb = (uint32_t)(usedBytes / MB);
-    snprintf(buf, len, "%luMB/%luGB", (unsigned long)mb, (unsigned long)totalGb);
+    const uint32_t mb = (uint32_t)(usedBytes / MiB);
+    snprintf(buf, len, "%luMB/%lu.%luGB", (unsigned long)mb, (unsigned long)(totalTenths / 10),
+             (unsigned long)(totalTenths % 10));
   }
 }
 
