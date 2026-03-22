@@ -21,6 +21,31 @@ constexpr int homeMenuMargin = 20;
 constexpr int homeMarginTop = 30;
 constexpr int subtitleY = 738;
 
+// Format as "1.2GB/64GB" (used/total) using the FAT partition's own byte counts.
+// Both values come from clusterCount/freeClusterCount × bytesPerCluster so units are consistent.
+void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len) {
+  if (freeBytes > totalBytes) freeBytes = totalBytes;
+  const uint64_t usedBytes = totalBytes - freeBytes;
+  constexpr uint64_t GB = 1000000000ULL;
+  constexpr uint64_t MB = 1000000ULL;
+  const uint32_t totalGb = (uint32_t)(totalBytes / GB);
+  if (usedBytes >= GB) {
+    const uint32_t tenths = (uint32_t)(usedBytes / (GB / 10));
+    snprintf(buf, len, "%lu.%luGB/%luGB", (unsigned long)(tenths / 10), (unsigned long)(tenths % 10),
+             (unsigned long)totalGb);
+  } else {
+    const uint32_t mb = (uint32_t)(usedBytes / MB);
+    snprintf(buf, len, "%luMB/%luGB", (unsigned long)mb, (unsigned long)totalGb);
+  }
+}
+
+// Draw a simple bold 10×12 microSD card icon: solid body with top-left diagonal notch.
+void drawMicroSdIcon(const GfxRenderer& renderer, int x, int y) {
+  renderer.fillRect(x + 2, y, 8, 1);      // row 0: notch removes left 2px
+  renderer.fillRect(x + 1, y + 1, 9, 1);  // row 1: notch removes left 1px
+  renderer.fillRect(x, y + 2, 10, 10);    // rows 2-11: full-width body
+}
+
 // Helper: draw battery icon at given position
 void drawBatteryIcon(const GfxRenderer& renderer, int x, int y, int battWidth, int rectHeight, uint16_t percentage) {
   // Top line
@@ -104,6 +129,15 @@ void BaseTheme::drawBatteryRight(const GfxRenderer& renderer, Rect rect, const b
 
   // Icon is already at correct position from rect.x
   drawBatteryIcon(renderer, rect.x, y, BaseMetrics::values.batteryWidth, rect.height, percentage);
+}
+
+void BaseTheme::drawSdInfo(const GfxRenderer& renderer, Rect rect) const {
+  constexpr int iconWidth = 10;
+  constexpr int iconGap = 2;
+  drawMicroSdIcon(renderer, rect.x, rect.y + 6);  // +6 matches battery icon offset within header
+  char buf[20];
+  formatSdInfo(Storage.sdFreeBytes(), Storage.sdTotalBytes(), buf, sizeof(buf));
+  renderer.drawText(SMALL_FONT_ID, rect.x + iconWidth + iconGap, rect.y, buf);
 }
 
 void BaseTheme::drawProgressBar(const GfxRenderer& renderer, Rect rect, const size_t current,
@@ -293,6 +327,9 @@ void BaseTheme::drawHeader(const GfxRenderer& renderer, Rect rect, const char* t
   drawBatteryRight(renderer,
                    Rect{batteryX, rect.y + 5, BaseMetrics::values.batteryWidth, BaseMetrics::values.batteryHeight},
                    showBatteryPercentage);
+
+  // SD free space — upper left, mirroring the battery's right margin
+  drawSdInfo(renderer, Rect{rect.x + 12, rect.y + 5, 0, 0});
 
   if (title) {
     int padding = rect.width - batteryX + BaseMetrics::values.batteryWidth;

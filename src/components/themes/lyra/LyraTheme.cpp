@@ -167,6 +167,9 @@ void LyraTheme::drawHeader(const GfxRenderer& renderer, Rect rect, const char* t
                    Rect{batteryX, rect.y + 5, LyraMetrics::values.batteryWidth, LyraMetrics::values.batteryHeight},
                    showBatteryPercentage);
 
+  // SD free space — upper left, mirroring the battery's right margin
+  drawSdInfo(renderer, Rect{rect.x + 12, rect.y + 5, 0, 0});
+
   int maxTitleWidth =
       rect.width - LyraMetrics::values.contentSidePadding * 2 - (subtitle != nullptr ? maxSubtitleWidth : 0);
 

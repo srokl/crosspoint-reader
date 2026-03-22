@@ -29,7 +29,16 @@ HalStorage::HalStorage() {
 
 bool HalStorage::begin() {
   FsDateTime::setCallback(sdFatDateTimeCallback);
-  return SDCard.begin();
+  const bool ok = SDCard.begin();
+  if (ok) {
+    // Pre-populate both caches synchronously — no other tasks running yet during setup.
+    sdTotalBytesCache = SDCard.cardTotalBytes();
+    sdTotalBytesValid = true;
+    sdFreeMB = (uint32_t)(SDCard.cardFreeBytes() / 1000000ULL);
+    // Background task keeps free-space cache fresh without blocking the UI thread.
+    xTaskCreate(sdFreeUpdateTask, "sdFree", 2048, this, 1, &sdFreeUpdateTaskHandle);
+  }
+  return ok;
 }
 
 bool HalStorage::ready() const { return SDCard.ready(); }
@@ -131,6 +140,29 @@ bool HalStorage::openFileForWrite(const char* moduleName, const String& path, Ha
 }
 
 bool HalStorage::removeDir(const char* path) { HAL_STORAGE_WRAPPED_CALL(removeDir, path); }
+
+uint64_t HalStorage::sdTotalBytes() {
+  if (sdTotalBytesValid) return sdTotalBytesCache;
+  StorageLock lock;
+  sdTotalBytesCache = SDCard.cardTotalBytes();
+  sdTotalBytesValid = true;
+  return sdTotalBytesCache;
+}
+
+uint64_t HalStorage::sdFreeBytes() {
+  // sdFreeMB is a volatile uint32_t updated by the background task.
+  // 32-bit reads are atomic on single-core RISC-V — no mutex needed here.
+  return (uint64_t)sdFreeMB * 1000000ULL;
+}
+
+void HalStorage::sdFreeUpdateTask(void* param) {
+  auto& self = *static_cast<HalStorage*>(param);
+  for (;;) {
+    vTaskDelay(pdMS_TO_TICKS(60000));  // refresh every 60 seconds
+    StorageLock lock;                  // competes normally with other SD users
+    self.sdFreeMB = (uint32_t)(SDCard.cardFreeBytes() / 1000000ULL);
+  }
+}
 
 // HalFile implementation
 // Allow doing file operations while ensuring thread safety via HalStorage's mutex.
