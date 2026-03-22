@@ -33,9 +33,9 @@ void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len
     snprintf(buf, len, "%lu.%luGB/%lu.%luGB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
              (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   } else {
-    const uint32_t mbTenths = (uint32_t)(usedBytes * 10 / MiB);
-    snprintf(buf, len, "%lu.%luMB/%lu.%luGB", (unsigned long)(mbTenths / 10), (unsigned long)(mbTenths % 10),
-             (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
+    const uint32_t mb = (uint32_t)(usedBytes / MiB);
+    snprintf(buf, len, "%luMB/%lu.%luGB", (unsigned long)mb, (unsigned long)(totalTenths / 10),
+             (unsigned long)(totalTenths % 10));
   }
 }
 
