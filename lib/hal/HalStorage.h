@@ -55,7 +55,8 @@ class HalStorage {
 
   static HalStorage& getInstance() { return instance; }
 
-  class StorageLock;  // private class, used internally
+  class StorageLock;     // private class, used internally
+  friend class HalFile;  // HalFile::close() calls notifySdFreeUpdate()
 
  private:
   static HalStorage instance;
@@ -111,6 +112,8 @@ class HalFile : public Print {
   size_t write(const void* buf, size_t count);
   size_t write(uint8_t b) override;
   bool rename(const char* newPath);
+  bool getCreateDateTime(uint16_t* pdate, uint16_t* ptime);
+  bool getModifyDateTime(uint16_t* pdate, uint16_t* ptime);
   bool isDirectory() const;
   void rewindDirectory();
   bool close();
