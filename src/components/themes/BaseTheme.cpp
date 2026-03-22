@@ -132,11 +132,13 @@ void BaseTheme::drawBatteryRight(const GfxRenderer& renderer, Rect rect, const b
 }
 
 void BaseTheme::drawSdInfo(const GfxRenderer& renderer, Rect rect) const {
+  const uint64_t total = Storage.sdTotalBytes();
+  if (total == 0) return;
   constexpr int iconWidth = 10;
   constexpr int iconGap = 2;
   drawMicroSdIcon(renderer, rect.x, rect.y + 6);  // +6 matches battery icon offset within header
   char buf[20];
-  formatSdInfo(Storage.sdFreeBytes(), Storage.sdTotalBytes(), buf, sizeof(buf));
+  formatSdInfo(Storage.sdFreeBytes(), total, buf, sizeof(buf));
   renderer.drawText(SMALL_FONT_ID, rect.x + iconWidth + iconGap, rect.y, buf);
 }
 

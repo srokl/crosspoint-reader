@@ -113,7 +113,7 @@ void SystemInformationActivity::render(RenderLock&&) {
   } else if (status.sdTotalBytes > 0) {
     drawRow(9, tr(STR_SD_CARD), formatBytes(status.sdUsedBytes) + " / " + formatBytes(status.sdTotalBytes));
   } else {
-    drawRow(9, tr(STR_SD_CARD), tr(STR_NOT_SET));
+    drawRow(9, tr(STR_SD_CARD), tr(STR_NO_SD_CARD));
   }
 
   const auto labels = mappedInput.mapLabels(tr(STR_BACK), "", "", "");
