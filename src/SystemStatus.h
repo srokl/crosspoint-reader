@@ -5,6 +5,8 @@
 #include <WiFi.h>
 #include <esp_heap_caps.h>
 
+#include <string>
+
 #include "HalPowerManager.h"
 
 // Snapshot of device system status, shared between the web server and the

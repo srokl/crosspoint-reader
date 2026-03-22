@@ -6,6 +6,7 @@
 #include <SDCardManager.h>
 #include <SdFat.h>
 
+#include <algorithm>
 #include <cassert>
 #include <ctime>
 
@@ -13,8 +14,15 @@ static void sdFatDateTimeCallback(uint16_t* pdate, uint16_t* ptime) {
   struct tm timeinfo;
   const time_t t = time(nullptr);
   localtime_r(&t, &timeinfo);
-  *pdate = FS_DATE(timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
-  *ptime = FS_TIME(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+  // Clamp to FAT-valid ranges; time(nullptr) returns epoch on cold boot (no SNTP yet).
+  const int year = std::max(1980, std::min(2107, timeinfo.tm_year + 1900));
+  const int mon = std::max(1, std::min(12, timeinfo.tm_mon + 1));
+  const int mday = std::max(1, std::min(31, timeinfo.tm_mday));
+  const int hour = std::max(0, std::min(23, timeinfo.tm_hour));
+  const int min = std::max(0, std::min(59, timeinfo.tm_min));
+  const int sec = std::max(0, std::min(59, timeinfo.tm_sec));
+  *pdate = FS_DATE(year, mon, mday);
+  *ptime = FS_TIME(hour, min, sec);
 }
 
 #define SDCard SDCardManager::getInstance()
@@ -37,7 +45,10 @@ bool HalStorage::begin() {
     // Do an initial free-space walk synchronously — no other tasks are running yet during setup.
     sdFreeMB = (uint32_t)(SDCard.cardFreeBytes() / 1000000ULL);
     // Start the background refresh task.
-    xTaskCreate(sdFreeUpdateTask, "sdFree", 2048, this, 1, &sdFreeUpdateTaskHandle);
+    if (xTaskCreate(sdFreeUpdateTask, "sdFree", 2048, this, 1, &sdFreeUpdateTaskHandle) != pdPASS) {
+      LOG_ERR("Storage", "Failed to create sdFree task; free-space cache will not update after writes");
+      sdFreeUpdateTaskHandle = nullptr;
+    }
   }
   return ok;
 }
@@ -192,8 +203,10 @@ bool HalStorage::openFileForWrite(const char* moduleName, const char* path, HalF
   StorageLock lock;  // ensure thread safety for the duration of this function
   FsFile fsFile;
   bool ok = SDCard.openFileForWrite(moduleName, path, fsFile);
-  file = HalFile(std::make_unique<HalFile::Impl>(std::move(fsFile)));
-  if (ok) file.openedForWrite = true;
+  if (ok) {
+    file = HalFile(std::make_unique<HalFile::Impl>(std::move(fsFile)));
+    file.openedForWrite = true;
+  }
   return ok;
 }
 
