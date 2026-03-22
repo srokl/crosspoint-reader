@@ -111,7 +111,7 @@ class BaseTheme {
   virtual void drawBatteryLeft(const GfxRenderer& renderer, Rect rect,
                                bool showPercentage = true) const;  // Left aligned (reader mode)
   virtual void drawBatteryRight(const GfxRenderer& renderer, Rect rect,
-                                bool showPercentage = true) const;  // Right aligned (UI headers)
+                                bool showPercentage = true) const;        // Right aligned (UI headers)
   virtual void drawSdInfo(const GfxRenderer& renderer, Rect rect) const;  // SD free space (upper left)
   virtual void drawButtonHints(GfxRenderer& renderer, const char* btn1, const char* btn2, const char* btn3,
                                const char* btn4) const;
