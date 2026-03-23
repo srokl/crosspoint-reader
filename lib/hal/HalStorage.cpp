@@ -8,6 +8,7 @@
 
 #include <cassert>
 #include <ctime>
+#include <esp_task_wdt.h>
 
 static void sdFatDateTimeCallback(uint16_t* pdate, uint16_t* ptime) {
   struct tm timeinfo;
@@ -119,11 +120,13 @@ void HalStorage::sdFreeUpdateTask(void* param) {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // block until first notification
     while (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5000))) {
     }  // reset window on each new notification
+    esp_task_wdt_reset();  // FAT walk can be slow on large/fragmented cards
     StorageLock lock;
     if (SDCard.ready()) {
       const uint32_t freeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
       if (freeKiB <= (uint32_t)(self.sdTotalBytesCache / 1024ULL)) self.sdFreeKiB = freeKiB;
     }
+    esp_task_wdt_reset();  // reset again after the walk completes
   }
 }
 

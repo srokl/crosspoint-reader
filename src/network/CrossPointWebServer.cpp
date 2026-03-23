@@ -401,8 +401,6 @@ void CrossPointWebServer::handleStatus() const {
   doc["minFreeHeap"] = status.minFreeHeapBytes;
   doc["maxAllocHeap"] = status.maxAllocHeapBytes;
   doc["flashTotal"] = status.flashBytes;
-  doc["flashAppUsed"] = status.flashAppUsedBytes;
-  doc["flashAppFree"] = status.flashAppFreeBytes;
   doc["batteryPercent"] = status.batteryPercent;
   doc["charging"] = status.charging;
   doc["uptime"] = status.uptimeSeconds;

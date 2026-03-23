@@ -24,8 +24,6 @@ struct SystemStatus {
   uint32_t minFreeHeapBytes;
   uint32_t maxAllocHeapBytes;
   uint64_t flashBytes;
-  uint64_t flashAppUsedBytes;
-  uint64_t flashAppFreeBytes;
   uint16_t batteryPercent;
   bool charging;
   uint32_t uptimeSeconds;
@@ -44,8 +42,6 @@ struct SystemStatus {
     s.minFreeHeapBytes = ESP.getMinFreeHeap();
     s.maxAllocHeapBytes = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
     s.flashBytes = static_cast<uint64_t>(ESP.getFlashChipSize());
-    s.flashAppUsedBytes = static_cast<uint64_t>(ESP.getSketchSize());
-    s.flashAppFreeBytes = static_cast<uint64_t>(ESP.getFreeSketchSpace());
     s.batteryPercent = powerManager.getBatteryPercentage();
     s.charging = digitalRead(UART0_RXD) == HIGH;
     s.uptimeSeconds = millis() / 1000;
