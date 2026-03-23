@@ -11,11 +11,11 @@
 static std::string formatBytes(uint64_t bytes) {
   char buf[16];
   if (bytes >= 1024ULL * 1024 * 1024) {
-    snprintf(buf, sizeof(buf), "%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0));
+    snprintf(buf, sizeof(buf), "%.1f GiB", bytes / (1024.0 * 1024.0 * 1024.0));
   } else if (bytes >= 1024ULL * 1024) {
-    snprintf(buf, sizeof(buf), "%.1f MB", bytes / (1024.0 * 1024.0));
+    snprintf(buf, sizeof(buf), "%.1f MiB", bytes / (1024.0 * 1024.0));
   } else if (bytes >= 1024ULL) {
-    snprintf(buf, sizeof(buf), "%.1f KB", bytes / 1024.0);
+    snprintf(buf, sizeof(buf), "%.1f KiB", bytes / 1024.0);
   } else {
     snprintf(buf, sizeof(buf), "%llu B", static_cast<unsigned long long>(bytes));
   }
