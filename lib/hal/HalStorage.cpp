@@ -282,13 +282,18 @@ bool HalFile::isDirectory() const { HAL_FILE_FORWARD_CALL(isDirectory, ); }  // 
 void HalFile::rewindDirectory() { HAL_FILE_WRAPPED_CALL(rewindDirectory, ); }
 
 bool HalFile::close() {
-  HalStorage::StorageLock lock;
-  assert(impl != nullptr);
-  const bool ok = impl->file.close();
-  if (ok && openedForWrite) {
-    openedForWrite = false;  // clear before notify to prevent double-notify on double-close
-    HalStorage::getInstance().notifySdFreeUpdate();
-  }
+  bool needNotify = false;
+  bool ok = false;
+  {
+    HalStorage::StorageLock lock;
+    assert(impl != nullptr);
+    ok = impl->file.close();
+    if (ok && openedForWrite) {
+      openedForWrite = false;  // clear before notify to prevent double-notify on double-close
+      needNotify = true;
+    }
+  }  // lock released here before notifying
+  if (needNotify) HalStorage::getInstance().notifySdFreeUpdate();
   return ok;
 }
 
