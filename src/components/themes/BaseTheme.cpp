@@ -139,7 +139,11 @@ void BaseTheme::drawSdInfo(const GfxRenderer& renderer, Rect rect) const {
   drawMicroSdIcon(renderer, rect.x, rect.y + 6);  // +6 matches battery icon offset within header
   char buf[24];                                   // "1023.9MiB/1023.9GiB" = 19 chars + null; 24 gives safe margin
   formatSdInfo(Storage.sdFreeBytes(), total, buf, sizeof(buf));
-  renderer.drawText(SMALL_FONT_ID, rect.x + iconWidth + iconGap, rect.y, buf);
+  const int textX = rect.x + iconWidth + iconGap;
+  const int textWidth = renderer.getTextWidth(SMALL_FONT_ID, buf);
+  const int textHeight = renderer.getTextHeight(SMALL_FONT_ID);
+  renderer.fillRect(textX, rect.y, textWidth, textHeight, false);  // clear before draw to prevent e-ink ghosting
+  renderer.drawText(SMALL_FONT_ID, textX, rect.y, buf);
 }
 
 void BaseTheme::drawProgressBar(const GfxRenderer& renderer, Rect rect, const size_t current,
