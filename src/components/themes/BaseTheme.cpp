@@ -21,7 +21,7 @@ constexpr int homeMenuMargin = 20;
 constexpr int homeMarginTop = 30;
 constexpr int subtitleY = 738;
 
-// Format as "112.5MB/59.4GB" (used/total) using binary units (1024-based), matching formatBytes().
+// Format as "112.5MiB/59.4GiB" (used/total) using binary units (1024-based), matching formatBytes().
 void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len) {
   if (freeBytes > totalBytes) freeBytes = totalBytes;
   const uint64_t usedBytes = totalBytes - freeBytes;
@@ -30,11 +30,11 @@ void formatSdInfo(uint64_t freeBytes, uint64_t totalBytes, char* buf, size_t len
   const uint32_t totalTenths = (uint32_t)(totalBytes * 10 / GiB);
   if (usedBytes >= GiB) {
     const uint32_t usedTenths = (uint32_t)(usedBytes * 10 / GiB);
-    snprintf(buf, len, "%lu.%luGB/%lu.%luGB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
+    snprintf(buf, len, "%lu.%luGiB/%lu.%luGiB", (unsigned long)(usedTenths / 10), (unsigned long)(usedTenths % 10),
              (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   } else {
     const uint32_t mbTenths = (uint32_t)(usedBytes * 10 / MiB);
-    snprintf(buf, len, "%lu.%luMB/%lu.%luGB", (unsigned long)(mbTenths / 10), (unsigned long)(mbTenths % 10),
+    snprintf(buf, len, "%lu.%luMiB/%lu.%luGiB", (unsigned long)(mbTenths / 10), (unsigned long)(mbTenths % 10),
              (unsigned long)(totalTenths / 10), (unsigned long)(totalTenths % 10));
   }
 }
@@ -137,7 +137,7 @@ void BaseTheme::drawSdInfo(const GfxRenderer& renderer, Rect rect) const {
   constexpr int iconWidth = 10;
   constexpr int iconGap = 2;
   drawMicroSdIcon(renderer, rect.x, rect.y + 6);  // +6 matches battery icon offset within header
-  char buf[20];
+  char buf[24];                                   // "1023.9MiB/1023.9GiB" = 19 chars + null; 24 gives safe margin
   formatSdInfo(Storage.sdFreeBytes(), total, buf, sizeof(buf));
   renderer.drawText(SMALL_FONT_ID, rect.x + iconWidth + iconGap, rect.y, buf);
 }
