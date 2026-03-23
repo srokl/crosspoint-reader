@@ -41,16 +41,20 @@ class HalStorage {
   bool openFileForRead(const char* moduleName, const char* path, HalFile& file);
   bool openFileForRead(const char* moduleName, const std::string& path, HalFile& file);
   bool openFileForRead(const char* moduleName, const String& path, HalFile& file);
-  bool openFileForWrite(const char* moduleName, const char* path, HalFile& file);
-  bool openFileForWrite(const char* moduleName, const std::string& path, HalFile& file);
-  bool openFileForWrite(const char* moduleName, const String& path, HalFile& file);
+  // silent=true skips the free-space cache notification on close (use for frequent
+  // small writes like progress saves that do not meaningfully change free space).
+  bool openFileForWrite(const char* moduleName, const char* path, HalFile& file, bool silent = false);
+  bool openFileForWrite(const char* moduleName, const std::string& path, HalFile& file, bool silent = false);
+  bool openFileForWrite(const char* moduleName, const String& path, HalFile& file, bool silent = false);
   bool removeDir(const char* path);
 
   // Returns total SD card size in bytes (cached — fast, no SD access).
   uint64_t sdTotalBytes() const;
   // Returns used space in bytes (total minus free, both cached — fast).
+  // NOTE: quantised to 1 KiB increments — the internal cache stores kibibytes.
   uint64_t sdUsedBytes() const;
   // Returns free space in bytes (cached — fast, no SD access).
+  // NOTE: quantised to 1 KiB increments — the internal cache stores kibibytes.
   uint64_t sdFreeBytes() const;
 
   static HalStorage& getInstance() { return instance; }
@@ -64,10 +68,12 @@ class HalStorage {
   bool initialized = false;
   SemaphoreHandle_t storageMutex = nullptr;
 
-  // Free-space cache. sdTotalBytes is populated once in begin() and never changes.
-  // sdFreeMB is a uint32_t written atomically on single-core RISC-V — no mutex needed for reads.
+  // Free-space cache. sdTotalBytesCache is populated once in begin() and never changes.
+  // sdFreeKiB stores free space in 1 KiB units (cardFreeBytes / 1024), giving ~1 KiB
+  // quantisation while keeping the field a uint32_t (atomic on 32-bit RISC-V, no mutex needed).
+  // Supports SD cards up to ~4 TB (2^32 * 1024).
   uint64_t sdTotalBytesCache = 0;
-  volatile uint32_t sdFreeMB = 0;
+  volatile uint32_t sdFreeKiB = 0;
 
   // Background task: blocks until notified, then waits for a 5-second quiet window
   // (debounce) before walking the FAT to refresh sdFreeMB. This ensures that even a
@@ -89,6 +95,11 @@ class HalFile : public Print {
   // Prevents read-only file closes from triggering unnecessary FAT walks.
   bool openedForWrite = false;
   explicit HalFile(std::unique_ptr<Impl> impl);
+  // Close the underlying file and notify the free-space cache if this instance
+  // was opened for writing. Idempotent; safe to call when impl is null or file
+  // is already closed. Used by operator= and ~HalFile to preserve notify
+  // semantics without duplicating the logic.
+  void release() noexcept;
 
  public:
   HalFile();

@@ -35,9 +35,12 @@ bool HalStorage::begin() {
     // Pre-populate the total-bytes cache once (partition size never changes).
     sdTotalBytesCache = SDCard.cardTotalBytes();
     // Do an initial free-space walk synchronously — no other tasks are running yet during setup.
-    sdFreeMB = (uint32_t)(SDCard.cardFreeBytes() / 1000000ULL);
+    sdFreeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
     // Start the background refresh task.
-    xTaskCreate(sdFreeUpdateTask, "sdFree", 2048, this, 1, &sdFreeUpdateTaskHandle);
+    if (xTaskCreate(sdFreeUpdateTask, "sdFree", 2048, this, 1, &sdFreeUpdateTaskHandle) != pdPASS) {
+      LOG_ERR("Storage", "Failed to create sdFree task; free-space cache will not update after writes");
+      sdFreeUpdateTaskHandle = nullptr;
+    }
   }
   return ok;
 }
@@ -85,8 +88,8 @@ bool HalStorage::ensureDirectoryExists(const char* path) { HAL_STORAGE_WRAPPED_C
 uint64_t HalStorage::sdTotalBytes() const { return sdTotalBytesCache; }
 
 uint64_t HalStorage::sdFreeBytes() const {
-  // sdFreeMB is a volatile uint32_t written atomically on single-core RISC-V — no mutex needed.
-  return (uint64_t)sdFreeMB * 1000000ULL;
+  // sdFreeKiB is a volatile uint32_t written atomically on single-core RISC-V — no mutex needed.
+  return (uint64_t)sdFreeKiB * 1024ULL;
 }
 
 uint64_t HalStorage::sdUsedBytes() const {
@@ -95,7 +98,16 @@ uint64_t HalStorage::sdUsedBytes() const {
 }
 
 void HalStorage::notifySdFreeUpdate() {
-  if (sdFreeUpdateTaskHandle) xTaskNotifyGive(sdFreeUpdateTaskHandle);
+  if (sdFreeUpdateTaskHandle) {
+    xTaskNotifyGive(sdFreeUpdateTaskHandle);
+  } else {
+    // Background task unavailable (creation failed); refresh synchronously.
+    StorageLock lock;
+    if (SDCard.ready()) {
+      const uint32_t freeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+      if (freeKiB <= (uint32_t)(sdTotalBytesCache / 1024ULL)) sdFreeKiB = freeKiB;
+    }
+  }
 }
 
 // Background task: wakes on notification, then waits for a 5-second quiet window before
@@ -108,7 +120,10 @@ void HalStorage::sdFreeUpdateTask(void* param) {
     while (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5000))) {
     }  // reset window on each new notification
     StorageLock lock;
-    self.sdFreeMB = (uint32_t)(SDCard.cardFreeBytes() / 1000000ULL);
+    if (SDCard.ready()) {
+      const uint32_t freeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+      if (freeKiB <= (uint32_t)(self.sdTotalBytesCache / 1024ULL)) self.sdFreeKiB = freeKiB;
+    }
   }
 }
 
@@ -122,7 +137,15 @@ HalFile::HalFile() = default;
 
 HalFile::HalFile(std::unique_ptr<Impl> impl) : impl(std::move(impl)) {}
 
-HalFile::~HalFile() = default;
+void HalFile::release() noexcept {
+  if (openedForWrite && impl && impl->file.isOpen()) {
+    impl->file.close();
+    openedForWrite = false;
+    HalStorage::getInstance().notifySdFreeUpdate();
+  }
+}
+
+HalFile::~HalFile() { release(); }
 
 // Move constructor: transfer ownership and clear openedForWrite on the moved-from object
 // so a subsequent close() on it cannot trigger a spurious notify.
@@ -132,6 +155,11 @@ HalFile::HalFile(HalFile&& other) noexcept : impl(std::move(other.impl)), opened
 
 HalFile& HalFile::operator=(HalFile&& other) noexcept {
   if (this != &other) {
+    // release() closes any write-opened file on *this and notifies the free-space
+    // cache before we overwrite impl. HalStorage::openFileForWrite always passes a
+    // fresh HalFile (openedForWrite=false) so this branch is only reached in
+    // user-level reassignment (no lock held).
+    release();
     impl = std::move(other.impl);
     openedForWrite = other.openedForWrite;
     other.openedForWrite = false;
@@ -188,21 +216,23 @@ bool HalStorage::openFileForRead(const char* moduleName, const String& path, Hal
   return openFileForRead(moduleName, path.c_str(), file);
 }
 
-bool HalStorage::openFileForWrite(const char* moduleName, const char* path, HalFile& file) {
+bool HalStorage::openFileForWrite(const char* moduleName, const char* path, HalFile& file, bool silent) {
   StorageLock lock;  // ensure thread safety for the duration of this function
   FsFile fsFile;
   bool ok = SDCard.openFileForWrite(moduleName, path, fsFile);
-  file = HalFile(std::make_unique<HalFile::Impl>(std::move(fsFile)));
-  if (ok) file.openedForWrite = true;
+  if (ok) {
+    file = HalFile(std::make_unique<HalFile::Impl>(std::move(fsFile)));
+    if (!silent) file.openedForWrite = true;
+  }
   return ok;
 }
 
-bool HalStorage::openFileForWrite(const char* moduleName, const std::string& path, HalFile& file) {
-  return openFileForWrite(moduleName, path.c_str(), file);
+bool HalStorage::openFileForWrite(const char* moduleName, const std::string& path, HalFile& file, bool silent) {
+  return openFileForWrite(moduleName, path.c_str(), file, silent);
 }
 
-bool HalStorage::openFileForWrite(const char* moduleName, const String& path, HalFile& file) {
-  return openFileForWrite(moduleName, path.c_str(), file);
+bool HalStorage::openFileForWrite(const char* moduleName, const String& path, HalFile& file, bool silent) {
+  return openFileForWrite(moduleName, path.c_str(), file, silent);
 }
 
 bool HalStorage::removeDir(const char* path) {
