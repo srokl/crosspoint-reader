@@ -93,7 +93,10 @@ void HalStorage::notifySdFreeUpdate() {
   } else {
     // Background task unavailable (creation failed); refresh synchronously.
     StorageLock lock;
-    sdFreeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+    if (SDCard.ready()) {
+      const uint32_t freeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+      if (freeKiB <= (uint32_t)(sdTotalBytesCache / 1024ULL)) sdFreeKiB = freeKiB;
+    }
   }
 }
 
@@ -107,7 +110,10 @@ void HalStorage::sdFreeUpdateTask(void* param) {
     while (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5000))) {
     }  // reset window on each new notification
     StorageLock lock;
-    self.sdFreeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+    if (SDCard.ready()) {
+      const uint32_t freeKiB = (uint32_t)(SDCard.cardFreeBytes() / 1024ULL);
+      if (freeKiB <= (uint32_t)(self.sdTotalBytesCache / 1024ULL)) self.sdFreeKiB = freeKiB;
+    }
   }
 }
 
