@@ -1651,7 +1651,7 @@
             <div class="legend-color"></div>
             <span>Rotate</span>
           </button>
-          <button class="legend-btn" style="--btn-color:#f39c12" onclick="applyStateToAll(4)" title="Rotate portrait images 90° to fill landscape screen (800×480)">
+          <button class="legend-btn" style="--btn-color:#f39c12" onclick="applyStateToAll(4)" title="P-Fit: rotate portrait images 90° to fill the landscape screen (800×480). Only use if you read exclusively in landscape mode — these images will appear smaller in portrait.">
             <div class="legend-color"></div>
             <span>P-Fit</span>
           </button>
@@ -2659,7 +2659,8 @@
         
         item.className = `image-item ${stateClasses[state]} ${rotateClass}`.trim();
         item.onclick = () => cycleImageState(img.path);
-        item.title = `${img.width}×${img.height} - ${stateText}${partsText}`;
+        const pfitWarning = state === 4 ? ' — landscape only, will appear smaller in portrait' : '';
+        item.title = `${img.width}×${img.height} - ${stateText}${partsText}${pfitWarning}`;
         item.innerHTML = `
           <span class="image-state-badge">${stateLabels[state] || '•'}</span>
           <div class="image-preview-overlay">
