@@ -2950,10 +2950,12 @@
     const convertOptions = document.getElementById('convertOptions');
     fileInput.classList.toggle('has-files', files.length > 0);
 
-    // Show/hide convert options based on file selection
-    if (files.length > 0) {
+    // Show/hide convert options — only when at least one EPUB is selected
+    const epubFiles = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.epub'));
+    if (epubFiles.length > 0) {
       convertOptions.style.display = 'block';
     } else {
+      convertOptions.style.display = 'none';
       clearImagePicker();
     }
 
