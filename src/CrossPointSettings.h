@@ -189,6 +189,8 @@ class CrossPointSettings {
   uint8_t hideBatteryPercentage = HIDE_NEVER;
   // Long-press chapter skip on side buttons
   uint8_t longPressChapterSkip = 1;
+  // Double-press chapter skip on side buttons
+  uint8_t doublePressChapterSkip = 1;
   // UI Theme
   uint8_t uiTheme = LYRA;
   // Sunlight fading compensation
