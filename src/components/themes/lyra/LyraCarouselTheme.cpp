@@ -103,20 +103,13 @@ void LyraCarouselTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect,
       if (Storage.openFileForRead("HOME", thumbPath, file)) {
         Bitmap bitmap(file);
         if (bitmap.parseHeaders() == BmpReaderError::Ok) {
-          // Crop-to-fill: compute cropX or cropY so the image covers the entire
-          // tile with no white bars, cropping the excess symmetrically.
-          const float bmpW = static_cast<float>(bitmap.getWidth());
-          const float bmpH = static_cast<float>(bitmap.getHeight());
-          const float tileRatio = static_cast<float>(maxW) / static_cast<float>(maxH);
-          const float bmpRatio = bmpW / bmpH;
-          float cropX = 0.0f;
-          float cropY = 0.0f;
-          if (bmpRatio > tileRatio) {
-            cropX = 1.0f - tileRatio / bmpRatio;  // bitmap too wide: crop sides
-          } else {
-            cropY = 1.0f - bmpRatio / tileRatio;  // bitmap too tall: crop top/bottom
-          }
-          renderer.drawBitmap(bitmap, x, y, maxW, maxH, cropX, cropY);
+          // Fixed height, proportional width: scale to fill maxH exactly, derive
+          // width from the bitmap aspect ratio capped at maxW. Centre horizontally.
+          const int bmpW = bitmap.getWidth();
+          const int bmpH = bitmap.getHeight();
+          const int displayW = (bmpH > 0) ? std::min(maxW, bmpW * maxH / bmpH) : maxW;
+          const int drawX = x + (maxW - displayW) / 2;
+          renderer.drawBitmap(bitmap, drawX, y, displayW, maxH, 0.0f, 0.0f);
           hasCover = true;
         }
         file.close();
