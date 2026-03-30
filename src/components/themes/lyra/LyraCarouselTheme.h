@@ -42,6 +42,12 @@ constexpr ThemeMetrics values = {.batteryWidth = 16,
 
 class LyraCarouselTheme : public LyraTheme {
  public:
+  // Exact pixel dimensions for each carousel slot — used for exact-size thumbnail generation
+  static constexpr int kCenterCoverW = 340;
+  static constexpr int kCenterCoverH = LyraCarouselMetrics::values.homeCoverHeight - 60;   // 540
+  static constexpr int kSideCoverW = 200;
+  static constexpr int kSideCoverH = LyraCarouselMetrics::values.homeCoverHeight - 210;    // 390
+
   static void setPreRenderIndex(int idx);
   void drawRecentBookCover(GfxRenderer& renderer, Rect rect, const std::vector<RecentBook>& recentBooks,
                            const int selectorIndex, bool& coverRendered, bool& coverBufferStored, bool& bufferRestored,

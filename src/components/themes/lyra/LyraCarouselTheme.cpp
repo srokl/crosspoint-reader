@@ -19,10 +19,10 @@
 
 namespace {
 // Cover layout — centre cover dominates, sides slide kOverlap px behind it
-constexpr int kCenterCoverMaxW = 340;
-constexpr int kCenterCoverMaxH = LyraCarouselMetrics::values.homeCoverHeight - 60;  // 540; frees 60px for dots+author+title
-constexpr int kSideCoverMaxW = 200;
-constexpr int kSideCoverMaxH = LyraCarouselMetrics::values.homeCoverHeight - 210;  // 390
+constexpr int kCenterCoverMaxW = LyraCarouselTheme::kCenterCoverW;
+constexpr int kCenterCoverMaxH = LyraCarouselTheme::kCenterCoverH;
+constexpr int kSideCoverMaxW = LyraCarouselTheme::kSideCoverW;
+constexpr int kSideCoverMaxH = LyraCarouselTheme::kSideCoverH;
 constexpr int kOverlap = 60;
 constexpr int kCoverTopPad = 10;
 
@@ -114,8 +114,7 @@ void LyraCarouselTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect,
     const RecentBook& book = recentBooks[bookIdx];
     bool hasCover = false;
     if (!book.coverBmpPath.empty()) {
-      const std::string thumbPath =
-          UITheme::getCoverThumbPath(book.coverBmpPath, LyraCarouselMetrics::values.homeCoverHeight);
+      const std::string thumbPath = UITheme::getCoverThumbPath(book.coverBmpPath, maxW, maxH);
       FsFile file;
       if (Storage.openFileForRead("HOME", thumbPath, file)) {
         Bitmap bitmap(file);

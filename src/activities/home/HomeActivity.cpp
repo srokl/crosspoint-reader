@@ -80,43 +80,38 @@ void HomeActivity::loadRecentCovers(int coverHeight) {
   bool anyThumbnailGenerated = false;
   Rect popupRect;
 
+  const bool isCarouselTheme = static_cast<CrossPointSettings::UI_THEME>(SETTINGS.uiTheme) ==
+                               CrossPointSettings::UI_THEME::LYRA_CAROUSEL;
+
   int progress = 0;
   for (RecentBook& book : recentBooks) {
     if (!book.coverBmpPath.empty()) {
-      std::string coverPath = UITheme::getCoverThumbPath(book.coverBmpPath, coverHeight);
-      if (!Storage.exists(coverPath.c_str())) {
-        // If epub, try to load the metadata for title/author and cover
-        if (FsHelpers::hasEpubExtension(book.path)) {
-          Epub epub(book.path, "/.crosspoint");
-          // Skip loading css since we only need metadata here
-          epub.load(false, true);
+      if (isCarouselTheme) {
+        // For carousel: generate exact-size thumbnails for center and side slots.
+        // Load the source image once even when both sizes are missing.
+        const std::string centerPath = UITheme::getCoverThumbPath(
+            book.coverBmpPath, LyraCarouselTheme::kCenterCoverW, LyraCarouselTheme::kCenterCoverH);
+        const std::string sidePath = UITheme::getCoverThumbPath(
+            book.coverBmpPath, LyraCarouselTheme::kSideCoverW, LyraCarouselTheme::kSideCoverH);
+        const bool centerMissing = !Storage.exists(centerPath.c_str());
+        const bool sideMissing = !Storage.exists(sidePath.c_str());
 
-          // Try to generate thumbnail image for Continue Reading card
-          if (!showingLoading) {
-            showingLoading = true;
-            popupRect = GUI.drawPopup(renderer, tr(STR_LOADING_POPUP));
-          }
-          GUI.fillPopupProgress(renderer, popupRect, 10 + progress * (90 / recentBooks.size()));
-          bool success = epub.generateThumbBmp(coverHeight);
-          if (!success) {
-            RECENT_BOOKS.updateBook(book.path, book.title, book.author, "");
-            book.coverBmpPath = "";
-          } else {
-            anyThumbnailGenerated = true;
-          }
-          coverRendered = false;
-          requestUpdate();
-        } else if (FsHelpers::hasXtcExtension(book.path)) {
-          // Handle XTC file
-          Xtc xtc(book.path, "/.crosspoint");
-          if (xtc.load()) {
-            // Try to generate thumbnail image for Continue Reading card
+        if (centerMissing || sideMissing) {
+          if (FsHelpers::hasEpubExtension(book.path)) {
+            Epub epub(book.path, "/.crosspoint");
+            epub.load(false, true);
             if (!showingLoading) {
               showingLoading = true;
               popupRect = GUI.drawPopup(renderer, tr(STR_LOADING_POPUP));
             }
             GUI.fillPopupProgress(renderer, popupRect, 10 + progress * (90 / recentBooks.size()));
-            bool success = xtc.generateThumbBmp(coverHeight);
+            bool success = true;
+            if (centerMissing)
+              success = epub.generateThumbBmp(LyraCarouselTheme::kCenterCoverW, LyraCarouselTheme::kCenterCoverH) &&
+                        success;
+            if (sideMissing)
+              success =
+                  epub.generateThumbBmp(LyraCarouselTheme::kSideCoverW, LyraCarouselTheme::kSideCoverH) && success;
             if (!success) {
               RECENT_BOOKS.updateBook(book.path, book.title, book.author, "");
               book.coverBmpPath = "";
@@ -125,6 +120,71 @@ void HomeActivity::loadRecentCovers(int coverHeight) {
             }
             coverRendered = false;
             requestUpdate();
+          } else if (FsHelpers::hasXtcExtension(book.path)) {
+            Xtc xtc(book.path, "/.crosspoint");
+            if (xtc.load()) {
+              if (!showingLoading) {
+                showingLoading = true;
+                popupRect = GUI.drawPopup(renderer, tr(STR_LOADING_POPUP));
+              }
+              GUI.fillPopupProgress(renderer, popupRect, 10 + progress * (90 / recentBooks.size()));
+              bool success = true;
+              if (centerMissing)
+                success =
+                    xtc.generateThumbBmp(LyraCarouselTheme::kCenterCoverW, LyraCarouselTheme::kCenterCoverH) && success;
+              if (sideMissing)
+                success =
+                    xtc.generateThumbBmp(LyraCarouselTheme::kSideCoverW, LyraCarouselTheme::kSideCoverH) && success;
+              if (!success) {
+                RECENT_BOOKS.updateBook(book.path, book.title, book.author, "");
+                book.coverBmpPath = "";
+              } else {
+                anyThumbnailGenerated = true;
+              }
+              coverRendered = false;
+              requestUpdate();
+            }
+          }
+        }
+      } else {
+        // Non-carousel: generate height-keyed thumbnail
+        std::string coverPath = UITheme::getCoverThumbPath(book.coverBmpPath, coverHeight);
+        if (!Storage.exists(coverPath.c_str())) {
+          if (FsHelpers::hasEpubExtension(book.path)) {
+            Epub epub(book.path, "/.crosspoint");
+            epub.load(false, true);
+            if (!showingLoading) {
+              showingLoading = true;
+              popupRect = GUI.drawPopup(renderer, tr(STR_LOADING_POPUP));
+            }
+            GUI.fillPopupProgress(renderer, popupRect, 10 + progress * (90 / recentBooks.size()));
+            bool success = epub.generateThumbBmp(coverHeight);
+            if (!success) {
+              RECENT_BOOKS.updateBook(book.path, book.title, book.author, "");
+              book.coverBmpPath = "";
+            } else {
+              anyThumbnailGenerated = true;
+            }
+            coverRendered = false;
+            requestUpdate();
+          } else if (FsHelpers::hasXtcExtension(book.path)) {
+            Xtc xtc(book.path, "/.crosspoint");
+            if (xtc.load()) {
+              if (!showingLoading) {
+                showingLoading = true;
+                popupRect = GUI.drawPopup(renderer, tr(STR_LOADING_POPUP));
+              }
+              GUI.fillPopupProgress(renderer, popupRect, 10 + progress * (90 / recentBooks.size()));
+              bool success = xtc.generateThumbBmp(coverHeight);
+              if (!success) {
+                RECENT_BOOKS.updateBook(book.path, book.title, book.author, "");
+                book.coverBmpPath = "";
+              } else {
+                anyThumbnailGenerated = true;
+              }
+              coverRendered = false;
+              requestUpdate();
+            }
           }
         }
       }
