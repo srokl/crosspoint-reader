@@ -215,18 +215,21 @@ void LyraCarouselTheme::drawButtonMenu(GfxRenderer& renderer, Rect rect, int but
   // for large cover tiles
   const int rowY = renderer.getScreenHeight() - kButtonHintsH - tileH;
 
+  constexpr int kHighlightPad = 12;  // horizontal padding around the icon on each side
+
   for (int i = 0; i < buttonCount; ++i) {
     const int tileX = i * tileW;
+    const int iconX = tileX + (tileW - kMenuIconSize) / 2;
+    const int iconY = rowY + kMenuIconPad;
 
     if (selectedIndex == i) {
-      renderer.fillRoundedRect(tileX + 4, rowY + 4, tileW - 8, tileH - 8, kCornerRadius, Color::LightGray);
+      renderer.fillRoundedRect(iconX - kHighlightPad, rowY + 4, kMenuIconSize + 2 * kHighlightPad, tileH - 8,
+                               kCornerRadius, Color::LightGray);
     }
 
     if (rowIcon != nullptr) {
       const uint8_t* bmp = iconBitmapFor(rowIcon(i));
       if (bmp != nullptr) {
-        const int iconX = tileX + (tileW - kMenuIconSize) / 2;
-        const int iconY = rowY + kMenuIconPad;
         renderer.drawIcon(bmp, iconX, iconY, kMenuIconSize, kMenuIconSize);
       }
     }
