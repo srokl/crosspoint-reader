@@ -165,13 +165,21 @@ void LyraCarouselTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect,
     renderer.fillRect(centerX - kCenterOutlineW, centerTileY - kCenterOutlineW, kCenterCoverMaxW + 2 * kCenterOutlineW,
                       kCenterCoverMaxH + 2 * kCenterOutlineW, false);
     drawCover(centerIdx, centerX, centerTileY, kCenterCoverMaxW, kCenterCoverMaxH);
-    // Mask the 4 bitmap corners white so dithered pixels don't bleed outside
-    // the rounded border. r×r squares — at kCornerRadius=6 the loss is invisible.
-    renderer.fillRect(centerX, centerTileY, kCornerRadius, kCornerRadius, false);
-    renderer.fillRect(centerX + kCenterCoverMaxW - kCornerRadius, centerTileY, kCornerRadius, kCornerRadius, false);
-    renderer.fillRect(centerX, centerTileY + kCenterCoverMaxH - kCornerRadius, kCornerRadius, kCornerRadius, false);
-    renderer.fillRect(centerX + kCenterCoverMaxW - kCornerRadius, centerTileY + kCenterCoverMaxH - kCornerRadius,
-                      kCornerRadius, kCornerRadius, false);
+    // Mask the 4 bitmap corners: clear the r×r square white then fill the
+    // quarter-disc black via a single-corner fillRoundedRect on a (r+1)×(r+1)
+    // tile. White outside the arc, black inside — invisible on dark covers,
+    // reads as a designed rounded cutoff on light covers.
+    const int r = kCornerRadius;
+    const int cR = kCenterCoverMaxW - r - 1;  // right arc column offset
+    const int cB = kCenterCoverMaxH - r - 1;  // bottom arc row offset
+    renderer.fillRect(centerX, centerTileY, r, r, false);
+    renderer.fillRoundedRect(centerX, centerTileY, r + 1, r + 1, r, true, false, false, false, Color::Black);
+    renderer.fillRect(centerX + kCenterCoverMaxW - r, centerTileY, r, r, false);
+    renderer.fillRoundedRect(centerX + cR, centerTileY, r + 1, r + 1, r, false, true, false, false, Color::Black);
+    renderer.fillRect(centerX, centerTileY + kCenterCoverMaxH - r, r, r, false);
+    renderer.fillRoundedRect(centerX, centerTileY + cB, r + 1, r + 1, r, false, false, true, false, Color::Black);
+    renderer.fillRect(centerX + kCenterCoverMaxW - r, centerTileY + kCenterCoverMaxH - r, r, r, false);
+    renderer.fillRoundedRect(centerX + cR, centerTileY + cB, r + 1, r + 1, r, false, false, false, true, Color::Black);
 
     // Dots — centred over the cover tile, count = actual book count
     const int dotsY = centerTileY + kCenterCoverMaxH + 8;
