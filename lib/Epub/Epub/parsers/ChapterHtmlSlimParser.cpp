@@ -305,6 +305,7 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
           // Shared result: set by whichever path succeeds
           std::string finalImagePath;
           ImageDimensions dims = {0, 0};
+          bool pxcFastPath = false;  // true = dims are the PXC's own dims, skip CSS layout
 
           // ── Fast path: pre-built PXC in EPUB (no JPEG extraction or decode needed) ──
           {
@@ -338,6 +339,7 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
               }
               if (dims.width > 0 && dims.height > 0) {
                 finalImagePath = cachedPxcPath;
+                pxcFastPath = true;
                 LOG_DBG("EHP", "PXC fast path: %dx%d", dims.width, dims.height);
               } else {
                 // Header read failed — reclaim counter and fall through to JPEG
@@ -383,6 +385,16 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
           if (!finalImagePath.empty() && dims.width > 0 && dims.height > 0) {
                 int displayWidth = 0;
                 int displayHeight = 0;
+
+                if (pxcFastPath) {
+                  // Pre-built PXC: use its own pixel dimensions directly.
+                  // Skipping CSS layout avoids the viewport-margin mismatch that would make
+                  // renderFromCache reject the file (PXC header 480px vs margin-adjusted ~456px).
+                  displayWidth = dims.width;
+                  displayHeight = dims.height;
+                  LOG_DBG("EHP", "PXC display size: %dx%d", displayWidth, displayHeight);
+                } else {
+
                 const float emSize = static_cast<float>(self->renderer.getFontAscenderSize(self->fontId));
                 CssStyle imgStyle = self->cssParser ? self->cssParser->resolveStyle("img", classAttr) : CssStyle{};
                 // Merge inline style (e.g. style="height: 2em") so it overrides stylesheet rules
@@ -468,6 +480,8 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
                   LOG_DBG("EHP", "Display size: %dx%d (scale %.2f)", displayWidth, displayHeight, scale);
                 }
 
+                }  // end else (CSS layout path)
+
                 // Flush any pending text block so it appears before the image
                 if (self->partWordBufferIndex > 0) {
                   self->flushPartWordBuffer();
@@ -503,8 +517,10 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
                   LOG_ERR("EHP", "Failed to create ImageBlock");
                   return;
                 }
-                int xPos = (self->viewportWidth - displayWidth) / 2;
-                auto pageImage = std::make_shared<PageImage>(imageBlock, xPos, self->currentPageNextY);
+                const int xPosRaw = (self->viewportWidth - displayWidth) / 2;
+                const int xPos = xPosRaw < 0 ? 0 : xPosRaw;
+                auto pageImage = std::make_shared<PageImage>(imageBlock, static_cast<int16_t>(xPos),
+                                                             static_cast<int16_t>(self->currentPageNextY));
                 if (!pageImage) {
                   LOG_ERR("EHP", "Failed to create PageImage");
                   return;
