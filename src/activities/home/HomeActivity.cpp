@@ -332,7 +332,7 @@ void HomeActivity::preRenderCarouselFrames() {
   uint8_t* frameBuffer = renderer.getFrameBuffer();
   if (!frameBuffer) return;
 
-  const size_t bufferSize = GfxRenderer::getBufferSize();
+  const size_t bufferSize = renderer.getBufferSize();
   freeCoverBuffer();  // reclaim 48KB before allocating frames
 
   const int frameCount = std::min(bookCount, kCarouselFrameCount);
@@ -453,7 +453,7 @@ void HomeActivity::render(RenderLock&&) {
     const int slotIdx = findFrameSlot(centerIdx);
 
     if (frameBuffer && slotIdx >= 0 && carouselFrames[slotIdx]) {
-      memcpy(frameBuffer, carouselFrames[slotIdx], GfxRenderer::getBufferSize());
+      memcpy(frameBuffer, carouselFrames[slotIdx], renderer.getBufferSize());
 
       GUI.drawCarouselBorder(renderer, Rect{0, metrics.homeTopPadding, pageWidth, metrics.homeCoverTileHeight},
                              inCarouselRow);
@@ -557,7 +557,7 @@ void HomeActivity::renderCarouselFrame(int bookIdx, int slotIdx) {
   GUI.drawRecentBookCover(renderer, Rect{0, metrics.homeTopPadding, pageWidth, metrics.homeCoverTileHeight},
                           recentBooks, bookCount, dummy1, dummy2, dummy3, []() { return true; });
 
-  memcpy(gCachedFrames[slotIdx], frameBuffer, GfxRenderer::getBufferSize());
+  memcpy(gCachedFrames[slotIdx], frameBuffer, renderer.getBufferSize());
   gCachedFrameBookIdx[slotIdx] = bookIdx;
   carouselFrames[slotIdx] = gCachedFrames[slotIdx];
 }
