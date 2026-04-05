@@ -1,5 +1,6 @@
 #include "SleepActivity.h"
 
+#include <EInkDisplay.h>
 #include <Epub.h>
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
@@ -189,23 +190,23 @@ void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
     renderer.invertScreen();
   }
 
-  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
-
   if (hasGreyscale) {
     bitmap.rewindToData();
     renderer.clearScreen(0x00);
-    renderer.setRenderMode(GfxRenderer::GRAYSCALE_LSB);
+    renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
     renderer.drawBitmap(bitmap, x, y, pageWidth, pageHeight, cropX, cropY);
     renderer.copyGrayscaleLsbBuffers();
 
     bitmap.rewindToData();
     renderer.clearScreen(0x00);
-    renderer.setRenderMode(GfxRenderer::GRAYSCALE_MSB);
+    renderer.setRenderMode(GfxRenderer::GRAY2_MSB);
     renderer.drawBitmap(bitmap, x, y, pageWidth, pageHeight, cropX, cropY);
     renderer.copyGrayscaleMsbBuffers();
 
-    renderer.displayGrayBuffer();
+    renderer.displayGrayBuffer(lut_factory_quality, true);
     renderer.setRenderMode(GfxRenderer::BW);
+  } else {
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
   }
 }
 

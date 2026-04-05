@@ -137,18 +137,6 @@ class CrossPointSettings {
   // Image rendering in EPUB reader
   enum IMAGE_RENDERING { IMAGES_DISPLAY = 0, IMAGES_PLACEHOLDER = 1, IMAGES_SUPPRESS = 2, IMAGE_RENDERING_COUNT };
 
-  // 2-bit grayscale refresh mode (XTC and EPUB anti-aliasing)
-  // ORIGINAL: current 12-frame differential waveform, no black blink, fastest
-  // FACTORY_FAST: factory LUT1, 60 frames, black blink, ~40% faster than FACTORY_QUALITY
-  // FACTORY_QUALITY: factory LUT2, 50 frames, black blink, best gray quality, least ghosting
-  enum GRAY_REFRESH_MODE {
-    GRAY_REFRESH_ORIGINAL = 0,
-    GRAY_REFRESH_FACTORY_FAST = 1,
-    GRAY_REFRESH_FACTORY_QUALITY = 2,
-    GRAY_REFRESH_XFAST = 3,
-    GRAY_REFRESH_MODE_COUNT
-  };
-
   // Sleep screen settings
   uint8_t sleepScreen = DARK;
   // Sleep screen cover mode settings
@@ -211,8 +199,9 @@ class CrossPointSettings {
   uint8_t showHiddenFiles = 0;
   // Image rendering mode in EPUB reader
   uint8_t imageRendering = IMAGES_DISPLAY;
-  // 2-bit grayscale refresh mode for XTC and EPUB anti-aliasing
-  uint8_t grayRefreshMode = GRAY_REFRESH_FACTORY_FAST;
+  // Use factory fast LUT for 2-bit grayscale pages (XTC and EPUB with AA).
+  // 0 = original differential (no flash), 1 = factory fast (black flash, better quality)
+  uint8_t factoryLutImages = 0;
 
   ~CrossPointSettings() = default;
 

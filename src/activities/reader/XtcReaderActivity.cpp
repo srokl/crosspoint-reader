@@ -210,20 +210,13 @@ void XtcReaderActivity::renderPage() {
       return (bit1 << 1) | bit2;
     };
 
-    const bool useFactory = SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_FAST ||
-                            SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_QUALITY;
+    const bool useFactory = SETTINGS.factoryLutImages;
 
     if (useFactory) {
       // Factory absolute 2-bit encoding: single display update, no BW flash.
       // BW RAM (0x24) = bit1: 1 for light gray(2) and black(3), 0 for white(0) and dark gray(1).
       // RED RAM (0x26) = bit0: 1 for dark gray(1) and black(3), 0 for white(0) and light gray(2).
       // clearScreen(0x00) base; drawPixel(false) sets bits that need 1.
-
-      const unsigned char* factoryLut = lut_factory_fast;
-      if (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_QUALITY)
-        factoryLut = lut_factory_quality;
-      else if (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_XFAST)
-        factoryLut = lut_xfast;
 
       // Display LUT mapping: state0=White, state1=DarkGrey, state2=LightGrey, state3=Black.
       // LUT state = (BW_bit << 1) | RED_bit = pv directly (pv=0=White...pv=3=Black).
@@ -253,7 +246,7 @@ void XtcReaderActivity::renderPage() {
       }
       renderer.copyGrayscaleMsbBuffers();
 
-      renderer.displayGrayBuffer(factoryLut, true);
+      renderer.displayGrayBuffer(lut_factory_fast, true);
     } else {
       // Original differential mode: BW flash first, then gray overlay.
       // Optimized grayscale rendering without storeBwBuffer (saves 48KB peak memory).
@@ -310,10 +303,7 @@ void XtcReaderActivity::renderPage() {
       }
       renderer.copyGrayscaleMsbBuffers();
 
-      const unsigned char* diffLut = (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_XFAST)
-                                         ? lut_xfast
-                                         : nullptr;
-      renderer.displayGrayBuffer(diffLut);
+      renderer.displayGrayBuffer(nullptr);
     }
 
     // Re-render BW to framebuffer (restores display state for next frame / next BW page turn)

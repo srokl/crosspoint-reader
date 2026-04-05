@@ -713,38 +713,14 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
   LOG_DBG("ERS", "Heap: before=%lu after=%lu delta=%ld", heapBefore, heapAfter,
           (int32_t)heapAfter - (int32_t)heapBefore);
 
-  // Force special handling for pages with images when anti-aliasing is on
-  bool imagePageWithAA = page->hasImages() && SETTINGS.textAntiAliasing;
-
   page->render(renderer, SETTINGS.getReaderFontId(), orientedMarginLeft, orientedMarginTop);
   renderStatusBar();
   fcm->logStats("bw_render");
   const auto tBwRender = millis();
 
-  const bool useFactoryGray = SETTINGS.textAntiAliasing && !imagePageWithAA &&
-                              (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_FAST ||
-                               SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_QUALITY);
+  const bool useFactoryGray = SETTINGS.textAntiAliasing && SETTINGS.factoryLutImages && page->hasImages();
 
-  if (imagePageWithAA) {
-    // Double FAST_REFRESH with selective image blanking (pablohc's technique):
-    // HALF_REFRESH sets particles too firmly for the grayscale LUT to adjust.
-    // Instead, blank only the image area and do two fast refreshes.
-    // Step 1: Display page with image area blanked (text appears, image area white)
-    // Step 2: Re-render with images and display again (images appear clean)
-    int16_t imgX, imgY, imgW, imgH;
-    if (page->getImageBoundingBox(imgX, imgY, imgW, imgH)) {
-      renderer.fillRect(imgX + orientedMarginLeft, imgY + orientedMarginTop, imgW, imgH, false);
-      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-
-      // Re-render page content to restore images into the blanked area
-      // Status bar is not re-rendered here to avoid reading stale dynamic values (e.g. battery %)
-      page->render(renderer, SETTINGS.getReaderFontId(), orientedMarginLeft, orientedMarginTop);
-      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-    } else {
-      renderer.displayBuffer(HalDisplay::HALF_REFRESH);
-    }
-    // Double FAST_REFRESH handles ghosting for image pages; don't count toward full refresh cadence
-  } else if (!useFactoryGray) {
+  if (!useFactoryGray) {
     // Original mode: display BW first, then apply differential gray AA
     ReaderUtils::displayWithRefreshCycle(renderer, pagesUntilFullRefresh);
   }
@@ -759,12 +735,6 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
   if (SETTINGS.textAntiAliasing) {
     if (useFactoryGray) {
       // Factory absolute encoding: single display update, no BW flash before gray
-      // clearScreen(0xFF) = white background; drawPixel(true) marks pixels needing bit=0
-      const unsigned char* factoryLut = lut_factory_fast;
-      if (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_FACTORY_QUALITY)
-        factoryLut = lut_factory_quality;
-      else if (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_XFAST)
-        factoryLut = lut_xfast;
 
       renderer.clearScreen(0x00);
       renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
@@ -778,7 +748,7 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
       renderer.copyGrayscaleMsbBuffers();
       const auto tGrayMsb = millis();
 
-      renderer.displayGrayBuffer(factoryLut, true);
+      renderer.displayGrayBuffer(lut_factory_fast, true);
       const auto tGrayDisplay = millis();
       renderer.setRenderMode(GfxRenderer::BW);
       fcm->logStats("gray_factory");
@@ -806,10 +776,7 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
       renderer.copyGrayscaleMsbBuffers();
       const auto tGrayMsb = millis();
 
-      const unsigned char* diffLut = (SETTINGS.grayRefreshMode == CrossPointSettings::GRAY_REFRESH_XFAST)
-                                         ? lut_xfast
-                                         : nullptr;
-      renderer.displayGrayBuffer(diffLut);
+      renderer.displayGrayBuffer(nullptr);
       const auto tGrayDisplay = millis();
       renderer.setRenderMode(GfxRenderer::BW);
       fcm->logStats("gray");
