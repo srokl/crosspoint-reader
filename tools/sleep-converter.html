@@ -229,6 +229,7 @@
       grid-template-columns: repeat(3, 26px);
       grid-template-rows: repeat(3, 26px);
       gap: 3px;
+      width: fit-content;
     }
 
     .pos-btn {
@@ -280,21 +281,20 @@
     /* ── Download button ────────────────────────────── */
     .download-btn {
       display: none;
-      width: 100%;
-      max-width: 860px;
-      padding: 14px 0;
+      width: calc(100% - 32px);
+      padding: 12px 0;
       background: var(--accent);
       color: #111;
       border: none;
-      border-radius: 9px;
+      border-radius: 8px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: opacity 0.12s;
       margin-top: 12px;
     }
-    .download-btn:hover { opacity: 0.85; }
+    .download-btn:hover { opacity: 0.82; }
     .download-btn.visible { display: block; }
 
     /* ── Footer ─────────────────────────────────────── */
@@ -386,14 +386,12 @@
       <p class="panel-heading">Preview</p>
       <!-- internal 480×800, CSS maintains 3:5 ratio -->
       <canvas id="previewCanvas" width="480" height="800"></canvas>
+      <button class="download-btn" id="downloadBtn">Download .pxc</button>
     </div>
-
 
   </div>
 
 </div>
-
-<button class="download-btn" id="downloadBtn">Download .pxc</button>
 
 <footer>
   Place on SD card as <code>/sleep.pxc</code> or inside <code>/.sleep/</code><br>
