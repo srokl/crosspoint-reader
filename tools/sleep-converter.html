@@ -26,6 +26,7 @@
       flex-direction: column;
       align-items: center;
       padding: 40px 20px 60px;
+      gap: 0;
     }
 
     header {
@@ -41,10 +42,7 @@
       margin-bottom: 5px;
     }
 
-    .subtitle {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
+    .subtitle { font-size: 0.78rem; color: var(--muted); }
 
     /* ── Drop zone ─────────────────────────────── */
     .drop-zone {
@@ -59,28 +57,29 @@
       gap: 12px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       color: var(--muted);
       font-size: 0.85rem;
     }
-
-    .drop-zone:hover, .drop-zone.over {
-      border-color: #666;
-      background: #161616;
-    }
-
+    .drop-zone:hover, .drop-zone.over { border-color: #666; background: #161616; }
     .drop-zone svg { width: 22px; height: 22px; stroke: var(--muted); flex-shrink: 0; }
     #fileInput { display: none; }
 
-    /* ── Mode pills ────────────────────────────── */
-    .options {
+    /* ── Controls (pills + position picker) ─────── */
+    .controls {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 14px;
       margin-bottom: 24px;
     }
 
-    .options label { font-size: 0.75rem; color: var(--muted); margin-right: 2px; }
+    .scale-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .scale-row label { font-size: 0.75rem; color: var(--muted); margin-right: 2px; }
 
     .pill {
       padding: 4px 14px;
@@ -92,13 +91,68 @@
       font-size: 0.78rem;
       transition: all 0.12s;
     }
-
     .pill.active {
       background: var(--accent);
       color: #111;
       border-color: var(--accent);
       font-weight: 600;
     }
+
+    /* ── Position picker ─────────────────────────── */
+    .position-row {
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .position-row.visible { display: flex; }
+
+    .pos-row-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 30px);
+      grid-template-rows: repeat(3, 30px);
+      gap: 3px;
+    }
+
+    .pos-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      background: none;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.1s, background 0.1s;
+    }
+    .pos-btn:hover { border-color: #555; background: #181818; }
+
+    .pos-btn::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 1px;
+      transition: background 0.1s;
+    }
+
+    .pos-btn[data-pos="tl"]::after { top: 4px;  left: 4px; }
+    .pos-btn[data-pos="tc"]::after { top: 4px;  left: 50%; transform: translateX(-50%); }
+    .pos-btn[data-pos="tr"]::after { top: 4px;  right: 4px; }
+    .pos-btn[data-pos="ml"]::after { top: 50%;  left: 4px; transform: translateY(-50%); }
+    .pos-btn[data-pos="mc"]::after { top: 50%;  left: 50%; transform: translate(-50%,-50%); }
+    .pos-btn[data-pos="mr"]::after { top: 50%;  right: 4px; transform: translateY(-50%); }
+    .pos-btn[data-pos="bl"]::after { bottom: 4px; left: 4px; }
+    .pos-btn[data-pos="bc"]::after { bottom: 4px; left: 50%; transform: translateX(-50%); }
+    .pos-btn[data-pos="br"]::after { bottom: 4px; right: 4px; }
+
+    .pos-btn.active { border-color: var(--accent); background: rgba(232,232,232,0.08); }
+    .pos-btn.active::after { background: var(--accent); }
 
     /* ── Editor row ────────────────────────────── */
     .editor-row {
@@ -109,154 +163,9 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
     .editor-row.visible { display: flex; }
 
-    /* ── Source image with crop overlay ─────────── */
-    .source-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .source-frame {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: crosshair;
-      flex-shrink: 0;
-    }
-
-    #sourceCanvas {
-      display: block;
-    }
-
-    /* Crop overlay */
-    #cropBox {
-      position: absolute;
-      top: 0;
-      left: 0;
-      box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.52);
-      border: 1.5px solid rgba(255,255,255,0.85);
-      outline: 1px solid rgba(0,0,0,0.4);
-      cursor: move;
-      user-select: none;
-      touch-action: none;
-      transition: border-color 0.1s, box-shadow 0.1s;
-    }
-
-    #cropBox.snapped {
-      border-color: rgba(255, 200, 60, 0.95);
-      box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.52), inset 0 0 0 1px rgba(255, 200, 60, 0.3);
-    }
-
-    /* Corner handles */
-    #cropBox::before, #cropBox::after {
-      content: '';
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-color: rgba(255,255,255,0.9);
-      border-style: solid;
-    }
-
-    #cropBox::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-    #cropBox::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-
-    /* ── Snap guides ─────────────────────────────── */
-    .snap-guide {
-      position: absolute;
-      pointer-events: none;
-      opacity: 0;
-      background: var(--snap);
-      transition: opacity 0.08s;
-      z-index: 10;
-    }
-
-    .snap-guide.active { opacity: 1; }
-
-    #snapGuideH {
-      height: 1px;
-      left: 0; right: 0;
-      top: 50%;
-      margin-top: -0.5px;
-    }
-
-    #snapGuideV {
-      width: 1px;
-      top: 0; bottom: 0;
-      left: 50%;
-      margin-left: -0.5px;
-    }
-
-    /* ── Position picker (fit mode) ──────────────── */
-    .position-picker {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .position-picker.visible { display: flex; }
-
-    .pos-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 34px);
-      grid-template-rows: repeat(3, 34px);
-      gap: 4px;
-    }
-
-    .pos-btn {
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--border);
-      background: none;
-      border-radius: 5px;
-      cursor: pointer;
-      position: relative;
-      transition: border-color 0.1s, background 0.1s;
-    }
-
-    .pos-btn:hover { border-color: #555; background: #181818; }
-
-    /* The dot inside each button */
-    .pos-btn::after {
-      content: '';
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      background: var(--muted);
-      border-radius: 1px;
-      transition: background 0.1s;
-    }
-
-    .pos-btn[data-pos="tl"]::after { top: 4px;  left: 4px; }
-    .pos-btn[data-pos="tc"]::after { top: 4px;  left: 50%; transform: translateX(-50%); }
-    .pos-btn[data-pos="tr"]::after { top: 4px;  right: 4px; }
-    .pos-btn[data-pos="ml"]::after { top: 50%;  left: 4px; transform: translateY(-50%); }
-    .pos-btn[data-pos="mc"]::after { top: 50%;  left: 50%; transform: translate(-50%, -50%); }
-    .pos-btn[data-pos="mr"]::after { top: 50%;  right: 4px; transform: translateY(-50%); }
-    .pos-btn[data-pos="bl"]::after { bottom: 4px; left: 4px; }
-    .pos-btn[data-pos="bc"]::after { bottom: 4px; left: 50%; transform: translateX(-50%); }
-    .pos-btn[data-pos="br"]::after { bottom: 4px; right: 4px; }
-
-    .pos-btn.active {
-      border-color: var(--accent);
-      background: rgba(232,232,232,0.08);
-    }
-    .pos-btn.active::after { background: var(--accent); }
-
-    .pos-label {
-      font-size: 0.67rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* ── Preview ───────────────────────────────── */
-    .preview-wrap {
+    .panel-col {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -270,6 +179,55 @@
       letter-spacing: 0.7px;
     }
 
+    /* ── Source frame ────────────────────────────── */
+    .source-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    #sourceCanvas { display: block; }
+
+    #cropBox {
+      position: absolute;
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.52);
+      border: 1.5px solid rgba(255,255,255,0.85);
+      outline: 1px solid rgba(0,0,0,0.4);
+      cursor: move;
+      user-select: none;
+      touch-action: none;
+      transition: border-color 0.1s, box-shadow 0.1s;
+    }
+    #cropBox.snapped {
+      border-color: rgba(255,200,60,0.95);
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.52), inset 0 0 0 1px rgba(255,200,60,0.25);
+    }
+    #cropBox::before, #cropBox::after {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      border-color: rgba(255,255,255,0.9);
+      border-style: solid;
+    }
+    #cropBox::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    #cropBox::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    /* Snap guides */
+    .snap-guide {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      background: var(--snap);
+      transition: opacity 0.08s;
+      z-index: 10;
+    }
+    .snap-guide.active { opacity: 1; }
+    #snapGuideH { height: 1px; left: 0; right: 0; top: 50%; margin-top: -0.5px; }
+    #snapGuideV { width: 1px; top: 0; bottom: 0; left: 50%; margin-left: -0.5px; }
+
+    /* ── Preview canvas ────────────────────────── */
     #previewCanvas {
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -293,7 +251,6 @@
       transition: opacity 0.12s;
       margin-bottom: 20px;
     }
-
     .download-btn:hover { opacity: 0.82; }
     .download-btn.visible { display: block; }
 
@@ -303,7 +260,6 @@
       text-align: center;
       line-height: 1.9;
     }
-
     footer code {
       background: #1a1a1a;
       border: 1px solid #272727;
@@ -329,14 +285,33 @@
   <input type="file" id="fileInput" accept="image/*">
 </div>
 
-<div class="options">
-  <label>Scale:</label>
-  <button class="pill" id="fitBtn" data-mode="fit">Fit</button>
-  <button class="pill active" id="cropBtn" data-mode="crop">Crop</button>
+<!-- Controls: mode pills + position picker (fit only) -->
+<div class="controls">
+  <div class="scale-row">
+    <label>Scale:</label>
+    <button class="pill" id="fitBtn" data-mode="fit">Fit</button>
+    <button class="pill active" id="cropBtn" data-mode="crop">Crop</button>
+  </div>
+
+  <div class="position-row" id="positionRow">
+    <span class="pos-row-label">Position on screen</span>
+    <div class="pos-grid">
+      <button class="pos-btn" data-pos="tl" title="Top left"></button>
+      <button class="pos-btn" data-pos="tc" title="Top centre"></button>
+      <button class="pos-btn" data-pos="tr" title="Top right"></button>
+      <button class="pos-btn" data-pos="ml" title="Middle left"></button>
+      <button class="pos-btn active" data-pos="mc" title="Centre"></button>
+      <button class="pos-btn" data-pos="mr" title="Middle right"></button>
+      <button class="pos-btn" data-pos="bl" title="Bottom left"></button>
+      <button class="pos-btn" data-pos="bc" title="Bottom centre"></button>
+      <button class="pos-btn" data-pos="br" title="Bottom right"></button>
+    </div>
+  </div>
 </div>
 
+<!-- Editor: source and preview always the same height -->
 <div class="editor-row" id="editorRow">
-  <div class="source-wrap">
+  <div class="panel-col">
     <span class="panel-label" id="sourceLabel">Source — drag to reposition</span>
     <div class="source-frame" id="sourceFrame">
       <canvas id="sourceCanvas"></canvas>
@@ -344,27 +319,11 @@
       <div id="snapGuideH" class="snap-guide"></div>
       <div id="snapGuideV" class="snap-guide"></div>
     </div>
-
-    <!-- Position picker — shown in fit mode only -->
-    <div class="position-picker" id="positionPicker">
-      <span class="pos-label">Position on screen</span>
-      <div class="pos-grid">
-        <button class="pos-btn" data-pos="tl" title="Top left"></button>
-        <button class="pos-btn" data-pos="tc" title="Top centre"></button>
-        <button class="pos-btn" data-pos="tr" title="Top right"></button>
-        <button class="pos-btn" data-pos="ml" title="Middle left"></button>
-        <button class="pos-btn active" data-pos="mc" title="Centre"></button>
-        <button class="pos-btn" data-pos="mr" title="Middle right"></button>
-        <button class="pos-btn" data-pos="bl" title="Bottom left"></button>
-        <button class="pos-btn" data-pos="bc" title="Bottom centre"></button>
-        <button class="pos-btn" data-pos="br" title="Bottom right"></button>
-      </div>
-    </div>
   </div>
 
-  <div class="preview-wrap">
+  <div class="panel-col">
     <span class="panel-label">Preview</span>
-    <!-- internal resolution 480×800, CSS scales to 240×400 — crisp 2× -->
+    <!-- 480×800 internal, CSS halves to 240×400 — crisp 2× -->
     <canvas id="previewCanvas" width="480" height="800"></canvas>
   </div>
 </div>
@@ -376,65 +335,50 @@
   480×800 px · 2 bits/pixel · ~96 KB per file
 </footer>
 
-<!-- full-res off-screen work canvas -->
 <canvas id="workCanvas" width="480" height="800" style="display:none"></canvas>
 
 <script>
-// ─── Constants ──────────────────────────────────────────────────────────────
 const TARGET_W = 480;
 const TARGET_H = 800;
-
 const MAX_EDITOR_W = 300;
 const MAX_EDITOR_H = 500;
-
-// Snap threshold in editor pixels — within this distance of centre → snap
 const SNAP_THRESHOLD = 9;
 
-// Gray level references — evenly spaced, factory LUT quality
 const GRAY_REF  = [0, 85, 170, 255];
 const GRAY_DISP = [0, 85, 170, 255];
 
-// ─── State ──────────────────────────────────────────────────────────────────
 let loadedImg    = null;
 let pxcBytes     = null;
 let outputName   = 'sleep.pxc';
 let mode         = 'crop';
-let fitAlign     = 'mc';   // fit mode: tl/tc/tr/ml/mc/mr/bl/bc/br
+let fitAlign     = 'mc';
 
 let displayScale = 1;
 let workScale    = 1;
 let dispImgW     = 0;
 let dispImgH     = 0;
-let boxW         = 0;
-let boxH         = 0;
-let boxX         = 0;
-let boxY         = 0;
+let boxW = 0, boxH = 0, boxX = 0, boxY = 0;
 
 let isDragging   = false;
-let dragStartX   = 0;
-let dragStartY   = 0;
-let dragStartBX  = 0;
-let dragStartBY  = 0;
-let snapH        = false;   // currently snapped on horizontal axis
-let snapV        = false;   // currently snapped on vertical axis
+let dragStartX   = 0, dragStartY = 0, dragStartBX = 0, dragStartBY = 0;
+let snapH = false, snapV = false;
 let convertTimer = null;
 
-// ─── DOM ────────────────────────────────────────────────────────────────────
-const dropZone       = document.getElementById('dropZone');
-const fileInput      = document.getElementById('fileInput');
-const editorRow      = document.getElementById('editorRow');
-const sourceFrame    = document.getElementById('sourceFrame');
-const sourceCanvas   = document.getElementById('sourceCanvas');
-const sourceLabel    = document.getElementById('sourceLabel');
-const cropBox        = document.getElementById('cropBox');
-const snapGuideH     = document.getElementById('snapGuideH');
-const snapGuideV     = document.getElementById('snapGuideV');
-const positionPicker = document.getElementById('positionPicker');
-const previewCanvas  = document.getElementById('previewCanvas');
-const workCanvas     = document.getElementById('workCanvas');
-const downloadBtn    = document.getElementById('downloadBtn');
+const dropZone     = document.getElementById('dropZone');
+const fileInput    = document.getElementById('fileInput');
+const editorRow    = document.getElementById('editorRow');
+const sourceFrame  = document.getElementById('sourceFrame');
+const sourceCanvas = document.getElementById('sourceCanvas');
+const sourceLabel  = document.getElementById('sourceLabel');
+const cropBox      = document.getElementById('cropBox');
+const snapGuideH   = document.getElementById('snapGuideH');
+const snapGuideV   = document.getElementById('snapGuideV');
+const positionRow  = document.getElementById('positionRow');
+const previewCanvas= document.getElementById('previewCanvas');
+const workCanvas   = document.getElementById('workCanvas');
+const downloadBtn  = document.getElementById('downloadBtn');
 
-// ─── Mode pills ─────────────────────────────────────────────────────────────
+// Mode pills
 document.querySelectorAll('.pill').forEach(btn => {
   btn.addEventListener('click', () => {
     mode = btn.dataset.mode;
@@ -444,7 +388,7 @@ document.querySelectorAll('.pill').forEach(btn => {
   });
 });
 
-// ─── Position picker ────────────────────────────────────────────────────────
+// Position picker
 document.querySelectorAll('.pos-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     fitAlign = btn.dataset.pos;
@@ -454,7 +398,7 @@ document.querySelectorAll('.pos-btn').forEach(btn => {
   });
 });
 
-// ─── Drop / file pick ───────────────────────────────────────────────────────
+// Drop / file pick
 dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
@@ -476,7 +420,6 @@ function loadFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ─── Editor setup ───────────────────────────────────────────────────────────
 function resetEditor() {
   const srcW = loadedImg.naturalWidth;
   const srcH = loadedImg.naturalHeight;
@@ -485,37 +428,31 @@ function resetEditor() {
   dispImgW = Math.round(srcW * displayScale);
   dispImgH = Math.round(srcH * displayScale);
 
-  if (mode === 'crop') {
-    workScale = Math.max(TARGET_W / srcW, TARGET_H / srcH);
-  } else {
-    workScale = Math.min(TARGET_W / srcW, TARGET_H / srcH);
-  }
+  workScale = mode === 'crop'
+    ? Math.max(TARGET_W / srcW, TARGET_H / srcH)
+    : Math.min(TARGET_W / srcW, TARGET_H / srcH);
 
   boxW = Math.min((TARGET_W / workScale) * displayScale, dispImgW);
   boxH = Math.min((TARGET_H / workScale) * displayScale, dispImgH);
-
-  // Start centred
   boxX = (dispImgW - boxW) / 2;
   boxY = (dispImgH - boxH) / 2;
 
   sourceCanvas.width  = dispImgW;
   sourceCanvas.height = dispImgH;
   sourceCanvas.getContext('2d').drawImage(loadedImg, 0, 0, dispImgW, dispImgH);
-
   sourceFrame.style.width  = dispImgW + 'px';
   sourceFrame.style.height = dispImgH + 'px';
 
-  // Mode-specific UI
   if (mode === 'crop') {
     sourceLabel.textContent = 'Source — drag to reposition';
     cropBox.style.display = 'block';
-    positionPicker.classList.remove('visible');
+    positionRow.classList.remove('visible');
     clearSnap();
     applyCropBox();
   } else {
     sourceLabel.textContent = 'Source';
     cropBox.style.display = 'none';
-    positionPicker.classList.add('visible');
+    positionRow.classList.add('visible');
     clearSnap();
   }
 
@@ -533,14 +470,13 @@ function applyCropBox() {
 }
 
 function clearSnap() {
-  snapH = false;
-  snapV = false;
+  snapH = snapV = false;
   snapGuideH.classList.remove('active');
   snapGuideV.classList.remove('active');
   cropBox.classList.remove('snapped');
 }
 
-// ─── Drag (crop mode) ────────────────────────────────────────────────────────
+// Drag
 cropBox.addEventListener('mousedown',  onDragStart);
 cropBox.addEventListener('touchstart', onDragStart, { passive: false });
 window.addEventListener('mousemove',   onDragMove);
@@ -549,61 +485,48 @@ window.addEventListener('mouseup',     onDragEnd);
 window.addEventListener('touchend',    onDragEnd);
 
 function clientXY(e) {
-  return e.touches
-    ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
-    : { x: e.clientX, y: e.clientY };
+  return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+                   : { x: e.clientX, y: e.clientY };
 }
 
 function onDragStart(e) {
   if (mode !== 'crop') return;
   e.preventDefault();
-  isDragging  = true;
-  const p     = clientXY(e);
-  dragStartX  = p.x;
-  dragStartY  = p.y;
-  dragStartBX = boxX;
-  dragStartBY = boxY;
+  isDragging = true;
+  const p = clientXY(e);
+  dragStartX = p.x; dragStartY = p.y;
+  dragStartBX = boxX; dragStartBY = boxY;
 }
 
 function onDragMove(e) {
   if (!isDragging) return;
   e.preventDefault();
-
-  const p  = clientXY(e);
-  const dx = p.x - dragStartX;
-  const dy = p.y - dragStartY;
-
-  let rawX = dragStartBX + dx;
-  let rawY = dragStartBY + dy;
+  const p = clientXY(e);
+  let rawX = dragStartBX + (p.x - dragStartX);
+  let rawY = dragStartBY + (p.y - dragStartY);
 
   const centreX = (dispImgW - boxW) / 2;
   const centreY = (dispImgH - boxH) / 2;
-
   snapH = Math.abs(rawX - centreX) < SNAP_THRESHOLD;
   snapV = Math.abs(rawY - centreY) < SNAP_THRESHOLD;
-
   boxX = snapH ? centreX : rawX;
   boxY = snapV ? centreY : rawY;
 
   applyCropBox();
-
-  // Snap guides
-  snapGuideH.classList.toggle('active', snapV);
   snapGuideV.classList.toggle('active', snapH);
+  snapGuideH.classList.toggle('active', snapV);
   cropBox.classList.toggle('snapped', snapH || snapV);
-
   scheduleConvert(100);
 }
 
 function onDragEnd() {
   if (!isDragging) return;
   isDragging = false;
-  // Keep guides visible briefly then fade
   setTimeout(clearSnap, 600);
   scheduleConvert(0);
 }
 
-// ─── Conversion ─────────────────────────────────────────────────────────────
+// Conversion
 function scheduleConvert(delay) {
   clearTimeout(convertTimer);
   convertTimer = setTimeout(convert, delay);
@@ -618,22 +541,15 @@ function quantize(v) {
   return 3;
 }
 
-// Alignment offsets for fit mode position picker
 function fitOffset(fw, fh) {
   const pos = fitAlign;
-  let x, y;
-  if      (pos[1] === 'l') x = 0;
-  else if (pos[1] === 'c') x = (TARGET_W - fw) / 2;
-  else                     x = TARGET_W - fw;
-  if      (pos[0] === 't') y = 0;
-  else if (pos[0] === 'm') y = (TARGET_H - fh) / 2;
-  else                     y = TARGET_H - fh;
+  let x = pos[1] === 'l' ? 0 : pos[1] === 'c' ? (TARGET_W - fw) / 2 : TARGET_W - fw;
+  let y = pos[0] === 't' ? 0 : pos[0] === 'm' ? (TARGET_H - fh) / 2 : TARGET_H - fh;
   return { x, y };
 }
 
 function convert() {
   if (!loadedImg) return;
-
   const srcW = loadedImg.naturalWidth;
   const srcH = loadedImg.naturalHeight;
   const ctx  = workCanvas.getContext('2d');
@@ -643,8 +559,7 @@ function convert() {
 
   if (mode === 'fit') {
     const fitScale = Math.min(TARGET_W / srcW, TARGET_H / srcH);
-    const fw = srcW * fitScale;
-    const fh = srcH * fitScale;
+    const fw = srcW * fitScale, fh = srcH * fitScale;
     const off = fitOffset(fw, fh);
     ctx.drawImage(loadedImg, off.x, off.y, fw, fh);
   } else {
@@ -652,12 +567,10 @@ function convert() {
     ctx.drawImage(loadedImg, -boxX * k, -boxY * k, srcW * workScale, srcH * workScale);
   }
 
-  // ── Floyd-Steinberg dithering ──────────────────────────────────────────
   const px  = ctx.getImageData(0, 0, TARGET_W, TARGET_H).data;
   const buf = new Float32Array(TARGET_W * TARGET_H);
-  for (let i = 0; i < TARGET_W * TARGET_H; i++) {
-    buf[i] = lum(px[i * 4], px[i * 4 + 1], px[i * 4 + 2]);
-  }
+  for (let i = 0; i < TARGET_W * TARGET_H; i++)
+    buf[i] = lum(px[i*4], px[i*4+1], px[i*4+2]);
 
   const q = new Uint8Array(TARGET_W * TARGET_H);
   for (let y = 0; y < TARGET_H; y++) {
@@ -667,55 +580,45 @@ function convert() {
       const qv = quantize(v);
       q[i]     = qv;
       const err = v - GRAY_REF[qv];
-      if (x + 1 < TARGET_W)
-        buf[i + 1]             += err * 7 / 16;
+      if (x + 1 < TARGET_W) buf[i+1] += err * 7/16;
       if (y + 1 < TARGET_H) {
-        if (x > 0)
-          buf[i + TARGET_W - 1] += err * 3 / 16;
-        buf[i + TARGET_W]        += err * 5 / 16;
-        if (x + 1 < TARGET_W)
-          buf[i + TARGET_W + 1]  += err * 1 / 16;
+        if (x > 0) buf[i+TARGET_W-1] += err * 3/16;
+        buf[i+TARGET_W]   += err * 5/16;
+        if (x + 1 < TARGET_W) buf[i+TARGET_W+1] += err * 1/16;
       }
     }
   }
 
-  // ── Preview at full 480×800, CSS halves it ─────────────────────────────
   const prevCtx = previewCanvas.getContext('2d');
-  const id      = prevCtx.createImageData(TARGET_W, TARGET_H);
+  const id = prevCtx.createImageData(TARGET_W, TARGET_H);
   for (let i = 0; i < TARGET_W * TARGET_H; i++) {
     const g = GRAY_DISP[q[i]];
-    id.data[i * 4]     = g;
-    id.data[i * 4 + 1] = g;
-    id.data[i * 4 + 2] = g;
-    id.data[i * 4 + 3] = 255;
+    id.data[i*4] = id.data[i*4+1] = id.data[i*4+2] = g;
+    id.data[i*4+3] = 255;
   }
   prevCtx.putImageData(id, 0, 0);
 
-  // ── Encode PXC ────────────────────────────────────────────────────────
   pxcBytes = encodePxc(q, TARGET_W, TARGET_H);
   downloadBtn.classList.add('visible');
 }
 
-// Format: uint16_t width (LE), uint16_t height (LE), 2bpp MSB-first row-major
 function encodePxc(q, w, h) {
   const bpr = Math.ceil(w / 4);
   const buf = new Uint8Array(4 + bpr * h);
-  buf[0] = w & 0xFF;  buf[1] = (w >> 8) & 0xFF;
-  buf[2] = h & 0xFF;  buf[3] = (h >> 8) & 0xFF;
-  for (let row = 0; row < h; row++) {
+  buf[0] = w & 0xFF; buf[1] = (w >> 8) & 0xFF;
+  buf[2] = h & 0xFF; buf[3] = (h >> 8) & 0xFF;
+  for (let row = 0; row < h; row++)
     for (let col = 0; col < w; col++) {
       const pv = q[row * w + col] & 0x03;
       buf[4 + row * bpr + (col >> 2)] |= pv << (6 - (col & 3) * 2);
     }
-  }
   return buf;
 }
 
-// ─── Download ────────────────────────────────────────────────────────────────
 downloadBtn.addEventListener('click', () => {
   if (!pxcBytes) return;
   const url = URL.createObjectURL(new Blob([pxcBytes], { type: 'application/octet-stream' }));
-  const a   = document.createElement('a');
+  const a = document.createElement('a');
   a.href = url; a.download = outputName; a.click();
   URL.revokeObjectURL(url);
 });
