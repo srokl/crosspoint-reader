@@ -110,14 +110,35 @@
     .editor-section { display: none; width: 100%; }
     .editor-section.visible { display: flex; flex-direction: column; align-items: center; }
 
+    .source-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
     .section-label {
       font-size: 0.68rem;
       font-weight: 500;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 8px;
+      margin-bottom: 0;  /* handled by source-header gap */
     }
+
+    .change-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 2px 7px;
+      cursor: pointer;
+      transition: color 0.1s, border-color 0.1s;
+      line-height: 1.6;
+    }
+    .change-btn:hover { color: var(--text); border-color: var(--muted); }
 
     .source-frame {
       position: relative;
@@ -346,7 +367,10 @@
     </div>
 
     <div class="editor-section" id="editorSection">
-      <p class="section-label" id="sourceLabel">Source — drag to reposition</p>
+      <div class="source-header">
+        <p class="section-label" id="sourceLabel">Source — drag to reposition</p>
+        <button class="change-btn" id="changeBtn">Change</button>
+      </div>
       <div class="source-frame" id="sourceFrame">
         <canvas id="sourceCanvas"></canvas>
         <div id="cropBox"></div>
@@ -444,6 +468,7 @@ const editorSection = document.getElementById('editorSection');
 const sourceFrame   = document.getElementById('sourceFrame');
 const sourceCanvas  = document.getElementById('sourceCanvas');
 const sourceLabel   = document.getElementById('sourceLabel');
+const changeBtn     = document.getElementById('changeBtn');
 const cropBox       = document.getElementById('cropBox');
 const snapGuideH    = document.getElementById('snapGuideH');
 const snapGuideV    = document.getElementById('snapGuideV');
@@ -451,6 +476,37 @@ const posSection    = document.getElementById('posSection');
 const previewCanvas = document.getElementById('previewCanvas');
 const workCanvas    = document.getElementById('workCanvas');
 const downloadBtn   = document.getElementById('downloadBtn');
+
+// Change / unload image
+changeBtn.addEventListener('click', unloadImage);
+
+function unloadImage() {
+  clearTimeout(convertTimer);
+
+  // Release decoded bitmap from browser memory
+  if (loadedImg) { loadedImg.src = ''; loadedImg = null; }
+
+  // Release dithered output buffer
+  pxcBytes = null;
+
+  // Free canvas pixel buffers by resizing to 1×1
+  sourceCanvas.width = 1; sourceCanvas.height = 1;
+  workCanvas.getContext('2d').clearRect(0, 0, TARGET_W, TARGET_H);
+  previewCanvas.getContext('2d').clearRect(0, 0, TARGET_W, TARGET_H);
+
+  // Reset file input so the same file can be re-picked
+  fileInput.value = '';
+
+  // Reset state
+  outputName = 'sleep.pxc';
+  clearSnap();
+
+  // Restore UI
+  dropZone.style.display = '';
+  editorSection.classList.remove('visible');
+  posSection.classList.remove('visible');
+  downloadBtn.classList.remove('visible');
+}
 
 // Mode pills
 document.querySelectorAll('.pill').forEach(btn => {
