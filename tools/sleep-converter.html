@@ -243,8 +243,8 @@
     }
 
     /* ── Position picker ────────────────────────────── */
-    #posSection { display: none; }
-    #posSection.visible { display: flex; }
+    #posSection { display: flex; }
+    #posSection.disabled { opacity: 0.35; pointer-events: none; }
 
     .pos-grid {
       display: grid;
@@ -393,7 +393,7 @@
       </div>
     </div>
 
-    <div class="panel-section" id="posSection">
+    <div class="panel-section disabled" id="posSection">
       <p class="panel-heading">Position on screen</p>
       <div class="pos-grid">
         <button class="pos-btn" data-pos="tl" title="Top left"></button>
@@ -504,7 +504,7 @@ function unloadImage() {
   // Restore UI
   dropZone.style.display = '';
   editorSection.classList.remove('visible');
-  posSection.classList.remove('visible');
+  posSection.classList.add('disabled');
   downloadBtn.classList.remove('visible');
 }
 
@@ -576,13 +576,13 @@ function resetEditor() {
   if (mode === 'crop') {
     sourceLabel.textContent = 'Source — drag to reposition';
     cropBox.style.display = 'block';
-    posSection.classList.remove('visible');
+    posSection.classList.add('disabled');
     clearSnap();
     applyCropBox();
   } else {
     sourceLabel.textContent = 'Source';
     cropBox.style.display = 'none';
-    posSection.classList.add('visible');
+    posSection.classList.remove('disabled');
     clearSnap();
   }
 
