@@ -36,8 +36,8 @@ class GfxRenderer {
 
   // Selects LUT, pixel-plane encoding, and pre-flash behavior for renderGrayscale().
   enum class GrayscaleMode {
-    FactoryFast,     // Factory absolute 2-bit (lut_factory_fast); pre-flashes to white before passes
-    FactoryQuality,  // Factory absolute 2-bit (lut_factory_quality); no pre-flash
+    FactoryFast,     // Factory absolute 2-bit (lut_factory_fast); FAST_REFRESH pre-flash to white
+    FactoryQuality,  // Factory absolute 2-bit (lut_factory_quality); HALF_REFRESH pre-flash to white
     Differential,    // Differential 2-bit overlay (no LUT); no pre-flash, requires prior BW state
   };
 

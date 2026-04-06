@@ -1177,14 +1177,18 @@ void GfxRenderer::copyGrayscaleMsbBuffers() const { display.copyGrayscaleMsbBuff
 void GfxRenderer::displayGrayBuffer(const unsigned char* lut, bool factoryMode) const { display.displayGrayBuffer(fadingFix, lut, factoryMode); }
 
 void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRenderer&, void*), void* ctx) {
-  if (mode == GrayscaleMode::FactoryFast) {
-    // Pre-flash to white so lut_factory_fast can drive particles reliably from any prior state.
-    // Without this, particles coming from an arbitrary BW state get stranded at intermediate
-    // grays: the fast frame clock (FR=0x44) doesn't provide enough dwell time per frame to
-    // complete the full black→white travel. From a known-white state only downward transitions
-    // are needed — a much shorter travel that converges within the fast frame budget.
+  if (mode == GrayscaleMode::FactoryFast || mode == GrayscaleMode::FactoryQuality) {
+    // Pre-flash to white so the factory LUT can drive particles reliably from any prior state.
+    // Without this, particles stranded at intermediate grays may not complete their transition:
+    // from a known-white state only downward transitions are needed, which both LUTs handle cleanly.
+    //
+    // FactoryQuality uses HALF_REFRESH (non-differential, loads its own LUT) to guarantee true white
+    // regardless of BW RAM sync state. FAST_REFRESH is differential — if BW RAM is desynchronised
+    // after a prior grayscale operation, it skips pixels it believes are already white but aren't,
+    // leaving them at intermediate grays which the quality LUT then renders darker than expected.
+    // FactoryFast keeps FAST_REFRESH since it is used in the reader where minimising flash is priority.
     clearScreen();
-    displayBuffer(HalDisplay::FAST_REFRESH);
+    displayBuffer(mode == GrayscaleMode::FactoryQuality ? HalDisplay::HALF_REFRESH : HalDisplay::FAST_REFRESH);
   }
 
   const RenderMode lsbMode = (mode == GrayscaleMode::Differential) ? GRAYSCALE_LSB : GRAY2_LSB;
