@@ -266,7 +266,7 @@ void XtcReaderActivity::renderPage() {
       const size_t byteOffset = colIndex * colBytes + byteInCol;
       const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
       const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
-      return ((bit2 << 1) | bit1); // Swapped priority (P2=MSB, P1=LSB)
+      return 3 - ((bit2 << 1) | bit1); // Total Inversion Fix
     };
 
     // Context + callback for renderGrayscale.
@@ -294,8 +294,8 @@ void XtcReaderActivity::renderPage() {
           const uint8_t b1 = (c->plane1[byteOff] >> bitPos) & 1;
           const uint8_t b2 = (c->plane2[byteOff] >> bitPos) & 1;
           
-          // Swapped mapping for DirectPixelWriter
-          const uint8_t pv = ((b2 << 1) | b1);
+          // Swapped and Inverted mapping for DirectPixelWriter
+          const uint8_t pv = 3 - ((b2 << 1) | b1);
           pw.writePixel(x, pv);
         }
       }

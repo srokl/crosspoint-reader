@@ -143,8 +143,8 @@ void XtgXthViewerActivity::onEnter() {
 
               const uint8_t b1 = (plane1[byteOffset] >> bitInByte) & 1;
               const uint8_t b2 = (plane2[byteOffset] >> bitInByte) & 1;
-              const uint8_t pv = ((b2 << 1) | b1); // Swapped priority (P2=MSB, P1=LSB)
-              pw.writePixel(col, pv);
+              const uint8_t pv = 3 - ((b2 << 1) | b1); // Swapped and Inverted mapping
+  pw.writePixel(col, pv);
             }
           }
         }
