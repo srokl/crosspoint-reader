@@ -304,37 +304,39 @@ void XtcReaderActivity::renderPage() {
     const bool useFactory = SETTINGS.factoryLutImages;
 
     // Fast Inversion Pass Logic:
-    // For 2nd bit content, we follow PXC and only rely on FactoryQuality refresh (one high-quality cycle).
-    // For 1-bit content, we keep the manual flips for the "seamless" 1-bit look.
+    // We use the "Seamless" technique: a quick negative-positive flip to clear ghosting,
+    // followed by a high-speed grayscale overlay using the FactoryFast LUT (no white flash).
     
     if (useFactory) {
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryQuality, xtcGrayFn, &xtcCtx);
+      // 1. Show next page BW base
+      // (Already in framebuffer via renderGrayscale calls below or manual draw)
     } else {
-      // Manual 2-pass Differential rendering
+      // Manual 2-pass Differential rendering logic...
       renderer.clearScreen();
       DirectPixelWriter pw;
       pw.init(renderer);
-
       for (uint16_t y = 0; y < pageHeight; y++) {
         pw.beginRow(y);
         for (uint16_t x = 0; x < pageWidth; x++) {
-          if (getPixelValue(x, y) < 3) {
-            pw.writePixel(x, 0); // Draw black
-          }
+          if (getPixelValue(x, y) < 3) pw.writePixel(x, 0);
         }
       }
-      
-      // Manual flip for Differential fallback
-      renderer.invertScreen();
-      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-      vTaskDelay(pdMS_TO_TICKS(100));
-      renderer.invertScreen();
-      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     }
 
-    if (!useFactory) {
-      // Apply grayscale overlay after the 1st bit inversion flip is fully settled
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryQuality, xtcGrayFn, &xtcCtx);
+    // --- Seamless Inversion Transition ---
+    renderer.invertScreen();
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    renderer.invertScreen();
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    vTaskDelay(pdMS_TO_TICKS(50));
+    // ------------------------------------
+
+    if (useFactory) {
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryFast, xtcGrayFn, &xtcCtx);
+    } else {
+      // Apply grayscale overlay Differential
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
       
       // Re-render BW to framebuffer for next turn consistency
       renderer.clearScreen();
@@ -343,16 +345,13 @@ void XtcReaderActivity::renderPage() {
       for (uint16_t y = 0; y < pageHeight; y++) {
         pw.beginRow(y);
         for (uint16_t x = 0; x < pageWidth; x++) {
-          if (getPixelValue(x, y) < 3) {
-            pw.writePixel(x, 0); // Black
-          }
+          if (getPixelValue(x, y) < 3) pw.writePixel(x, 0);
         }
       }
       renderer.cleanupGrayscaleWithFrameBuffer();
     }
 
     free(pageBuffer);
-
     LOG_DBG("XTR", "Rendered page %lu/%lu (2-bit %s)", currentPage + 1, xtc->getPageCount(),
             useFactory ? "factory" : "differential");
     return;
@@ -382,6 +381,11 @@ void XtcReaderActivity::renderPage() {
   free(pageBuffer);
 
   // XTC pages already have status bar pre-rendered, no need to add our own
+  // Seamless Inversion Transition for 1-bit
+  renderer.invertScreen();
+  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+  vTaskDelay(pdMS_TO_TICKS(100));
+  renderer.invertScreen();
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
