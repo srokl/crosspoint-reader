@@ -1,0 +1,2011 @@
+--- Opening serial port ---
+Command: 
+--- Using Matplotlib style: ggplot ---
+[21:02:47.133] [DBG] [XTR] ReESP-ROM:esp32c3-api1-20210207
+[21:02:47.145] (+  12.5ms)  Build:Feb  7 2021
+[21:02:47.146] (+   0.6ms)  rst:0x15 (USB_UART_CHIP_RESET),boot:0xf (SPI_FAST_FLASH_BOOT)
+[21:02:47.146] (+   0.1ms)  Saved PC:0x4038e25a
+[21:02:47.146] (+   0.2ms)  SPIWP:0xee
+[21:02:47.161] (+  14.6ms)  mode:DIO, clock div:1
+[21:02:47.161] (+   0.1ms)  load:0x3fcd5810,len:0x38c
+[21:02:47.161] (+   0.1ms)  load:0x403cc710,len:0x6a0
+[21:02:47.161] (+   0.1ms)  load:0x403ce710,len:0x2624
+[21:02:47.161] (+   0.1ms)  entry 0x403cc710
+Starting Graph Window... (Close window or press Ctrl-C to exit)
+[21:02:48.092] (+ 931.0ms)  [INF] [MAIN] Hardware detect: X4
+[21:02:48.098] (+   6.4ms)  [SD] SD card detected
+[21:02:50.619] (+2520.2ms)  [DBG] [CPS] Settings loaded from file
+[21:02:50.623] (+   4.3ms)  [I18N] File does not exist: /.crosspoint/language.bin
+[I18N] No settings file, using default (English)
+[21:02:50.630] (+   6.2ms)  [DBG] [KRS] No credentials file found
+[21:02:50.630] (+   0.2ms)  [DBG] [UI] Using Classic theme
+[21:02:50.630] (+   0.2ms)  [DBG] [MAIN] Starting CrossPoint version 1.2.0-dev+master (Apr 08)
+[21:02:50.630] (+   0.1ms)  EInkDisplay: begin() called
+[21:02:50.630] (+   0.1ms)    Static frame buffer (48000 bytes)
+[21:02:50.630] (+   0.1ms)    Initializing e-ink display driver...
+[21:02:50.630] (+   0.1ms)    SPI initialized at 40000000 Hz, Mode 0
+[21:02:50.630] (+   0.1ms)    GPIO pins configured
+[21:02:50.630] (+   0.1ms)    Resetting display...
+[21:02:50.672] (+  41.6ms)    Display reset complete
+[21:02:50.672] (+   0.4ms)    Initializing SSD1677 controller...
+[21:02:50.674] (+   1.7ms)    Wait complete:  CMD_SOFT_RESET (2 ms)
+[21:02:50.674] (+   0.3ms)    Clearing RAM buffers...
+[21:02:50.680] (+   5.7ms)    Wait complete:  CMD_AUTO_WRITE_BW_RAM (6 ms)
+[21:02:50.685] (+   5.1ms)    Wait complete:  CMD_AUTO_WRITE_RED_RAM (5 ms)
+[21:02:50.685] (+   0.3ms)    SSD1677 controller initialized
+[21:02:50.686] (+   0.3ms)    E-ink display driver initialized
+[21:02:50.686] (+   0.3ms)  [DBG] [MAIN] Display initialized
+[21:02:50.686] (+   0.2ms)  [DBG] [MAIN] Fonts setup
+[21:02:50.687] (+   0.3ms)  [DBG] [ACT] Entering activity: Boot
+[21:02:50.687] (+   0.2ms)    Image drawn to frame buffer
+[21:02:50.689] (+   2.0ms)  [DBG] [GFX] Time = 3 ms from clearScreen to displayBuffer
+[21:02:50.689] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:50.701] (+  11.9ms)    BW RAM write complete (12 ms)
+[21:02:50.702] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:50.713] (+  11.6ms)    RED RAM write complete (12 ms)
+[21:02:50.714] (+   0.4ms)    Powering on display 0xD4 (half refresh)...
+[21:02:50.714] (+   0.3ms)    Waiting for display refresh...
+[21:02:52.277] (+1563.4ms)    Wait complete: half (1564 ms)
+[21:02:52.277] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:52.289] (+  11.8ms)    RED RAM write complete (12 ms)
+[21:02:52.317] (+  27.5ms)  [DBG] [RBS] Recent books loaded from file (8 entries)
+[21:02:52.322] (+   5.6ms)  [DBG] [ACT] Exiting activity: Boot
+[21:02:52.322] (+   0.1ms)  [DBG] [ACT] Entering activity: Home
+[21:02:52.344] (+  21.1ms)  [DBG] [THEME] Rendering bmp
+[21:02:52.448] (+ 104.5ms)  [DBG] [THEME] Drawing selection
+[21:02:52.472] (+  23.6ms)  [DBG] [GFX] Time = 149 ms from clearScreen to displayBuffer
+[21:02:52.472] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:52.485] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:02:52.485] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:52.485] (+   0.1ms)    Waiting for display refresh...
+[21:02:52.901] (+ 416.0ms)    Wait complete: fast (416 ms)
+[21:02:52.901] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:52.914] (+  13.1ms)    RED RAM write complete (12 ms)
+[21:02:52.959] (+  44.5ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:02:52.959] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:52.972] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:02:52.972] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:02:52.972] (+   0.3ms)    Waiting for display refresh...
+[21:02:53.388] (+ 416.0ms)    Wait complete: fast (417 ms)
+[21:02:53.389] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:53.401] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:02:53.457] (+  55.8ms)  [DBG] [GFX] Time = 43 ms from clearScreen to displayBuffer
+[21:02:53.457] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:53.469] (+  12.0ms)    BW RAM write complete (13 ms)
+[21:02:53.469] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:53.470] (+   0.2ms)    Waiting for display refresh...
+[21:02:53.885] (+ 415.4ms)    Wait complete: fast (416 ms)
+[21:02:53.885] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:53.898] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:02:53.943] (+  45.5ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:02:53.944] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:53.956] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:02:53.956] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:53.957] (+   0.2ms)    Waiting for display refresh...
+[21:02:54.372] (+ 415.9ms)    Wait complete: fast (416 ms)
+[21:02:54.373] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:54.385] (+  12.1ms)    RED RAM write complete (12 ms)
+[21:02:54.430] (+  44.9ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:02:54.430] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:54.443] (+  12.5ms)    BW RAM write complete (12 ms)
+[21:02:54.443] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:54.443] (+   0.2ms)    Waiting for display refresh...
+[21:02:54.859] (+ 415.7ms)    Wait complete: fast (417 ms)
+[21:02:54.860] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:54.872] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:02:54.917] (+  44.7ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:02:54.917] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:54.930] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:02:54.930] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:54.930] (+   0.3ms)    Waiting for display refresh...
+[21:02:55.346] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:02:55.347] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:55.359] (+  12.4ms)    RED RAM write complete (13 ms)
+[21:02:55.359] (+   0.4ms)  [DBG] [ACT] Exiting activity: Home
+[21:02:55.360] (+   0.3ms)  [DBG] [ACT] Entering activity: FileBrowser
+[21:02:55.385] (+  25.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:55.385] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:55.385] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:55.385] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:55.385] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:55.386] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:55.387] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:55.399] (+  12.8ms)  [DBG] [GFX] Time = 28 ms from clearScreen to displayBuffer
+[21:02:55.399] (+   0.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:55.412] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:02:55.412] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:55.413] (+   0.1ms)    Waiting for display refresh...
+[21:02:55.829] (+ 416.5ms)    Wait complete: fast (417 ms)
+[21:02:55.830] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:55.842] (+  12.5ms)    RED RAM write complete (13 ms)
+[21:02:56.234] (+ 392.4ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.235] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.235] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:56.235] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:56.236] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.236] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.236] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:56.237] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:56.237] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:56.237] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:56.237] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.238] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.238] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:56.238] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:56.239] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:56.239] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:56.249] (+  10.0ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:56.249] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:56.262] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:02:56.262] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:02:56.263] (+   0.2ms)    Waiting for display refresh...
+[21:02:56.678] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:02:56.679] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:56.691] (+  12.0ms)    RED RAM write complete (12 ms)
+[21:02:56.704] (+  13.5ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:56.705] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:56.706] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:56.706] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:56.706] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:56.706] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:56.706] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:56.719] (+  12.9ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:56.719] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:56.732] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:02:56.732] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:56.732] (+   0.1ms)    Waiting for display refresh...
+[21:02:57.148] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:02:57.148] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:57.161] (+  12.7ms)    RED RAM write complete (12 ms)
+[21:02:57.174] (+  13.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.174] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.174] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:57.174] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:57.175] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.175] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.175] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:57.175] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:57.175] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:57.175] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:57.175] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.175] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.176] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:57.176] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:57.176] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:57.176] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:57.189] (+  13.4ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:57.190] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:57.202] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:02:57.202] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:57.202] (+   0.1ms)    Waiting for display refresh...
+[21:02:57.618] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:02:57.618] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:57.631] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:02:57.679] (+  48.6ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.680] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.680] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:57.680] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:57.681] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.681] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.681] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:57.682] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:57.682] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:57.682] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:57.683] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:57.683] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:57.683] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:57.683] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:57.684] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:57.684] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:57.694] (+   9.9ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:57.694] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:57.707] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:02:57.707] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:57.707] (+   0.3ms)    Waiting for display refresh...
+[21:02:58.067] (+ 359.5ms)  [INF] [MEM] Free: 166148 bytes, Total: 226000 bytes, Min Free: 116184 bytes, MaxAlloc: 114676 bytes
+[21:02:58.124] (+  57.1ms)    Wait complete: fast (416 ms)
+[21:02:58.125] (+   0.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:58.138] (+  13.6ms)    RED RAM write complete (12 ms)
+[21:02:58.150] (+  12.0ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.150] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.151] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:58.153] (+   2.9ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:58.154] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.154] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.155] (+   0.8ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:58.155] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:58.155] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:58.155] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:58.155] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.156] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.156] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:58.159] (+   2.8ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:58.159] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:58.159] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:58.164] (+   4.7ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:58.164] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:58.177] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:02:58.177] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:58.177] (+   0.1ms)    Waiting for display refresh...
+[21:02:58.593] (+ 416.1ms)    Wait complete: fast (416 ms)
+[21:02:58.594] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:58.606] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:02:58.619] (+  13.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.619] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.620] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:58.620] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:58.620] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.621] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.621] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:58.621] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:58.621] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:58.622] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:58.622] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:58.622] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:58.623] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:58.623] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:58.623] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:58.623] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:58.634] (+  10.6ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:58.634] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:58.647] (+  12.8ms)    BW RAM write complete (13 ms)
+[21:02:58.648] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:02:58.648] (+   0.3ms)    Waiting for display refresh...
+[21:02:59.063] (+ 415.5ms)    Wait complete: fast (416 ms)
+[21:02:59.064] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:59.076] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:02:59.143] (+  66.7ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.144] (+   1.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.146] (+   2.2ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:59.147] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:59.147] (+   0.7ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.148] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.149] (+   1.4ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:59.149] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:59.149] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:59.150] (+   1.0ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:59.151] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.151] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.151] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:59.151] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:59.152] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:59.152] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:59.152] (+   0.3ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:59.152] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:59.156] (+   4.1ms)    BW RAM write complete (12 ms)
+[21:02:59.157] (+   0.7ms)    Powering on display 0x1C (fast refresh)...
+[21:02:59.159] (+   1.5ms)    Waiting for display refresh...
+[21:02:59.558] (+ 399.6ms)    Wait complete: fast (416 ms)
+[21:02:59.559] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:02:59.571] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:02:59.614] (+  43.5ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.615] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.615] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:02:59.615] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:02:59.616] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.616] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.616] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:02:59.617] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:02:59.617] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:02:59.617] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:02:59.617] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:02:59.617] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:02:59.617] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:02:59.617] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:02:59.617] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:02:59.618] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:02:59.629] (+  11.3ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:02:59.629] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:02:59.642] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:02:59.642] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:02:59.642] (+   0.1ms)    Waiting for display refresh...
+[21:03:00.058] (+ 416.2ms)    Wait complete: fast (416 ms)
+[21:03:00.059] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:00.071] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:03:00.146] (+  75.6ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.152] (+   5.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.152] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:00.152] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:00.157] (+   4.5ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.159] (+   2.0ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.162] (+   3.8ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:00.163] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:00.165] (+   2.6ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:00.166] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:00.170] (+   4.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.171] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.172] (+   1.4ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:00.173] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:00.173] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:00.175] (+   1.4ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:00.175] (+   0.7ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:00.177] (+   1.7ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:00.177] (+   0.3ms)    BW RAM write complete (12 ms)
+[21:03:00.178] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:03:00.178] (+   0.2ms)    Waiting for display refresh...
+[21:03:00.588] (+ 410.0ms)    Wait complete: fast (416 ms)
+[21:03:00.588] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:00.601] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:00.614] (+  13.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.614] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.614] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:00.614] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:00.614] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.614] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.615] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:00.615] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:00.615] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:00.616] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:00.616] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:00.629] (+  13.0ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:00.629] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:00.642] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:00.642] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:00.642] (+   0.1ms)    Waiting for display refresh...
+[21:03:01.058] (+ 416.1ms)    Wait complete: fast (416 ms)
+[21:03:01.059] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:01.071] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:03:01.176] (+ 105.2ms)  [DBG] [ACT] Exiting activity: FileBrowser
+[21:03:01.176] (+   0.2ms)  [DBG] [ACT] Entering activity: Home
+[21:03:01.198] (+  22.2ms)  [DBG] [THEME] Rendering bmp
+[21:03:01.303] (+ 104.7ms)  [DBG] [THEME] Drawing selection
+[21:03:01.327] (+  24.1ms)  [DBG] [GFX] Time = 151 ms from clearScreen to displayBuffer
+[21:03:01.327] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:01.340] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:01.340] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:01.340] (+   0.1ms)    Waiting for display refresh...
+[21:03:01.756] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:03:01.756] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:01.769] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:01.815] (+  46.6ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:03:01.816] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:01.828] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:01.828] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:01.829] (+   0.1ms)    Waiting for display refresh...
+[21:03:02.245] (+ 416.3ms)    Wait complete: fast (417 ms)
+[21:03:02.245] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:02.258] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:02.701] (+ 443.5ms)  [DBG] [ACT] Exiting activity: Home
+[21:03:02.701] (+   0.2ms)  [DBG] [ACT] Entering activity: Reader
+[21:03:02.709] (+   7.9ms)  [DBG] [XTC] Loading XTC: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch
+[21:03:02.723] (+  13.6ms)  [DBG] [XTC] Header: magic=0x48435458 (XTCH), ver=1.0, pages=615, bitDepth=2
+[21:03:02.723] (+   0.2ms)  [DBG] [XTC] Title: The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch
+[21:03:02.723] (+   0.1ms)  [DBG] [XTC] Author:
+[21:03:02.724] (+   0.7ms)  [DBG] [XTC] Lazy loading page table (615 pages)
+[21:03:02.750] (+  25.8ms)  [DBG] [XTC] Chapters: 156
+[21:03:02.750] (+   0.3ms)  [DBG] [XTC] Opened file: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch (615 pages, 480x800)
+[21:03:02.750] (+   0.2ms)  [DBG] [XTC] Loaded XTC: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch (615 pages)
+[21:03:02.750] (+   0.1ms)  [DBG] [ACT] Exiting activity: Reader
+[21:03:02.751] (+   0.1ms)  [DBG] [ACT] Entering activity: XtcReader
+[21:03:02.761] (+  10.6ms)  [DBG] [XTR] Loaded progress: page 243
+[21:03:03.295] (+ 534.0ms)  [DBG] [LOOP] New max loop duration: 592 ms (activity: 592 ms)
+[21:03:03.572] (+ 276.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:03.584] (+  11.8ms)    BW RAM write complete (12 ms)
+[21:03:03.720] (+ 136.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:03.732] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:03:03.733] (+   0.3ms)    Loading custom LUT...
+[21:03:03.734] (+   1.1ms)    Custom LUT loaded
+[21:03:04.547] (+ 813.2ms)    Wait complete: factory_gray (813 ms)
+[21:03:04.547] (+   0.3ms)    Custom LUT disabled
+[21:03:04.548] (+   0.4ms)  [DBG] [XTR] Rendered page 244/615 (2-bit factory)
+[21:03:05.447] (+ 899.5ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:05.459] (+  12.1ms)    BW RAM write complete (12 ms)
+[21:03:05.599] (+ 139.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:05.611] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:03:05.611] (+   0.1ms)    Loading custom LUT...
+[21:03:05.612] (+   1.1ms)    Custom LUT loaded
+[21:03:06.426] (+ 813.5ms)    Wait complete: factory_gray (814 ms)
+[21:03:06.426] (+   0.3ms)    Custom LUT disabled
+[21:03:06.426] (+   0.3ms)  [DBG] [XTR] Rendered page 245/615 (2-bit factory)
+[21:03:07.158] (+ 731.5ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:07.170] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:03:07.304] (+ 133.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:07.316] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:03:07.316] (+   0.1ms)    Loading custom LUT...
+[21:03:07.318] (+   1.4ms)    Custom LUT loaded
+[21:03:08.075] (+ 757.7ms)  [INF] [MEM] Free: 61596 bytes, Total: 226000 bytes, Min Free: 57584 bytes, MaxAlloc: 20468 bytes
+[21:03:08.134] (+  58.2ms)    Wait complete: factory_gray (813 ms)
+[21:03:08.134] (+   0.2ms)    Custom LUT disabled
+[21:03:08.134] (+   0.3ms)  [DBG] [XTR] Rendered page 246/615 (2-bit factory)
+[21:03:08.983] (+ 849.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:08.995] (+  12.1ms)    BW RAM write complete (12 ms)
+[21:03:09.133] (+ 138.3ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:09.145] (+  11.9ms)    RED RAM write complete (12 ms)
+[21:03:09.147] (+   1.5ms)    Loading custom LUT...
+[21:03:09.147] (+   0.2ms)    Custom LUT loaded
+[21:03:09.960] (+ 812.9ms)    Wait complete: factory_gray (814 ms)
+[21:03:09.960] (+   0.2ms)    Custom LUT disabled
+[21:03:09.960] (+   0.1ms)  [DBG] [XTR] Rendered page 247/615 (2-bit factory)
+[21:03:11.189] (+1228.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:11.201] (+  12.4ms)    BW RAM write complete (12 ms)
+[21:03:11.340] (+ 138.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:11.352] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:11.352] (+   0.3ms)    Loading custom LUT...
+[21:03:11.353] (+   0.9ms)    Custom LUT loaded
+[21:03:12.167] (+ 813.3ms)    Wait complete: factory_gray (813 ms)
+[21:03:12.167] (+   0.3ms)    Custom LUT disabled
+[21:03:12.167] (+   0.3ms)  [DBG] [XTR] Rendered page 248/615 (2-bit factory)
+[21:03:13.397] (+1230.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:13.410] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:03:13.550] (+ 140.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:13.562] (+  12.1ms)    RED RAM write complete (12 ms)
+[21:03:13.563] (+   0.3ms)    Loading custom LUT...
+[21:03:13.563] (+   0.7ms)    Custom LUT loaded
+[21:03:14.376] (+ 813.1ms)    Wait complete: factory_gray (813 ms)
+[21:03:14.377] (+   0.3ms)    Custom LUT disabled
+[21:03:14.377] (+   0.3ms)  [DBG] [XTR] Rendered page 249/615 (2-bit factory)
+[21:03:15.638] (+1261.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:15.650] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:03:15.789] (+ 138.3ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:15.801] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:03:15.801] (+   0.3ms)    Loading custom LUT...
+[21:03:15.802] (+   1.0ms)    Custom LUT loaded
+[21:03:16.615] (+ 813.1ms)    Wait complete: factory_gray (814 ms)
+[21:03:16.616] (+   0.3ms)    Custom LUT disabled
+[21:03:16.616] (+   0.4ms)  [DBG] [XTR] Rendered page 250/615 (2-bit factory)
+[21:03:16.950] (+ 334.1ms)  [DBG] [ACT] Pushed to activity stack, new size = 1
+[21:03:16.951] (+   0.4ms)  [DBG] [ACT] Entering activity: XtcReaderChapterSelection
+[21:03:16.969] (+  18.9ms)  [DBG] [GFX] Time = 19 ms from clearScreen to displayBuffer
+[21:03:16.970] (+   0.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:16.983] (+  12.8ms)    BW RAM write complete (13 ms)
+[21:03:16.983] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:16.995] (+  11.7ms)    RED RAM write complete (12 ms)
+[21:03:16.995] (+   0.4ms)    Powering on display 0xD4 (half refresh)...
+[21:03:16.996] (+   0.3ms)    Waiting for display refresh...
+[21:03:18.080] (+1084.5ms)  [INF] [MEM] Free: 159704 bytes, Total: 226000 bytes, Min Free: 57584 bytes, MaxAlloc: 114676 bytes
+[21:03:18.559] (+ 479.3ms)    Wait complete: half (1565 ms)
+[21:03:18.560] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:18.572] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:18.624] (+  51.2ms)  [DBG] [GFX] Time = 18 ms from clearScreen to displayBuffer
+[21:03:18.624] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:18.637] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:18.637] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:18.637] (+   0.3ms)    Waiting for display refresh...
+[21:03:19.053] (+ 416.1ms)    Wait complete: fast (417 ms)
+[21:03:19.054] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:19.067] (+  12.7ms)    RED RAM write complete (13 ms)
+[21:03:19.433] (+ 366.9ms)  [DBG] [GFX] Time = 18 ms from clearScreen to displayBuffer
+[21:03:19.434] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:19.447] (+  12.8ms)    BW RAM write complete (13 ms)
+[21:03:19.447] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:19.447] (+   0.3ms)    Waiting for display refresh...
+[21:03:19.864] (+ 416.1ms)    Wait complete: fast (417 ms)
+[21:03:19.864] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:19.876] (+  12.3ms)    RED RAM write complete (13 ms)
+[21:03:20.224] (+ 348.1ms)  [DBG] [GFX] Time = 19 ms from clearScreen to displayBuffer
+[21:03:20.225] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:20.237] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:03:20.238] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:20.238] (+   0.3ms)    Waiting for display refresh...
+[21:03:20.653] (+ 415.4ms)    Wait complete: fast (416 ms)
+[21:03:20.654] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:20.666] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:03:21.150] (+ 483.3ms)  [DBG] [ACT] Exiting activity: XtcReaderChapterSelection
+[21:03:21.150] (+   0.2ms)  [DBG] [ACT] Popped from activity stack, new size = 0
+[21:03:21.150] (+   0.1ms)  [DBG] [ACT] Handling result for popped activity
+[21:03:21.435] (+ 285.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:21.447] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:03:21.583] (+ 136.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:21.595] (+  11.9ms)    RED RAM write complete (12 ms)
+[21:03:21.596] (+   0.3ms)    Loading custom LUT...
+[21:03:21.596] (+   0.8ms)    Custom LUT loaded
+[21:03:22.409] (+ 812.9ms)    Wait complete: factory_gray (813 ms)
+[21:03:22.410] (+   0.3ms)    Custom LUT disabled
+[21:03:22.410] (+   0.3ms)  [DBG] [XTR] Rendered page 363/615 (2-bit factory)
+[21:03:24.487] (+2076.8ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:24.499] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:03:24.635] (+ 136.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:24.647] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:03:24.648] (+   0.1ms)    Loading custom LUT...
+[21:03:24.649] (+   1.4ms)    Custom LUT loaded
+[21:03:25.462] (+ 813.2ms)    Wait complete: factory_gray (814 ms)
+[21:03:25.462] (+   0.1ms)    Custom LUT disabled
+[21:03:25.462] (+   0.1ms)  [DBG] [XTR] Rendered page 366/615 (2-bit factory)
+[21:03:25.759] (+ 296.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:25.771] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:03:25.915] (+ 143.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:25.927] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:03:25.927] (+   0.3ms)    Loading custom LUT...
+[21:03:25.928] (+   0.8ms)    Custom LUT loaded
+[21:03:26.741] (+ 813.2ms)    Wait complete: factory_gray (813 ms)
+[21:03:26.741] (+   0.3ms)    Custom LUT disabled
+[21:03:26.742] (+   0.4ms)  [DBG] [XTR] Rendered page 367/615 (2-bit factory)
+[21:03:27.035] (+ 293.7ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:27.047] (+  12.1ms)    BW RAM write complete (12 ms)
+[21:03:27.184] (+ 136.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:27.196] (+  12.3ms)    RED RAM write complete (13 ms)
+[21:03:27.196] (+   0.3ms)    Loading custom LUT...
+[21:03:27.197] (+   0.8ms)    Custom LUT loaded
+[21:03:28.011] (+ 813.9ms)    Wait complete: factory_gray (814 ms)
+[21:03:28.011] (+   0.3ms)    Custom LUT disabled
+[21:03:28.012] (+   0.4ms)  [DBG] [XTR] Rendered page 368/615 (2-bit factory)
+[21:03:28.085] (+  73.1ms)  [INF] [MEM] Free: 61596 bytes, Total: 226000 bytes, Min Free: 57584 bytes, MaxAlloc: 20468 bytes
+[21:03:28.307] (+ 222.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:28.320] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:03:28.458] (+ 138.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:28.470] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:28.471] (+   0.1ms)    Loading custom LUT...
+[21:03:28.472] (+   1.5ms)    Custom LUT loaded
+[21:03:29.285] (+ 813.3ms)    Wait complete: factory_gray (814 ms)
+[21:03:29.286] (+   0.3ms)    Custom LUT disabled
+[21:03:29.286] (+   0.3ms)  [DBG] [XTR] Rendered page 369/615 (2-bit factory)
+[21:03:29.577] (+ 291.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:29.590] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:03:29.725] (+ 135.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:29.737] (+  12.4ms)    RED RAM write complete (13 ms)
+[21:03:29.737] (+   0.3ms)    Loading custom LUT...
+[21:03:29.738] (+   0.9ms)    Custom LUT loaded
+[21:03:30.552] (+ 813.8ms)    Wait complete: factory_gray (814 ms)
+[21:03:30.552] (+   0.3ms)    Custom LUT disabled
+[21:03:30.553] (+   0.3ms)  [DBG] [XTR] Rendered page 370/615 (2-bit factory)
+[21:03:30.846] (+ 293.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:30.858] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:03:30.999] (+ 140.9ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:31.012] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:31.012] (+   0.3ms)    Loading custom LUT...
+[21:03:31.013] (+   1.0ms)    Custom LUT loaded
+[21:03:31.826] (+ 813.0ms)    Wait complete: factory_gray (813 ms)
+[21:03:31.826] (+   0.2ms)    Custom LUT disabled
+[21:03:31.826] (+   0.1ms)  [DBG] [XTR] Rendered page 371/615 (2-bit factory)
+[21:03:32.129] (+ 303.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:32.134] (+   4.8ms)    BW RAM write complete (13 ms)
+[21:03:32.266] (+ 132.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:32.279] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:03:32.279] (+   0.3ms)    Loading custom LUT...
+[21:03:32.280] (+   1.0ms)    Custom LUT loaded
+[21:03:33.093] (+ 813.1ms)    Wait complete: factory_gray (813 ms)
+[21:03:33.093] (+   0.2ms)    Custom LUT disabled
+[21:03:33.093] (+   0.1ms)  [DBG] [XTR] Rendered page 372/615 (2-bit factory)
+[21:03:33.385] (+ 292.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:33.398] (+  12.3ms)    BW RAM write complete (13 ms)
+[21:03:33.535] (+ 137.6ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:33.547] (+  12.1ms)    RED RAM write complete (12 ms)
+[21:03:33.548] (+   0.3ms)    Loading custom LUT...
+[21:03:33.549] (+   1.0ms)    Custom LUT loaded
+[21:03:34.362] (+ 813.3ms)    Wait complete: factory_gray (813 ms)
+[21:03:34.362] (+   0.3ms)    Custom LUT disabled
+[21:03:34.363] (+   0.3ms)  [DBG] [XTR] Rendered page 373/615 (2-bit factory)
+[21:03:34.660] (+ 297.7ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:34.673] (+  12.4ms)    BW RAM write complete (12 ms)
+[21:03:34.810] (+ 136.8ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:34.822] (+  12.1ms)    RED RAM write complete (13 ms)
+[21:03:34.822] (+   0.3ms)    Loading custom LUT...
+[21:03:34.823] (+   1.2ms)    Custom LUT loaded
+[21:03:35.637] (+ 813.6ms)    Wait complete: factory_gray (814 ms)
+[21:03:35.637] (+   0.2ms)    Custom LUT disabled
+[21:03:35.637] (+   0.1ms)  [DBG] [XTR] Rendered page 373/615 (2-bit factory)
+[21:03:36.455] (+ 818.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:36.468] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:03:36.596] (+ 127.8ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:36.608] (+  12.1ms)    RED RAM write complete (13 ms)
+[21:03:36.608] (+   0.1ms)    Loading custom LUT...
+[21:03:36.609] (+   1.2ms)    Custom LUT loaded
+[21:03:37.423] (+ 813.7ms)    Wait complete: factory_gray (814 ms)
+[21:03:37.423] (+   0.1ms)    Custom LUT disabled
+[21:03:37.423] (+   0.1ms)  [DBG] [XTR] Rendered page 374/615 (2-bit factory)
+[21:03:38.090] (+ 666.7ms)  [INF] [MEM] Free: 159904 bytes, Total: 226000 bytes, Min Free: 57584 bytes, MaxAlloc: 114676 bytes
+[21:03:38.568] (+ 477.8ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:38.580] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:03:38.717] (+ 137.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:38.729] (+  12.0ms)    RED RAM write complete (12 ms)
+[21:03:38.729] (+   0.3ms)    Loading custom LUT...
+[21:03:38.730] (+   0.8ms)    Custom LUT loaded
+[21:03:39.544] (+ 813.7ms)    Wait complete: factory_gray (814 ms)
+[21:03:39.544] (+   0.3ms)    Custom LUT disabled
+[21:03:39.544] (+   0.3ms)  [DBG] [XTR] Rendered page 375/615 (2-bit factory)
+[21:03:40.284] (+ 739.9ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:40.297] (+  12.3ms)    BW RAM write complete (13 ms)
+[21:03:40.437] (+ 140.3ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:40.449] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:03:40.449] (+   0.3ms)    Loading custom LUT...
+[21:03:40.450] (+   0.7ms)    Custom LUT loaded
+[21:03:41.264] (+ 813.4ms)    Wait complete: factory_gray (814 ms)
+[21:03:41.264] (+   0.3ms)    Custom LUT disabled
+[21:03:41.264] (+   0.3ms)  [DBG] [XTR] Rendered page 386/615 (2-bit factory)
+[21:03:41.552] (+ 287.8ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:41.564] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:03:41.699] (+ 134.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:41.711] (+  12.1ms)    RED RAM write complete (12 ms)
+[21:03:41.711] (+   0.2ms)    Loading custom LUT...
+[21:03:41.712] (+   1.1ms)    Custom LUT loaded
+[21:03:42.525] (+ 813.0ms)    Wait complete: factory_gray (813 ms)
+[21:03:42.526] (+   0.2ms)    Custom LUT disabled
+[21:03:42.526] (+   0.1ms)  [DBG] [XTR] Rendered page 398/615 (2-bit factory)
+[21:03:42.831] (+ 305.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:42.843] (+  12.4ms)    BW RAM write complete (12 ms)
+[21:03:42.983] (+ 140.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:42.995] (+  12.1ms)    RED RAM write complete (13 ms)
+[21:03:42.996] (+   0.1ms)    Loading custom LUT...
+[21:03:42.997] (+   1.2ms)    Custom LUT loaded
+[21:03:43.810] (+ 813.6ms)    Wait complete: factory_gray (814 ms)
+[21:03:43.810] (+   0.1ms)    Custom LUT disabled
+[21:03:43.811] (+   0.1ms)  [DBG] [XTR] Rendered page 409/615 (2-bit factory)
+[21:03:44.107] (+ 296.5ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:44.127] (+  19.8ms)    BW RAM write complete (12 ms)
+[21:03:44.272] (+ 145.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:44.284] (+  11.8ms)    RED RAM write complete (12 ms)
+[21:03:44.284] (+   0.1ms)    Loading custom LUT...
+[21:03:44.285] (+   0.9ms)    Custom LUT loaded
+[21:03:45.098] (+ 813.5ms)    Wait complete: factory_gray (814 ms)
+[21:03:45.099] (+   0.3ms)    Custom LUT disabled
+[21:03:45.099] (+   0.3ms)  [DBG] [XTR] Rendered page 409/615 (2-bit factory)
+[21:03:45.130] (+  30.9ms)  [DBG] [ACT] Exiting activity: XtcReader
+[21:03:45.143] (+  13.4ms)  [DBG] [ACT] Entering activity: Home
+[21:03:45.144] (+   0.3ms)  [DBG] [LOOP] New max loop duration: 1598 ms (activity: 1598 ms)
+[21:03:45.163] (+  18.8ms)  [DBG] [THEME] Rendering bmp
+[21:03:45.267] (+ 104.7ms)  [DBG] [THEME] Drawing selection
+[21:03:45.291] (+  23.9ms)  [DBG] [GFX] Time = 148 ms from clearScreen to displayBuffer
+[21:03:45.291] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:45.304] (+  12.5ms)    BW RAM write complete (12 ms)
+[21:03:45.304] (+   0.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:45.317] (+  12.5ms)    RED RAM write complete (13 ms)
+[21:03:45.317] (+   0.1ms)    Powering on display 0xD4 (half refresh)...
+[21:03:45.317] (+   0.1ms)    Waiting for display refresh...
+[21:03:46.881] (+1564.5ms)    Wait complete: half (1565 ms)
+[21:03:46.882] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:46.894] (+  12.8ms)    RED RAM write complete (12 ms)
+[21:03:46.939] (+  44.8ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:03:46.940] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:46.952] (+  12.4ms)    BW RAM write complete (12 ms)
+[21:03:46.952] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:46.953] (+   0.3ms)    Waiting for display refresh...
+[21:03:47.368] (+ 415.7ms)    Wait complete: fast (417 ms)
+[21:03:47.368] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:47.381] (+  12.7ms)    RED RAM write complete (12 ms)
+[21:03:47.437] (+  55.6ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:03:47.437] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:47.449] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:03:47.450] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:47.450] (+   0.1ms)    Waiting for display refresh...
+[21:03:47.866] (+ 416.6ms)    Wait complete: fast (417 ms)
+[21:03:47.867] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:47.879] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:47.919] (+  39.4ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:03:47.919] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:47.932] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:47.932] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:47.932] (+   0.3ms)    Waiting for display refresh...
+[21:03:48.092] (+ 159.6ms)  [INF] [MEM] Free: 118432 bytes, Total: 226000 bytes, Min Free: 57584 bytes, MaxAlloc: 65524 bytes
+[21:03:48.348] (+ 256.4ms)    Wait complete: fast (417 ms)
+[21:03:48.348] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:48.361] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:48.406] (+  44.9ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:03:48.406] (+   0.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:48.419] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:03:48.419] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:03:48.419] (+   0.1ms)    Waiting for display refresh...
+[21:03:48.835] (+ 416.3ms)    Wait complete: fast (417 ms)
+[21:03:48.836] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:48.848] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:48.896] (+  48.1ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:03:48.896] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:48.909] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:03:48.909] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:48.909] (+   0.1ms)    Waiting for display refresh...
+[21:03:49.325] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:03:49.325] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:49.338] (+  12.8ms)    RED RAM write complete (12 ms)
+[21:03:49.383] (+  44.5ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:03:49.383] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:49.396] (+  12.8ms)    BW RAM write complete (12 ms)
+[21:03:49.396] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:49.396] (+   0.1ms)    Waiting for display refresh...
+[21:03:49.812] (+ 416.3ms)    Wait complete: fast (417 ms)
+[21:03:49.813] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:49.825] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:49.916] (+  91.5ms)  [DBG] [ACT] Exiting activity: Home
+[21:03:49.917] (+   0.2ms)  [DBG] [ACT] Entering activity: FileBrowser
+[21:03:49.942] (+  25.4ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:49.942] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:49.942] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:49.943] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:49.944] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:49.944] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:49.944] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:49.944] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:49.956] (+  12.6ms)  [DBG] [GFX] Time = 28 ms from clearScreen to displayBuffer
+[21:03:49.957] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:49.970] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:03:49.970] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:49.970] (+   0.1ms)    Waiting for display refresh...
+[21:03:50.386] (+ 416.2ms)    Wait complete: fast (417 ms)
+[21:03:52.708] (+2321.5ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:52.720] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:52.734] (+  13.9ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:52.734] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:52.735] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:52.735] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:52.736] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:52.736] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:52.736] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:52.737] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:52.737] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:52.737] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:52.738] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:52.738] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:52.738] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:52.738] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:52.739] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:52.739] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:52.748] (+   9.3ms)  [DBG] [GFX] Time = 28 ms from clearScreen to displayBuffer
+[21:03:52.749] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:52.762] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:03:52.762] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:52.762] (+   0.1ms)    Waiting for display refresh...
+[21:03:53.178] (+ 416.4ms)    Wait complete: fast (417 ms)
+[21:03:53.179] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:53.191] (+  12.3ms)    RED RAM write complete (13 ms)
+[21:03:53.241] (+  50.4ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.242] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:53.242] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:53.243] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.243] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.243] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:53.243] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:53.243] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:53.243] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:53.256] (+  12.8ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:53.256] (+   0.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:53.269] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:03:53.269] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:03:53.269] (+   0.1ms)    Waiting for display refresh...
+[21:03:53.685] (+ 416.0ms)    Wait complete: fast (416 ms)
+[21:03:53.685] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:53.698] (+  12.7ms)    RED RAM write complete (12 ms)
+[21:03:53.712] (+  13.7ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.712] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:53.713] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:53.726] (+  12.6ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:53.726] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:53.739] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:03:53.739] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:53.739] (+   0.1ms)    Waiting for display refresh...
+[21:03:54.155] (+ 415.6ms)    Wait complete: fast (416 ms)
+[21:03:54.155] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:54.168] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:03:54.181] (+  13.6ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.182] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.182] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:54.182] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:54.182] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.182] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.182] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:54.182] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:54.183] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:54.196] (+  12.6ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:54.196] (+   0.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:54.209] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:03:54.209] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:03:54.209] (+   0.1ms)    Waiting for display refresh...
+[21:03:54.625] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:03:54.625] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:54.638] (+  12.7ms)    RED RAM write complete (12 ms)
+[21:03:54.651] (+  13.5ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.651] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:54.652] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:54.652] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:54.653] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:54.653] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:54.653] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:54.653] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:54.653] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:54.653] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:54.666] (+  12.4ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:54.666] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:54.679] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:03:54.679] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:54.679] (+   0.1ms)    Waiting for display refresh...
+[21:03:55.095] (+ 415.9ms)    Wait complete: fast (416 ms)
+[21:03:55.095] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:55.108] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:03:55.140] (+  31.7ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.143] (+   3.6ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.143] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:55.144] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:55.144] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.144] (+   0.8ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.145] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:55.145] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:55.145] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:55.145] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:55.146] (+   0.7ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.146] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.146] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:55.146] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:55.146] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:55.147] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:55.148] (+   1.0ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:55.148] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:55.150] (+   2.6ms)    BW RAM write complete (13 ms)
+[21:03:55.151] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:55.153] (+   2.1ms)    Waiting for display refresh...
+[21:03:55.565] (+ 412.4ms)    Wait complete: fast (416 ms)
+[21:03:55.565] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:55.578] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:03:55.591] (+  13.0ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.591] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.591] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:55.591] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:55.591] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:55.592] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:55.592] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:55.593] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:55.593] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:55.606] (+  13.4ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:55.606] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:55.619] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:03:55.619] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:03:55.619] (+   0.1ms)    Waiting for display refresh...
+[21:03:56.035] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:03:56.035] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:56.048] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:56.061] (+  13.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:56.061] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:56.061] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:03:56.061] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:03:56.062] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:56.062] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:56.062] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:03:56.062] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:03:56.062] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:03:56.062] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:03:56.062] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:03:56.063] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:03:56.063] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:03:56.063] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:03:56.063] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:03:56.063] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:03:56.076] (+  13.1ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:03:56.076] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:56.089] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:03:56.089] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:03:56.089] (+   0.1ms)    Waiting for display refresh...
+[21:03:56.505] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:03:56.505] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:56.518] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:03:56.613] (+  95.3ms)  [DBG] [ACT] Exiting activity: FileBrowser
+[21:03:56.614] (+   0.3ms)  [DBG] [ACT] Entering activity: Reader
+[21:03:56.614] (+   0.3ms)  [DBG] [ACT] Exiting activity: Reader
+[21:03:56.614] (+   0.3ms)  [DBG] [ACT] Entering activity: XtgXthViewer
+[21:03:56.619] (+   5.2ms)  [DBG] [GFX] Time = 571 ms from clearScreen to displayBuffer
+[21:03:56.620] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:56.632] (+  11.9ms)    BW RAM write complete (12 ms)
+[21:03:56.632] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:56.632] (+   0.2ms)    Waiting for display refresh...
+[21:03:57.048] (+ 415.7ms)    Wait complete: fast (417 ms)
+[21:03:57.048] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:57.060] (+  11.8ms)    RED RAM write complete (12 ms)
+[21:03:57.061] (+   0.5ms)  [DBG] [GFX] Time = 1012 ms from clearScreen to displayBuffer
+[21:03:57.061] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:57.073] (+  11.9ms)    BW RAM write complete (12 ms)
+[21:03:57.073] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:57.073] (+   0.3ms)    Waiting for display refresh...
+[21:03:57.489] (+ 415.7ms)    Wait complete: fast (417 ms)
+[21:03:57.490] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:57.501] (+  11.7ms)    RED RAM write complete (12 ms)
+[21:03:57.505] (+   4.0ms)  [DBG] [GFX] Time = 1456 ms from clearScreen to displayBuffer
+[21:03:57.506] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:57.517] (+  11.5ms)    BW RAM write complete (12 ms)
+[21:03:57.518] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:03:57.518] (+   0.3ms)    Waiting for display refresh...
+[21:03:57.933] (+ 415.4ms)    Wait complete: fast (416 ms)
+[21:03:57.934] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:57.945] (+  11.6ms)    RED RAM write complete (12 ms)
+[21:03:57.946] (+   0.5ms)  [DBG] [GFX] Time = 0 ms from clearScreen to displayBuffer
+[21:03:57.946] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:57.958] (+  12.0ms)    BW RAM write complete (12 ms)
+[21:03:57.958] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:57.970] (+  11.7ms)    RED RAM write complete (12 ms)
+[21:03:57.970] (+   0.4ms)    Powering on display 0xD4 (half refresh)...
+[21:03:57.971] (+   0.3ms)    Waiting for display refresh...
+[21:03:59.534] (+1563.3ms)    Wait complete: half (1564 ms)
+[21:03:59.534] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:03:59.546] (+  12.0ms)    RED RAM write complete (12 ms)
+[21:03:59.845] (+ 298.9ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:03:59.857] (+  11.7ms)    BW RAM write complete (12 ms)
+[21:04:00.166] (+ 309.3ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:00.178] (+  12.0ms)    RED RAM write complete (12 ms)
+[21:04:00.179] (+   0.3ms)    Loading custom LUT...
+[21:04:00.179] (+   0.5ms)    Custom LUT loaded
+[21:04:01.387] (+1208.1ms)    Wait complete: factory_gray (1208 ms)
+[21:04:01.387] (+   0.2ms)    Custom LUT disabled
+[21:04:01.387] (+   0.2ms)  [DBG] [LOOP] New max loop duration: 4774 ms (activity: 4774 ms)
+[21:04:01.388] (+   0.1ms)  [DBG] [PWR] Going to low-power mode
+[21:04:01.450] (+  62.7ms)  [INF] [MEM] Free: 168052 bytes, Total: 226000 bytes, Min Free: 57580 bytes, MaxAlloc: 114676 bytes
+[21:04:02.931] (+1481.1ms)  [DBG] [PWR] Restoring normal CPU frequency
+[21:04:03.134] (+ 202.4ms)  [DBG] [ACT] Exiting activity: XtgXthViewer
+[21:04:03.135] (+   0.9ms)  [DBG] [GFX] Time = 0 ms from clearScreen to displayBuffer
+[21:04:03.138] (+   3.7ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:03.144] (+   5.9ms)    BW RAM write complete (12 ms)
+[21:04:03.146] (+   2.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:03.149] (+   2.9ms)    RED RAM write complete (12 ms)
+[21:04:03.150] (+   0.7ms)    Powering on display 0xD4 (half refresh)...
+[21:04:03.156] (+   5.7ms)    Waiting for display refresh...
+[21:04:04.711] (+1555.1ms)    Wait complete: half (1564 ms)
+[21:04:04.711] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:04.723] (+  11.8ms)    RED RAM write complete (12 ms)
+[21:04:04.723] (+   0.2ms)  [DBG] [ACT] Entering activity: Home
+[21:04:04.849] (+ 126.3ms)  [DBG] [THEME] Rendering bmp
+[21:04:04.849] (+   0.2ms)  [DBG] [THEME] Drawing selection
+[21:04:04.873] (+  23.9ms)  [DBG] [GFX] Time = 150 ms from clearScreen to displayBuffer
+[21:04:04.874] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:04.886] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:04:04.886] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:04.886] (+   0.1ms)    Waiting for display refresh...
+[21:04:05.303] (+ 416.1ms)    Wait complete: fast (417 ms)
+[21:04:05.303] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:05.315] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:05.357] (+  41.8ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:05.357] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:05.370] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:04:05.370] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:05.370] (+   0.1ms)    Waiting for display refresh...
+[21:04:05.787] (+ 416.2ms)    Wait complete: fast (417 ms)
+[21:04:05.787] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:05.800] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:04:05.855] (+  55.3ms)  [DBG] [GFX] Time = 43 ms from clearScreen to displayBuffer
+[21:04:05.855] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:05.868] (+  12.8ms)    BW RAM write complete (13 ms)
+[21:04:05.868] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:05.868] (+   0.1ms)    Waiting for display refresh...
+[21:04:06.285] (+ 416.4ms)    Wait complete: fast (417 ms)
+[21:04:06.285] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:06.297] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:06.342] (+  45.1ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:06.343] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:06.355] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:04:06.355] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:06.355] (+   0.1ms)    Waiting for display refresh...
+[21:04:06.772] (+ 416.3ms)    Wait complete: fast (417 ms)
+[21:04:06.772] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:06.784] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:06.829] (+  44.8ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:04:06.830] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:06.842] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:04:06.842] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:06.843] (+   0.3ms)    Waiting for display refresh...
+[21:04:07.259] (+ 416.1ms)    Wait complete: fast (417 ms)
+[21:04:07.259] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:07.271] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:07.316] (+  44.9ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:07.316] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:07.329] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:04:07.329] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:07.330] (+   0.1ms)    Waiting for display refresh...
+[21:04:07.746] (+ 416.1ms)    Wait complete: fast (417 ms)
+[21:04:07.746] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:07.758] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:07.917] (+ 159.0ms)  [DBG] [GFX] Time = 44 ms from clearScreen to displayBuffer
+[21:04:07.918] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:07.930] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:04:07.930] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:07.931] (+   0.1ms)    Waiting for display refresh...
+[21:04:08.347] (+ 416.2ms)    Wait complete: fast (416 ms)
+[21:04:08.347] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:08.359] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:08.404] (+  45.2ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:08.405] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:08.417] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:04:08.418] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:08.418] (+   0.1ms)    Waiting for display refresh...
+[21:04:08.834] (+ 416.0ms)    Wait complete: fast (416 ms)
+[21:04:08.834] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:08.846] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:04:08.891] (+  44.7ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:08.891] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:08.904] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:04:08.904] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:08.904] (+   0.1ms)    Waiting for display refresh...
+[21:04:09.320] (+ 416.1ms)    Wait complete: fast (416 ms)
+[21:04:09.321] (+   0.5ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:09.333] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:04:09.379] (+  45.4ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:09.379] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:09.391] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:04:09.392] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:09.392] (+   0.3ms)    Waiting for display refresh...
+[21:04:09.808] (+ 415.9ms)    Wait complete: fast (416 ms)
+[21:04:09.808] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:09.821] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:09.828] (+   7.7ms)  [DBG] [ACT] Exiting activity: Home
+[21:04:09.829] (+   0.4ms)  [DBG] [ACT] Entering activity: RecentBooks
+[21:04:09.879] (+  50.6ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:09.880] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:09.880] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:09.880] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:09.881] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:09.881] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:09.881] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:09.881] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:09.882] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:09.882] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:09.882] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:09.883] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:09.883] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:09.883] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:09.884] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:09.884] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:09.884] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:09.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:09.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:09.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:09.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:09.886] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:09.886] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:09.887] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:09.887] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:09.887] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:09.887] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:09.888] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:09.888] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:09.888] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:09.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:09.889] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:09.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:09.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:09.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:09.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:09.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:09.891] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:09.891] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:09.891] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:09.891] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:09.892] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:09.895] (+   3.8ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:09.896] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:09.909] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:04:09.909] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:09.909] (+   0.1ms)    Waiting for display refresh...
+[21:04:10.326] (+ 416.7ms)    Wait complete: fast (417 ms)
+[21:04:10.326] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:10.338] (+  12.6ms)    RED RAM write complete (13 ms)
+[21:04:10.439] (+ 100.6ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:10.439] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:10.439] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:10.440] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:10.443] (+   2.6ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:10.443] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.443] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:10.443] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:10.443] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:10.444] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:10.444] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:10.445] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:10.445] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:10.446] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:10.447] (+   0.9ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:10.447] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:10.455] (+   8.0ms)  [DBG] [GFX] Time = 38 ms from clearScreen to displayBuffer
+[21:04:10.456] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:10.469] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:04:10.469] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:10.469] (+   0.1ms)    Waiting for display refresh...
+[21:04:10.885] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:04:10.885] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:10.897] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:04:10.919] (+  21.9ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:10.919] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:10.920] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:10.921] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:10.924] (+   3.9ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:10.925] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:10.925] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:10.926] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:10.926] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:10.926] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:10.927] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:10.927] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:10.927] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.927] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:10.928] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:10.928] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:10.928] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:10.929] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:10.929] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:10.929] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:10.930] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:10.930] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:10.930] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:10.937] (+   6.8ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:10.937] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:10.950] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:04:10.950] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:10.950] (+   0.1ms)    Waiting for display refresh...
+[21:04:11.367] (+ 417.0ms)    Wait complete: fast (417 ms)
+[21:04:11.367] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:11.379] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:11.402] (+  23.0ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:11.403] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:11.403] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.403] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:11.404] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.404] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:11.404] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:11.404] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.405] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:11.405] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:11.405] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:11.406] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:11.406] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:11.407] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:11.407] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.407] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:11.408] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:11.408] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:11.408] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:11.408] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:11.409] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:11.409] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:11.409] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:11.410] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:11.410] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:11.410] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:11.411] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:11.412] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:11.412] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:11.418] (+   6.8ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:11.419] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:11.432] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:04:11.432] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:11.432] (+   0.1ms)    Waiting for display refresh...
+[21:04:11.452] (+  20.0ms)  [INF] [MEM] Free: 166080 bytes, Total: 226000 bytes, Min Free: 57580 bytes, MaxAlloc: 114676 bytes
+[21:04:11.849] (+ 396.6ms)    Wait complete: fast (417 ms)
+[21:04:11.849] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:11.861] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:11.884] (+  22.7ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:11.884] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:11.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:11.885] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.886] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:11.886] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:11.886] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.886] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:11.887] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:11.887] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:11.888] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:11.888] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:11.888] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:11.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:11.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:11.889] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:11.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:11.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:11.890] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:11.891] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:11.891] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:11.891] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:11.892] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:11.892] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:11.892] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.893] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:11.893] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:11.893] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:11.894] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:11.894] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:11.894] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:11.895] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.895] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:11.895] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:11.895] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:11.896] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:11.896] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:11.896] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:11.897] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:11.897] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:11.900] (+   3.5ms)  [DBG] [GFX] Time = 38 ms from clearScreen to displayBuffer
+[21:04:11.901] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:11.914] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:04:11.914] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:04:11.914] (+   0.3ms)    Waiting for display refresh...
+[21:04:12.331] (+ 416.3ms)    Wait complete: fast (417 ms)
+[21:04:12.331] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:12.343] (+  12.6ms)    RED RAM write complete (13 ms)
+[21:04:12.366] (+  22.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:12.366] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.367] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:12.367] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:12.367] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:12.367] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:12.367] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:12.370] (+   2.8ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:12.370] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:12.371] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:12.371] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:12.371] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:12.371] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:12.371] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:12.372] (+   1.0ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:12.372] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.372] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:12.373] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:12.373] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:12.373] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:12.373] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.373] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:12.373] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:12.374] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:12.383] (+   8.8ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:12.383] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:12.396] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:04:12.396] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:12.396] (+   0.1ms)    Waiting for display refresh...
+[21:04:12.812] (+ 416.2ms)    Wait complete: fast (417 ms)
+[21:04:12.813] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:12.825] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:04:12.848] (+  22.9ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:12.848] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:12.848] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.848] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:12.848] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:12.849] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:12.852] (+   2.9ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:12.852] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:12.853] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:12.853] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:12.854] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:12.854] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:12.855] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:12.856] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:12.856] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:12.864] (+   8.7ms)  [DBG] [GFX] Time = 38 ms from clearScreen to displayBuffer
+[21:04:12.865] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:12.878] (+  13.0ms)    BW RAM write complete (13 ms)
+[21:04:12.878] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:12.878] (+   0.1ms)    Waiting for display refresh...
+[21:04:13.295] (+ 416.6ms)    Wait complete: fast (417 ms)
+[21:04:13.295] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:13.307] (+  12.5ms)    RED RAM write complete (13 ms)
+[21:04:13.329] (+  22.1ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:13.330] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:13.331] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:13.331] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:13.331] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:13.334] (+   3.0ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:13.334] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:13.335] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.335] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:13.336] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:13.336] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:13.336] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:13.336] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.337] (+   0.9ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:13.337] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.337] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:13.337] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:13.337] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.338] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:13.338] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:13.338] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:13.338] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:13.338] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:13.346] (+   8.1ms)  [DBG] [GFX] Time = 38 ms from clearScreen to displayBuffer
+[21:04:13.347] (+   1.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:13.360] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:04:13.360] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:13.360] (+   0.1ms)    Waiting for display refresh...
+[21:04:13.777] (+ 417.1ms)    Wait complete: fast (417 ms)
+[21:04:13.777] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:13.789] (+  12.1ms)    RED RAM write complete (13 ms)
+[21:04:13.811] (+  22.2ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.812] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:13.813] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:13.813] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:13.813] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:13.813] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:13.816] (+   2.9ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:13.816] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.816] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:13.816] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:13.817] (+   0.7ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:13.817] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:13.817] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:13.817] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:13.818] (+   0.6ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:13.818] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:13.819] (+   0.5ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:13.819] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:13.819] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:13.819] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:13.819] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:13.820] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:13.829] (+   8.5ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:13.829] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:13.842] (+  12.7ms)    BW RAM write complete (12 ms)
+[21:04:13.842] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:13.842] (+   0.3ms)    Waiting for display refresh...
+[21:04:14.258] (+ 415.8ms)    Wait complete: fast (417 ms)
+[21:04:14.259] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:14.271] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:04:14.293] (+  22.0ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:14.293] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:14.294] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:14.295] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:14.295] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:14.298] (+   3.8ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:14.299] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:14.300] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:14.300] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:14.301] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:14.301] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.302] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:14.302] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:14.302] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:14.302] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:14.302] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:14.311] (+   8.6ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:14.311] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:14.324] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:04:14.324] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:14.324] (+   0.1ms)    Waiting for display refresh...
+[21:04:14.740] (+ 416.4ms)    Wait complete: fast (417 ms)
+[21:04:14.741] (+   0.5ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:14.753] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:14.776] (+  22.4ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:14.776] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:14.776] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.777] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:14.777] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.777] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:14.777] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:14.778] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.778] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:14.778] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:14.779] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:14.779] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:14.779] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:14.780] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:14.780] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.780] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:14.781] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12510
+[21:04:14.781] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 29066
+[21:04:14.781] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12505
+[21:04:14.781] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12450
+[21:04:14.782] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 12540
+[21:04:14.782] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12502
+[21:04:14.782] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12483
+[21:04:14.783] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12463
+[21:04:14.783] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12473
+[21:04:14.783] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12367
+[21:04:14.784] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.784] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12394
+[21:04:14.784] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12398
+[21:04:14.785] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12354
+[21:04:14.785] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12378
+[21:04:14.785] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12414
+[21:04:14.786] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12365
+[21:04:14.786] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.786] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12402
+[21:04:14.786] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12371
+[21:04:14.787] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12424
+[21:04:14.787] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12388
+[21:04:14.787] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12400
+[21:04:14.788] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 12392
+[21:04:14.788] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 31532
+[21:04:14.788] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24059
+[21:04:14.793] (+   4.4ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:14.793] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:14.806] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:04:14.806] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:14.806] (+   0.3ms)    Waiting for display refresh...
+[21:04:15.222] (+ 415.3ms)    Wait complete: fast (416 ms)
+[21:04:15.222] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:15.234] (+  12.2ms)    RED RAM write complete (13 ms)
+[21:04:15.442] (+ 207.6ms)  [DBG] [ACT] Exiting activity: RecentBooks
+[21:04:15.442] (+   0.3ms)  [DBG] [ACT] Entering activity: Home
+[21:04:15.464] (+  21.9ms)  [DBG] [THEME] Rendering bmp
+[21:04:15.568] (+ 104.5ms)  [DBG] [THEME] Drawing selection
+[21:04:15.593] (+  24.3ms)  [DBG] [GFX] Time = 151 ms from clearScreen to displayBuffer
+[21:04:15.593] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:15.606] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:04:15.606] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:15.606] (+   0.3ms)    Waiting for display refresh...
+[21:04:16.022] (+ 415.3ms)    Wait complete: fast (416 ms)
+[21:04:16.022] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:16.034] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:16.081] (+  46.7ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:16.081] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:16.094] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:04:16.094] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:16.094] (+   0.3ms)    Waiting for display refresh...
+[21:04:16.510] (+ 415.9ms)    Wait complete: fast (417 ms)
+[21:04:16.511] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:16.523] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:16.579] (+  55.5ms)  [DBG] [GFX] Time = 43 ms from clearScreen to displayBuffer
+[21:04:16.579] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:16.592] (+  12.7ms)    BW RAM write complete (13 ms)
+[21:04:16.592] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:16.592] (+   0.3ms)    Waiting for display refresh...
+[21:04:17.008] (+ 415.9ms)    Wait complete: fast (417 ms)
+[21:04:17.009] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:17.021] (+  12.5ms)    RED RAM write complete (12 ms)
+[21:04:17.061] (+  40.0ms)  [DBG] [GFX] Time = 40 ms from clearScreen to displayBuffer
+[21:04:17.062] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:17.074] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:04:17.074] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:17.075] (+   0.2ms)    Waiting for display refresh...
+[21:04:17.490] (+ 415.8ms)    Wait complete: fast (417 ms)
+[21:04:17.491] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:17.503] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:17.548] (+  44.8ms)  [DBG] [GFX] Time = 45 ms from clearScreen to displayBuffer
+[21:04:17.548] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:17.561] (+  12.8ms)    BW RAM write complete (12 ms)
+[21:04:17.561] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:17.561] (+   0.1ms)    Waiting for display refresh...
+[21:04:17.977] (+ 416.2ms)    Wait complete: fast (416 ms)
+[21:04:17.978] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:17.989] (+  11.8ms)    RED RAM write complete (12 ms)
+[21:04:17.990] (+   0.2ms)  [DBG] [ACT] Exiting activity: Home
+[21:04:17.990] (+   0.2ms)  [DBG] [ACT] Entering activity: FileBrowser
+[21:04:18.016] (+  25.9ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.016] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.016] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:18.016] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:18.016] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.016] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.016] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:18.017] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:18.030] (+  12.7ms)  [DBG] [GFX] Time = 28 ms from clearScreen to displayBuffer
+[21:04:18.030] (+   0.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:18.043] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:04:18.043] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:18.043] (+   0.1ms)    Waiting for display refresh...
+[21:04:18.459] (+ 416.2ms)    Wait complete: fast (416 ms)
+[21:04:18.460] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:18.472] (+  12.6ms)    RED RAM write complete (13 ms)
+[21:04:18.695] (+ 222.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.695] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.695] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:18.696] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:18.696] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.696] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.696] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:18.697] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:18.697] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:18.697] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:18.698] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:18.698] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:18.698] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:18.699] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:18.699] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:18.699] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:18.709] (+   9.7ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:04:18.709] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:18.722] (+  13.1ms)    BW RAM write complete (12 ms)
+[21:04:18.723] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:04:18.723] (+   0.3ms)    Waiting for display refresh...
+[21:04:19.140] (+ 416.7ms)    Wait complete: fast (416 ms)
+[21:04:19.141] (+   0.9ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:19.156] (+  15.2ms)    RED RAM write complete (12 ms)
+[21:04:19.165] (+   9.8ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.166] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.166] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:19.166] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:19.166] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.166] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.168] (+   1.9ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:19.168] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:19.169] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:19.169] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:19.169] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.170] (+   0.7ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.170] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:19.170] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:19.170] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:19.171] (+   0.7ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:19.179] (+   8.2ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:04:19.179] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:19.192] (+  12.6ms)    BW RAM write complete (13 ms)
+[21:04:19.192] (+   0.2ms)    Powering on display 0x1C (fast refresh)...
+[21:04:19.192] (+   0.1ms)    Waiting for display refresh...
+[21:04:19.608] (+ 415.8ms)    Wait complete: fast (416 ms)
+[21:04:19.609] (+   0.6ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:19.621] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:19.634] (+  13.0ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.635] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.635] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:19.635] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:19.635] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.636] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.636] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:19.636] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:19.637] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:19.637] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:19.637] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:19.637] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:19.638] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:19.638] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:19.638] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:19.639] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:19.649] (+  10.8ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:04:19.650] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:19.662] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:04:19.663] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:04:19.663] (+   0.3ms)    Waiting for display refresh...
+[21:04:20.079] (+ 415.7ms)    Wait complete: fast (416 ms)
+[21:04:20.079] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:20.091] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:20.104] (+  13.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.105] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.105] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:20.105] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:20.106] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.106] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.106] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:20.106] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:20.107] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:20.107] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:20.108] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.108] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.108] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:20.108] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:20.109] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:20.109] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:20.134] (+  24.9ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:04:20.134] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:20.137] (+   2.9ms)    BW RAM write complete (13 ms)
+[21:04:20.139] (+   1.8ms)    Powering on display 0x1C (fast refresh)...
+[21:04:20.140] (+   1.5ms)    Waiting for display refresh...
+[21:04:20.548] (+ 408.0ms)    Wait complete: fast (416 ms)
+[21:04:20.549] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:20.561] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:20.574] (+  13.2ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.575] (+   0.4ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.575] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22721
+[21:04:20.575] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 32440
+[21:04:20.576] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.576] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.576] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 22806
+[21:04:20.576] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 37096
+[21:04:20.577] (+   0.3ms)  [ERR] [GFX] No glyph for codepoint 23383
+[21:04:20.577] (+   0.2ms)  [ERR] [GFX] No glyph for codepoint 20307
+[21:04:20.577] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 33258
+[21:04:20.577] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 24102
+[21:04:20.577] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 39044
+[21:04:20.577] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 35272
+[21:04:20.577] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 20070
+[21:04:20.578] (+   0.1ms)  [ERR] [GFX] No glyph for codepoint 31821
+[21:04:20.589] (+  11.6ms)  [DBG] [GFX] Time = 27 ms from clearScreen to displayBuffer
+[21:04:20.589] (+   0.3ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:20.602] (+  12.9ms)    BW RAM write complete (13 ms)
+[21:04:20.602] (+   0.1ms)    Powering on display 0x1C (fast refresh)...
+[21:04:20.603] (+   0.1ms)    Waiting for display refresh...
+[21:04:21.018] (+ 415.9ms)    Wait complete: fast (416 ms)
+[21:04:21.019] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:21.031] (+  12.6ms)    RED RAM write complete (12 ms)
+[21:04:21.452] (+ 420.4ms)  [INF] [MEM] Free: 165560 bytes, Total: 226000 bytes, Min Free: 57580 bytes, MaxAlloc: 114676 bytes
+[21:04:22.212] (+ 759.8ms)  [DBG] [ACT] Exiting activity: FileBrowser
+[21:04:22.212] (+   0.4ms)  [DBG] [ACT] Entering activity: Home
+[21:04:22.234] (+  22.0ms)  [DBG] [THEME] Rendering bmp
+[21:04:22.338] (+ 104.4ms)  [DBG] [THEME] Drawing selection
+[21:04:22.363] (+  24.3ms)  [DBG] [GFX] Time = 151 ms from clearScreen to displayBuffer
+[21:04:22.363] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:22.375] (+  12.2ms)    BW RAM write complete (13 ms)
+[21:04:22.376] (+   0.3ms)    Powering on display 0x1C (fast refresh)...
+[21:04:22.376] (+   0.3ms)    Waiting for display refresh...
+[21:04:22.791] (+ 415.5ms)    Wait complete: fast (416 ms)
+[21:04:22.792] (+   0.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:22.804] (+  12.1ms)    RED RAM write complete (12 ms)
+[21:04:22.846] (+  41.9ms)  [DBG] [GFX] Time = 39 ms from clearScreen to displayBuffer
+[21:04:22.846] (+   0.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:22.859] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:04:22.859] (+   0.4ms)    Powering on display 0x1C (fast refresh)...
+[21:04:22.859] (+   0.3ms)    Waiting for display refresh...
+[21:04:23.275] (+ 415.8ms)    Wait complete: fast (417 ms)
+[21:04:23.275] (+   0.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:23.288] (+  12.9ms)    RED RAM write complete (12 ms)
+[21:04:25.212] (+1923.4ms)  [DBG] [PWR] Going to low-power mode
+[21:04:28.807] (+3595.1ms)  [DBG] [PWR] Restoring normal CPU frequency
+[21:04:28.922] (+ 115.7ms)  [DBG] [ACT] Exiting activity: Home
+[21:04:28.923] (+   0.4ms)  [DBG] [ACT] Entering activity: Reader
+[21:04:28.931] (+   8.1ms)  [DBG] [XTC] Loading XTC: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch
+[21:04:28.944] (+  13.4ms)  [DBG] [XTC] Header: magic=0x48435458 (XTCH), ver=1.0, pages=615, bitDepth=2
+[21:04:28.945] (+   0.5ms)  [DBG] [XTC] Title: The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch
+[21:04:28.945] (+   0.2ms)  [DBG] [XTC] Author:
+[21:04:28.945] (+   0.3ms)  [DBG] [XTC] Lazy loading page table (615 pages)
+[21:04:28.971] (+  25.6ms)  [DBG] [XTC] Chapters: 156
+[21:04:28.972] (+   0.7ms)  [DBG] [XTC] Opened file: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch (615 pages, 480x800)
+[21:04:28.972] (+   0.7ms)  [DBG] [XTC] Loaded XTC: /BOOKS/Mangas/The Girl Past the Filters v01 (2025) (Digital) (1r0n).xtch (615 pages)
+[21:04:28.973] (+   0.3ms)  [DBG] [ACT] Exiting activity: Reader
+[21:04:28.973] (+   0.3ms)  [DBG] [ACT] Entering activity: XtcReader
+[21:04:28.982] (+   9.6ms)  [DBG] [XTR] Loaded progress: page 408
+[21:04:29.332] (+ 350.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:29.345] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:04:29.500] (+ 155.0ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:29.512] (+  12.2ms)    RED RAM write complete (13 ms)
+[21:04:29.512] (+   0.3ms)    Loading custom LUT...
+[21:04:29.513] (+   0.8ms)    Custom LUT loaded
+[21:04:30.327] (+ 813.9ms)    Wait complete: factory_gray (814 ms)
+[21:04:30.327] (+   0.3ms)    Custom LUT disabled
+[21:04:30.328] (+   0.4ms)  [DBG] [XTR] Rendered page 409/615 (2-bit factory)
+[21:04:31.461] (+1133.5ms)  [INF] [MEM] Free: 159680 bytes, Total: 226000 bytes, Min Free: 57356 bytes, MaxAlloc: 114676 bytes
+[21:04:31.774] (+ 313.5ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:31.787] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:04:31.928] (+ 140.9ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:31.939] (+  11.6ms)    RED RAM write complete (12 ms)
+[21:04:31.940] (+   0.3ms)    Loading custom LUT...
+[21:04:31.941] (+   1.4ms)    Custom LUT loaded
+[21:04:32.754] (+ 812.7ms)    Wait complete: factory_gray (813 ms)
+[21:04:32.754] (+   0.3ms)    Custom LUT disabled
+[21:04:32.754] (+   0.4ms)  [DBG] [XTR] Rendered page 410/615 (2-bit factory)
+[21:04:33.497] (+ 742.8ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:33.497] (+   0.3ms)    BW RAM write complete (13 ms)
+[21:04:33.620] (+ 123.0ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:33.633] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:33.633] (+   0.3ms)    Loading custom LUT...
+[21:04:33.634] (+   1.1ms)    Custom LUT loaded
+[21:04:34.447] (+ 812.8ms)    Wait complete: factory_gray (813 ms)
+[21:04:34.447] (+   0.1ms)    Custom LUT disabled
+[21:04:34.447] (+   0.1ms)  [DBG] [XTR] Rendered page 411/615 (2-bit factory)
+[21:04:34.882] (+ 435.2ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:34.894] (+  12.2ms)    BW RAM write complete (12 ms)
+[21:04:35.018] (+ 123.2ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:35.030] (+  12.4ms)    RED RAM write complete (13 ms)
+[21:04:35.030] (+   0.2ms)    Loading custom LUT...
+[21:04:35.031] (+   0.9ms)    Custom LUT loaded
+[21:04:35.845] (+ 813.5ms)    Wait complete: factory_gray (814 ms)
+[21:04:35.845] (+   0.3ms)    Custom LUT disabled
+[21:04:35.845] (+   0.4ms)  [DBG] [XTR] Rendered page 414/615 (2-bit factory)
+[21:04:36.136] (+ 291.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:36.141] (+   5.1ms)    BW RAM write complete (13 ms)
+[21:04:36.266] (+ 124.5ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:36.278] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:36.278] (+   0.1ms)    Loading custom LUT...
+[21:04:36.279] (+   1.1ms)    Custom LUT loaded
+[21:04:37.092] (+ 813.0ms)    Wait complete: factory_gray (813 ms)
+[21:04:37.093] (+   0.2ms)    Custom LUT disabled
+[21:04:37.093] (+   0.1ms)  [DBG] [XTR] Rendered page 415/615 (2-bit factory)
+[21:04:37.386] (+ 293.5ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:37.398] (+  12.3ms)    BW RAM write complete (13 ms)
+[21:04:37.525] (+ 126.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:37.537] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:37.537] (+   0.1ms)    Loading custom LUT...
+[21:04:37.538] (+   1.2ms)    Custom LUT loaded
+[21:04:38.351] (+ 813.0ms)    Wait complete: factory_gray (813 ms)
+[21:04:38.352] (+   0.2ms)    Custom LUT disabled
+[21:04:38.352] (+   0.1ms)  [DBG] [XTR] Rendered page 416/615 (2-bit factory)
+[21:04:38.644] (+ 291.9ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:38.656] (+  12.3ms)    BW RAM write complete (12 ms)
+[21:04:38.784] (+ 128.3ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:38.797] (+  12.4ms)    RED RAM write complete (13 ms)
+[21:04:38.797] (+   0.1ms)    Loading custom LUT...
+[21:04:38.798] (+   1.2ms)    Custom LUT loaded
+[21:04:39.611] (+ 813.4ms)    Wait complete: factory_gray (814 ms)
+[21:04:39.611] (+   0.1ms)    Custom LUT disabled
+[21:04:39.612] (+   0.1ms)  [DBG] [XTR] Rendered page 417/615 (2-bit factory)
+[21:04:39.905] (+ 293.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:39.918] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:04:40.043] (+ 125.0ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:40.055] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:40.055] (+   0.2ms)    Loading custom LUT...
+[21:04:40.056] (+   0.9ms)    Custom LUT loaded
+[21:04:40.869] (+ 813.3ms)    Wait complete: factory_gray (813 ms)
+[21:04:40.870] (+   0.3ms)    Custom LUT disabled
+[21:04:40.870] (+   0.4ms)  [DBG] [XTR] Rendered page 418/615 (2-bit factory)
+[21:04:41.167] (+ 297.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:41.180] (+  12.4ms)    BW RAM write complete (13 ms)
+[21:04:41.307] (+ 126.9ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:41.319] (+  12.4ms)    RED RAM write complete (12 ms)
+[21:04:41.319] (+   0.3ms)    Loading custom LUT...
+[21:04:41.320] (+   0.6ms)    Custom LUT loaded
+[21:04:41.465] (+ 145.0ms)  [INF] [MEM] Free: 61372 bytes, Total: 226000 bytes, Min Free: 57356 bytes, MaxAlloc: 20468 bytes
+[21:04:42.139] (+ 674.2ms)    Wait complete: factory_gray (813 ms)
+[21:04:42.143] (+   3.8ms)    Custom LUT disabled
+[21:04:42.143] (+   0.3ms)  [DBG] [XTR] Rendered page 419/615 (2-bit factory)
+[21:04:42.424] (+ 280.1ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:42.436] (+  12.6ms)    BW RAM write complete (12 ms)
+[21:04:42.566] (+ 130.4ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:42.579] (+  12.2ms)    RED RAM write complete (12 ms)
+[21:04:42.579] (+   0.1ms)    Loading custom LUT...
+[21:04:42.580] (+   1.2ms)    Custom LUT loaded
+[21:04:43.393] (+ 813.1ms)    Wait complete: factory_gray (814 ms)
+[21:04:43.393] (+   0.1ms)    Custom LUT disabled
+[21:04:43.393] (+   0.1ms)  [DBG] [XTR] Rendered page 420/615 (2-bit factory)
+[21:04:43.683] (+ 289.4ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:43.695] (+  12.3ms)    BW RAM write complete (13 ms)
+[21:04:43.827] (+ 131.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:43.839] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:43.839] (+   0.1ms)    Loading custom LUT...
+[21:04:43.841] (+   1.4ms)    Custom LUT loaded
+[21:04:44.653] (+ 812.6ms)    Wait complete: factory_gray (813 ms)
+[21:04:44.653] (+   0.1ms)    Custom LUT disabled
+[21:04:44.653] (+   0.1ms)  [DBG] [XTR] Rendered page 421/615 (2-bit factory)
+[21:04:44.945] (+ 292.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:44.958] (+  12.5ms)    BW RAM write complete (13 ms)
+[21:04:45.090] (+ 132.0ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:45.102] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:45.103] (+   0.3ms)    Loading custom LUT...
+[21:04:45.104] (+   1.1ms)    Custom LUT loaded
+[21:04:45.916] (+ 812.8ms)    Wait complete: factory_gray (813 ms)
+[21:04:45.917] (+   0.3ms)    Custom LUT disabled
+[21:04:45.917] (+   0.4ms)  [DBG] [XTR] Rendered page 421/615 (2-bit factory)
+[21:04:47.148] (+1231.0ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:47.157] (+   9.3ms)    BW RAM write complete (13 ms)
+[21:04:47.287] (+ 129.7ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:47.299] (+  12.2ms)    RED RAM write complete (13 ms)
+[21:04:47.300] (+   0.3ms)    Loading custom LUT...
+[21:04:47.301] (+   0.9ms)    Custom LUT loaded
+[21:04:48.133] (+ 832.8ms)    Wait complete: factory_gray (814 ms)
+[21:04:48.135] (+   1.6ms)    Custom LUT disabled
+[21:04:48.137] (+   2.6ms)  [DBG] [XTR] Rendered page 423/615 (2-bit factory)
+[21:04:48.409] (+ 271.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:48.422] (+  12.8ms)    BW RAM write complete (13 ms)
+[21:04:48.557] (+ 135.1ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:48.569] (+  12.3ms)    RED RAM write complete (13 ms)
+[21:04:48.569] (+   0.1ms)    Loading custom LUT...
+[21:04:48.571] (+   1.2ms)    Custom LUT loaded
+[21:04:49.384] (+ 813.7ms)    Wait complete: factory_gray (814 ms)
+[21:04:49.384] (+   0.2ms)    Custom LUT disabled
+[21:04:49.385] (+   0.1ms)  [DBG] [XTR] Rendered page 424/615 (2-bit factory)
+[21:04:49.679] (+ 294.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:49.691] (+  12.0ms)    BW RAM write complete (13 ms)
+[21:04:49.825] (+ 133.5ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:49.837] (+  12.4ms)    RED RAM write complete (13 ms)
+[21:04:49.837] (+   0.1ms)    Loading custom LUT...
+[21:04:49.838] (+   1.2ms)    Custom LUT loaded
+[21:04:50.651] (+ 812.9ms)    Wait complete: factory_gray (813 ms)
+[21:04:50.652] (+   0.3ms)    Custom LUT disabled
+[21:04:50.652] (+   0.4ms)  [DBG] [XTR] Rendered page 424/615 (2-bit factory)
+[21:04:51.249] (+ 597.6ms)  [DBG] [PWR] Going to low-power mode
+[21:04:51.510] (+ 260.6ms)  [INF] [MEM] Free: 159680 bytes, Total: 226000 bytes, Min Free: 57356 bytes, MaxAlloc: 114676 bytes
+[21:04:52.278] (+ 767.7ms)  [DBG] [PWR] Restoring normal CPU frequency
+[21:04:52.918] (+ 640.6ms)    Writing frame buffer to BW RAM (48000 bytes)...
+[21:04:52.931] (+  12.8ms)    BW RAM write complete (12 ms)
+[21:04:53.066] (+ 134.9ms)    Writing frame buffer to RED RAM (48000 bytes)...
+[21:04:53.078] (+  12.3ms)    RED RAM write complete (12 ms)
+[21:04:53.079] (+   0.1ms)    Loading custom LUT...
+[21:04:53.080] (+   1.2ms)    Custom LUT loaded
+[21:04:53.893] (+ 813.2ms)    Wait complete: factory_gray (814 ms)
+[21:04:53.893] (+   0.3ms)    Custom LUT disabled
+[21:04:53.894] (+   0.3ms)  [DBG] [XTR] Rendered page 423/615 (2-bit factory)
+[21:04:55.418] (+1524.6ms)  [DBG] [PWR] Going to low-power mode
+
+Received signal 2. Shutting down...

@@ -279,22 +279,20 @@ void XtcReaderActivity::renderPage() {
     XtcGrayCtx xtcCtx{plane1, plane2, pageWidth, pageHeight, colBytes};
     const auto xtcGrayFn = [](GfxRenderer& r, void* raw) {
       const auto* c = static_cast<const XtcGrayCtx*>(raw);
-      
       DirectPixelWriter pw;
       pw.init(r);
 
       for (uint16_t y = 0; y < c->pageHeight; y++) {
         pw.beginRow(y);
         for (uint16_t x = 0; x < c->pageWidth; x++) {
-          const size_t colIdx = c->pageWidth - 1 - x;
-          const size_t byteOff = colIdx * c->colBytes + y / 8;
-          const size_t bitPos = 7 - (y % 8);
-          
-          // Original bits from file
-          const uint8_t b1 = (c->plane1[byteOff] >> bitPos) & 1;
-          const uint8_t b2 = (c->plane2[byteOff] >> bitPos) & 1;
-          
-          // Swapped and Inverted mapping for DirectPixelWriter
+          const size_t colIndexInFile = c->pageWidth - 1 - x;
+          const size_t byteInCol = y / 8;
+          const size_t bitInByte = 7 - (y % 8);
+          const size_t byteOffset = colIndexInFile * c->colBytes + byteInCol;
+
+          const uint8_t b1 = (c->plane1[byteOffset] >> bitInByte) & 1;
+          const uint8_t b2 = (c->plane2[byteOffset] >> bitInByte) & 1;
+
           const uint8_t pv = 3 - ((b2 << 1) | b1);
           pw.writePixel(x, pv);
         }
@@ -348,7 +346,7 @@ void XtcReaderActivity::renderPage() {
     return;
   } else {
     // 1-bit mode: 8 pixels per byte, MSB first
-    const size_t srcRowBytes = (pageWidth + 7) / 8;  // 60 bytes for 480 width
+    const size_t srcRowBytes = (pageWidth + 7) / 8;
 
     DirectPixelWriter pw;
     pw.init(renderer);
@@ -356,10 +354,9 @@ void XtcReaderActivity::renderPage() {
       const size_t srcRowStart = srcY * srcRowBytes;
       pw.beginRow(srcY);
       for (uint16_t srcX = 0; srcX < pageWidth; srcX++) {
-        // Read source pixel (MSB first, bit 7 = leftmost pixel)
         const size_t srcByte = srcRowStart + srcX / 8;
         const size_t srcBit = 7 - (srcX % 8);
-        const bool isBlack = !((pageBuffer[srcByte] >> srcBit) & 1);  // XTC: 1=white, 0=black
+        const bool isBlack = !((pageBuffer[srcByte] >> srcBit) & 1);
 
         if (isBlack) {
           pw.writePixel(srcX, 0); // Black

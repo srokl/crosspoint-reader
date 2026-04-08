@@ -265,9 +265,21 @@ def serial_worker(ser, kwargs: dict[str, str]) -> None:
                     elif clean_line == "SCREENSHOT_END":
                         continue  # ignore
 
-                    # Add PC timestamp
-                    pc_time = datetime.now().strftime("%H:%M:%S")
-                    formatted_line = re.sub(r"^\[\d+\]", f"[{pc_time}]", clean_line)
+                    # Add PC timestamp with milliseconds and delta
+                    now = datetime.now()
+                    pc_time = now.strftime("%H:%M:%S.%f")[:-3]
+                    
+                    # Calculate delta if we have a previous timestamp
+                    delta_str = ""
+                    if hasattr(serial_worker, 'last_time'):
+                        delta = (now - serial_worker.last_time).total_seconds() * 1000
+                        delta_str = f" (+{delta:6.1f}ms) "
+                    serial_worker.last_time = now
+
+                    # Replace device timestamp with PC timestamp + delta
+                    formatted_line = re.sub(r"^\[\d+\]", f"[{pc_time}]{delta_str}", clean_line)
+                    if not formatted_line.startswith("["):
+                        formatted_line = f"[{pc_time}]{delta_str} {formatted_line}"
 
                     # Check for Memory Line
                     if "[MEM]" in formatted_line:
