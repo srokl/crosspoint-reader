@@ -13,6 +13,7 @@
 #include "activities/util/BmpViewerActivity.h"
 #include "activities/util/FullScreenMessageActivity.h"
 #include "activities/util/PxcViewerActivity.h"
+#include "activities/util/XtgXthViewerActivity.h"
 
 std::string ReaderActivity::extractFolderPath(const std::string& filePath) {
   const auto lastSlash = filePath.find_last_of('/');
@@ -32,6 +33,10 @@ bool ReaderActivity::isTxtFile(const std::string& path) {
 bool ReaderActivity::isBmpFile(const std::string& path) { return FsHelpers::hasBmpExtension(path); }
 
 bool ReaderActivity::isPxcFile(const std::string& path) { return FsHelpers::hasPxcExtension(path); }
+
+bool ReaderActivity::isXtgFile(const std::string& path) { return FsHelpers::hasXtgExtension(path); }
+
+bool ReaderActivity::isXthFile(const std::string& path) { return FsHelpers::hasXthExtension(path); }
 
 std::unique_ptr<Epub> ReaderActivity::loadEpub(const std::string& path) {
   if (!Storage.exists(path.c_str())) {
@@ -98,6 +103,10 @@ void ReaderActivity::onGoToPxcViewer(const std::string& path) {
   activityManager.replaceActivity(std::make_unique<PxcViewerActivity>(renderer, mappedInput, path));
 }
 
+void ReaderActivity::onGoToXtgXthViewer(const std::string& path) {
+  activityManager.replaceActivity(std::make_unique<XtgXthViewerActivity>(renderer, mappedInput, path));
+}
+
 void ReaderActivity::onGoToXtcReader(std::unique_ptr<Xtc> xtc) {
   const auto xtcPath = xtc->getPath();
   currentBookPath = xtcPath;
@@ -123,6 +132,8 @@ void ReaderActivity::onEnter() {
     onGoToBmpViewer(initialBookPath);
   } else if (isPxcFile(initialBookPath)) {
     onGoToPxcViewer(initialBookPath);
+  } else if (isXtgFile(initialBookPath) || isXthFile(initialBookPath)) {
+    onGoToXtgXthViewer(initialBookPath);
   } else if (isXtcFile(initialBookPath)) {
     auto xtc = loadXtc(initialBookPath);
     if (!xtc) {

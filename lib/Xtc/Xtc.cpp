@@ -133,7 +133,7 @@ bool Xtc::generateCoverBmp() const {
 
   // Get first page info for cover
   xtc::PageInfo pageInfo;
-  if (!parser->getPageInfo(0, pageInfo)) {
+  if (!const_cast<Xtc*>(this)->parser->getPageInfo(0, pageInfo)) {
     LOG_DBG("XTC", "Failed to get first page info");
     return false;
   }
@@ -328,7 +328,7 @@ bool Xtc::generateThumbBmp(int height) const {
 
   // Get first page info for cover
   xtc::PageInfo pageInfo;
-  if (!parser->getPageInfo(0, pageInfo)) {
+  if (!const_cast<Xtc*>(this)->parser->getPageInfo(0, pageInfo)) {
     LOG_DBG("XTC", "Failed to get first page info");
     return false;
   }

@@ -14,12 +14,18 @@
 
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
+#include <Epub.h>
+#include <Epub/converters/DirectPixelWriter.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
 #include "MappedInputManager.h"
 #include "ReaderUtils.h"
 #include "RecentBooksStore.h"
 #include "XtcReaderChapterSelectionActivity.h"
 #include "components/UITheme.h"
 #include "components/themes/lyra/LyraCarouselTheme.h"
+
 #include "fontIds.h"
 
 namespace {
@@ -244,8 +250,8 @@ void XtcReaderActivity::renderPage() {
     // - Columns scanned right to left (x = width-1 down to 0)
     // - 8 vertical pixels per byte (MSB = topmost pixel in group)
     // - First plane: Bit1, Second plane: Bit2
-    // - Pixel value = (bit1 << 1) | bit2
-    // - Grayscale: 0=White, 1=Dark Grey, 2=Light Grey, 3=Black
+    // - Pixel value = (bit1 << 1) | bit2 (mapped to 0=Black, 3=White)
+    // - Grayscale: 0=Black, 1=Dark Grey, 2=Light Grey, 3=White
 
     const size_t planeSize = (static_cast<size_t>(pageWidth) * pageHeight + 7) / 8;
     const uint8_t* plane1 = pageBuffer;              // Bit1 plane
@@ -260,15 +266,10 @@ void XtcReaderActivity::renderPage() {
       const size_t byteOffset = colIndex * colBytes + byteInCol;
       const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
       const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
-      return (bit1 << 1) | bit2;
+      return 3 - ((bit1 << 1) | bit2); // Invert so 0=Black, 3=White
     };
 
-    // Context + callback for renderGrayscale. Pixel selection adapts to the render mode set
-    // by renderGrayscale before each pass:
-    //   GRAY2_LSB  (factory BW RAM):   pv>=2 — LightGrey(2) and Black(3) → bit1=1
-    //   GRAY2_MSB  (factory RED RAM):  pv&1  — DarkGrey(1) and Black(3)  → bit0=1
-    //   GRAYSCALE_LSB (diff BW RAM):   pv==1 — DarkGrey only
-    //   GRAYSCALE_MSB (diff RED RAM):  pv==1||pv==2 — DarkGrey and LightGrey
+    // Context + callback for renderGrayscale.
     struct XtcGrayCtx {
       const uint8_t* plane1;
       const uint8_t* plane2;
@@ -278,75 +279,81 @@ void XtcReaderActivity::renderPage() {
     XtcGrayCtx xtcCtx{plane1, plane2, pageWidth, pageHeight, colBytes};
     const auto xtcGrayFn = [](GfxRenderer& r, void* raw) {
       const auto* c = static_cast<const XtcGrayCtx*>(raw);
-      const auto mode = r.getRenderMode();
+      
+      DirectPixelWriter pw;
+      pw.init(r);
+
       for (uint16_t y = 0; y < c->pageHeight; y++) {
+        pw.beginRow(y);
         for (uint16_t x = 0; x < c->pageWidth; x++) {
           const size_t colIdx = c->pageWidth - 1 - x;
           const size_t byteOff = colIdx * c->colBytes + y / 8;
           const size_t bitPos = 7 - (y % 8);
-          const uint8_t pv = (((c->plane1[byteOff] >> bitPos) & 1) << 1) |
-                              ((c->plane2[byteOff] >> bitPos) & 1);
-          bool draw;
-          switch (mode) {
-            case GfxRenderer::GRAY2_LSB:     draw = (pv >= 2);          break;
-            case GfxRenderer::GRAY2_MSB:     draw = (pv == 1 || pv == 3); break;
-            case GfxRenderer::GRAYSCALE_LSB: draw = (pv == 1);          break;
-            default:                         draw = (pv == 1 || pv == 2); break;
-          }
-          if (draw) r.drawPixel(x, y, false);
+          
+          // Original bits from file
+          const uint8_t b1 = (c->plane1[byteOff] >> bitPos) & 1;
+          const uint8_t b2 = (c->plane2[byteOff] >> bitPos) & 1;
+          
+          // Map to 0=Black, 3=White for DirectPixelWriter
+          const uint8_t pv = 3 - ((b1 << 1) | b2);
+          pw.writePixel(x, pv);
         }
       }
     };
 
     const bool useFactory = SETTINGS.factoryLutImages;
 
+    // Fast Inversion Pass Logic
     if (useFactory) {
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryFast, xtcGrayFn, &xtcCtx);
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
     } else {
-      // Original differential mode: BW flash first, then gray overlay.
-      // Optimized grayscale rendering without storeBwBuffer (saves 48KB peak memory).
+      // Manual 2-pass Differential rendering
+      renderer.clearScreen();
+      DirectPixelWriter pw;
+      pw.init(renderer);
 
-      // Count pixel distribution for debugging
-      uint32_t pixelCounts[4] = {0, 0, 0, 0};
       for (uint16_t y = 0; y < pageHeight; y++) {
+        pw.beginRow(y);
         for (uint16_t x = 0; x < pageWidth; x++) {
-          pixelCounts[getPixelValue(x, y)]++;
-        }
-      }
-      LOG_DBG("XTR", "Pixel distribution: White=%lu, DarkGrey=%lu, LightGrey=%lu, Black=%lu", pixelCounts[0],
-              pixelCounts[1], pixelCounts[2], pixelCounts[3]);
-
-      // Pass 1: BW buffer - draw all non-white pixels as black
-      for (uint16_t y = 0; y < pageHeight; y++) {
-        for (uint16_t x = 0; x < pageWidth; x++) {
-          if (getPixelValue(x, y) >= 1) {
-            renderer.drawPixel(x, y, true);
+          if (getPixelValue(x, y) < 3) {
+            pw.writePixel(x, 0); // Draw black
           }
         }
       }
-
-      // Display BW with conditional refresh based on pagesUntilFullRefresh
-      if (pagesUntilFullRefresh <= 1) {
-        renderer.displayBuffer(HalDisplay::HALF_REFRESH);
-        pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
-      } else {
-        renderer.displayBuffer();
-        pagesUntilFullRefresh--;
-      }
-
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
     }
 
-    // Re-render BW to framebuffer (restores display state for next frame / next BW page turn)
-    renderer.clearScreen();
-    for (uint16_t y = 0; y < pageHeight; y++) {
-      for (uint16_t x = 0; x < pageWidth; x++) {
-        if (getPixelValue(x, y) >= 1) {
-          renderer.drawPixel(x, y, true);
+    // --- Inversion Transition Start ---
+    renderer.invertScreen();
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    
+    // Stabilization delay to prevent streaks
+    vTaskDelay(pdMS_TO_TICKS(100));
+    
+    renderer.invertScreen();
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    
+    // Final stabilization before gray overlay
+    vTaskDelay(pdMS_TO_TICKS(50));
+    // --- Inversion Transition End ---
+
+    if (!useFactory) {
+      // Apply grayscale overlay after the 1st bit inversion flip is fully settled
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
+      
+      // Re-render BW to framebuffer for next turn consistency
+      renderer.clearScreen();
+      DirectPixelWriter pw;
+      pw.init(renderer);
+      for (uint16_t y = 0; y < pageHeight; y++) {
+        pw.beginRow(y);
+        for (uint16_t x = 0; x < pageWidth; x++) {
+          if (getPixelValue(x, y) < 3) {
+            pw.writePixel(x, 0); // Black
+          }
         }
       }
+      renderer.cleanupGrayscaleWithFrameBuffer();
     }
-    renderer.cleanupGrayscaleWithFrameBuffer();
 
     free(pageBuffer);
 
@@ -357,17 +364,19 @@ void XtcReaderActivity::renderPage() {
     // 1-bit mode: 8 pixels per byte, MSB first
     const size_t srcRowBytes = (pageWidth + 7) / 8;  // 60 bytes for 480 width
 
+    DirectPixelWriter pw;
+    pw.init(renderer);
     for (uint16_t srcY = 0; srcY < maxSrcY; srcY++) {
       const size_t srcRowStart = srcY * srcRowBytes;
-
+      pw.beginRow(srcY);
       for (uint16_t srcX = 0; srcX < pageWidth; srcX++) {
         // Read source pixel (MSB first, bit 7 = leftmost pixel)
         const size_t srcByte = srcRowStart + srcX / 8;
         const size_t srcBit = 7 - (srcX % 8);
-        const bool isBlack = !((pageBuffer[srcByte] >> srcBit) & 1);  // XTC: 0 = black, 1 = white
+        const bool isBlack = !((pageBuffer[srcByte] >> srcBit) & 1);  // XTC: 1=white, 0=black
 
         if (isBlack) {
-          renderer.drawPixel(srcX, srcY, true);
+          pw.writePixel(srcX, 0); // Black
         }
       }
     }
@@ -378,14 +387,13 @@ void XtcReaderActivity::renderPage() {
 
   // XTC pages already have status bar pre-rendered, no need to add our own
 
-  // Display with appropriate refresh
-  if (pagesUntilFullRefresh <= 1) {
-    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
-    pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
-  } else {
-    renderer.displayBuffer();
-    pagesUntilFullRefresh--;
-  }
+  // --- Inversion Transition Start ---
+  renderer.invertScreen();
+  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+  vTaskDelay(pdMS_TO_TICKS(100)); // Stabilization delay
+  renderer.invertScreen();
+  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+  // --- Inversion Transition End ---
 
   LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
 }

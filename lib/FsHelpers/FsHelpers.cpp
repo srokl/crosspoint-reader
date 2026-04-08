@@ -76,6 +76,10 @@ bool hasXtcExtension(std::string_view fileName) {
   return checkFileExtension(fileName, ".xtc") || checkFileExtension(fileName, ".xtch");
 }
 
+bool hasXtgExtension(std::string_view fileName) { return checkFileExtension(fileName, ".xtg"); }
+
+bool hasXthExtension(std::string_view fileName) { return checkFileExtension(fileName, ".xth"); }
+
 bool hasTxtExtension(std::string_view fileName) { return checkFileExtension(fileName, ".txt"); }
 
 bool hasMarkdownExtension(std::string_view fileName) { return checkFileExtension(fileName, ".md"); }

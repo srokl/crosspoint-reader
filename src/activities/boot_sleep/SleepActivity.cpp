@@ -65,8 +65,11 @@ void SleepActivity::renderCustomSleepScreen() const {
 
       const bool isBmp = FsHelpers::hasBmpExtension(filename);
       const bool isPxc = FsHelpers::hasPxcExtension(filename);
-      if (!isBmp && !isPxc) {
-        LOG_DBG("SLP", "Skipping non-BMP/PXC file: %s", name);
+      const bool isXtg = FsHelpers::hasXtgExtension(filename);
+      const bool isXth = FsHelpers::hasXthExtension(filename);
+
+      if (!isBmp && !isPxc && !isXtg && !isXth) {
+        LOG_DBG("SLP", "Skipping non-image file: %s", name);
         file.close();
         continue;
       }
@@ -99,6 +102,16 @@ void SleepActivity::renderCustomSleepScreen() const {
         dir.close();
         return;
       }
+      if (FsHelpers::hasXtgExtension(files[randomFileIndex])) {
+        renderXtgSleepScreen(filename);
+        dir.close();
+        return;
+      }
+      if (FsHelpers::hasXthExtension(files[randomFileIndex])) {
+        renderXthSleepScreen(filename);
+        dir.close();
+        return;
+      }
       FsFile file;
       if (Storage.openFileForRead("SLP", filename, file)) {
         Bitmap bitmap(file, true);
@@ -118,6 +131,18 @@ void SleepActivity::renderCustomSleepScreen() const {
   if (Storage.exists("/sleep.pxc")) {
     LOG_DBG("SLP", "Loading: /sleep.pxc");
     renderPxcSleepScreen("/sleep.pxc");
+    return;
+  }
+
+  if (Storage.exists("/sleep.xtg")) {
+    LOG_DBG("SLP", "Loading: /sleep.xtg");
+    renderXtgSleepScreen("/sleep.xtg");
+    return;
+  }
+
+  if (Storage.exists("/sleep.xth")) {
+    LOG_DBG("SLP", "Loading: /sleep.xth");
+    renderXthSleepScreen("/sleep.xth");
     return;
   }
 
@@ -210,6 +235,115 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
       },
       &ctx);
 
+  file.close();
+}
+
+void SleepActivity::renderXtgSleepScreen(const std::string& path) const {
+  FsFile file;
+  if (!Storage.openFileForRead("SLP", path, file)) {
+    return renderDefaultSleepScreen();
+  }
+
+  xtc::XtgPageHeader header;
+  if (file.read(&header, sizeof(header)) != sizeof(header)) {
+    file.close();
+    return renderDefaultSleepScreen();
+  }
+
+  struct XtgCtx {
+    FsFile* file;
+    uint32_t dataOffset;
+    int width, height;
+  };
+  XtgCtx ctx{&file, (uint32_t)file.position(), header.width, header.height};
+
+  renderer.clearScreen();
+  renderer.renderGrayscale(
+      GfxRenderer::GrayscaleMode::FactoryFast,
+      [](GfxRenderer& r, void* raw) {
+        const auto* c = static_cast<const XtgCtx*>(raw);
+        c->file->seek(c->dataOffset);
+
+        const int bytesPerRow = (c->width + 7) / 8;
+        uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
+        if (!rowBuf) return;
+
+        DirectPixelWriter pw;
+        pw.init(r);
+
+        for (int row = 0; row < c->height; row++) {
+          if (c->file->read(rowBuf, bytesPerRow) != bytesPerRow) break;
+          pw.beginRow(row);
+          for (int col = 0; col < c->width; col++) {
+            const bool pixel = (rowBuf[col >> 3] >> (7 - (col & 7))) & 1;
+            pw.writePixel(col, pixel ? 3 : 0); // 0=Black, 3=White. bit=1 is white in XTC
+          }
+        }
+        free(rowBuf);
+      },
+      &ctx);
+  file.close();
+}
+
+void SleepActivity::renderXthSleepScreen(const std::string& path) const {
+  FsFile file;
+  if (!Storage.openFileForRead("SLP", path, file)) {
+    return renderDefaultSleepScreen();
+  }
+
+  xtc::XtgPageHeader header;
+  if (file.read(&header, sizeof(header)) != sizeof(header)) {
+    file.close();
+    return renderDefaultSleepScreen();
+  }
+
+  const uint32_t dataOffset = file.position();
+
+  struct XthCtx {
+    FsFile* file;
+    uint32_t dataOffset;
+    int width, height;
+  };
+  XthCtx ctx{&file, dataOffset, header.width, header.height};
+
+  renderer.clearScreen();
+  renderer.renderGrayscale(
+      GfxRenderer::GrayscaleMode::FactoryQuality,
+      [](GfxRenderer& r, void* raw) {
+        const auto* c = static_cast<const XthCtx*>(raw);
+        c->file->seek(c->dataOffset);
+
+        const size_t planeSize = (static_cast<size_t>(c->width) * c->height + 7) / 8;
+        uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
+        uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
+
+        if (plane1 && plane2) {
+          c->file->read(plane1, planeSize);
+          c->file->read(plane2, planeSize);
+
+          const size_t colBytes = (c->height + 7) / 8;
+          DirectPixelWriter pw;
+          pw.init(r);
+
+          for (int row = 0; row < c->height; row++) {
+            pw.beginRow(row);
+            for (int col = 0; col < c->width; col++) {
+              const size_t colIndexInFile = c->width - 1 - col;
+              const size_t byteInCol = row / 8;
+              const size_t bitInByte = 7 - (row % 8);
+              const size_t byteOffset = colIndexInFile * colBytes + byteInCol;
+
+              const uint8_t b1 = (plane1[byteOffset] >> bitInByte) & 1;
+              const uint8_t b2 = (plane2[byteOffset] >> bitInByte) & 1;
+              const uint8_t pv = 3 - ((b1 << 1) | b2); // Invert so 0=Black, 3=White
+              pw.writePixel(col, pv);
+            }
+          }
+        }
+        if (plane1) free(plane1);
+        if (plane2) free(plane2);
+      },
+      &ctx);
   file.close();
 }
 
