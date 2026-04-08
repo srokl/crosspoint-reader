@@ -322,6 +322,17 @@ void XtcReaderActivity::renderPage() {
     }
 
     if (useFactory) {
+      const bool fullRefresh = (pagesUntilFullRefresh <= 1);
+      
+      if (fullRefresh) {
+        // Pre-flash to white to guarantee clean starting state for quality LUT
+        renderer.clearScreen();
+        renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+        pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
+      } else {
+        pagesUntilFullRefresh--;
+      }
+
       renderer.clearScreen(0x00);
       renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
       xtcGrayFn(renderer, &xtcCtx);
@@ -333,7 +344,8 @@ void XtcReaderActivity::renderPage() {
       renderer.copyGrayscaleMsbBuffers();
 
       extern const unsigned char lut_factory_fast[];
-      renderer.displayGrayBuffer(lut_factory_fast, true);
+      extern const unsigned char lut_factory_quality[];
+      renderer.displayGrayBuffer(fullRefresh ? lut_factory_quality : lut_factory_fast, true);
       renderer.setRenderMode(GfxRenderer::BW);
     } else {
       // Apply grayscale overlay Differential
