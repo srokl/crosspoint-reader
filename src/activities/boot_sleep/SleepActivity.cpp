@@ -198,6 +198,7 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
   };
   PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
 
+  // cppcheck-suppress constParameterReference
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryQuality,
       [](GfxRenderer& r, const void* raw) {

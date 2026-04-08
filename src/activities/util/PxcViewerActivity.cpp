@@ -64,6 +64,7 @@ void PxcViewerActivity::onEnter() {
   const auto labels = mappedInput.mapLabels(tr(STR_BACK), "", "", "");
   PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight, labels};
 
+  // cppcheck-suppress constParameterReference
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryQuality,
       [](GfxRenderer& r, const void* raw) {
