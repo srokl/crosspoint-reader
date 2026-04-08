@@ -366,6 +366,7 @@ void GfxRenderer::drawArc(const int maxRadius, const int cx, const int cy, const
   const int innerRadius = std::max(maxRadius - stroke, 0);
   const int outerRadiusSq = maxRadius * maxRadius;
   const int innerRadiusSq = innerRadius * innerRadius;
+  const bool s = (renderMode == GRAY2_LSB || renderMode == GRAY2_MSB) ? !state : state;
   for (int dy = 0; dy <= maxRadius; ++dy) {
     for (int dx = 0; dx <= maxRadius; ++dx) {
       const int distSq = dx * dx + dy * dy;
@@ -374,7 +375,7 @@ void GfxRenderer::drawArc(const int maxRadius, const int cx, const int cy, const
       }
       const int px = cx + xDir * dx;
       const int py = cy + yDir * dy;
-      drawPixel(px, py, state);
+      drawPixel(px, py, s);
     }
   }
 };
