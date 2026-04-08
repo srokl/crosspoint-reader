@@ -77,6 +77,21 @@ void SleepActivity::renderCustomSleepScreen() const {
           continue;
         }
       }
+      if (isPxc) {
+        uint16_t w, h;
+        if (file.read(&w, 2) != 2 || file.read(&h, 2) != 2) {
+          LOG_DBG("SLP", "Skipping PXC with unreadable header: %s", name);
+          file.close();
+          continue;
+        }
+        const int sw = renderer.getScreenWidth();
+        const int sh = renderer.getScreenHeight();
+        if (abs(w - sw) > 1 || abs(h - sh) > 1) {
+          LOG_DBG("SLP", "Skipping PXC size mismatch %dx%d (screen %dx%d): %s", w, h, sw, sh, name);
+          file.close();
+          continue;
+        }
+      }
       files.emplace_back(filename);
       file.close();
     }
