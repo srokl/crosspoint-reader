@@ -96,6 +96,11 @@ void PxcViewerActivity::onEnter() {
       &ctx);
 
   file.close();
+
+  // Sync BW framebuffer state after factory-gray render so onExit's FAST_REFRESH
+  // does a correct differential (controller BW state = white, not stale gray planes).
+  renderer.clearScreen();
+  renderer.cleanupGrayscaleWithFrameBuffer();
 }
 
 void PxcViewerActivity::onExit() {

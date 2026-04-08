@@ -63,6 +63,7 @@ void BmpViewerActivity::onEnter() {
           MappedInputManager::Labels labels;
         };
         BmpGrayCtx grayCtx{&bitmap, x, y, pageWidth, pageHeight, labels};
+        renderer.storeBwBuffer();
         renderer.renderGrayscale(
             GfxRenderer::GrayscaleMode::FactoryQuality,
             [](const GfxRenderer& r, const void* raw) {
@@ -78,6 +79,7 @@ void BmpViewerActivity::onEnter() {
                                   c->labels.btn4);
             },
             &grayCtx);
+        renderer.restoreBwBuffer();
       } else {
         renderer.displayBuffer(HalDisplay::FULL_REFRESH);
       }
