@@ -282,19 +282,24 @@ void XtcReaderActivity::renderPage() {
       DirectPixelWriter pw;
       pw.init(r);
 
+      const size_t colStride = c->colBytes;
+      const size_t initialOffset = (c->pageWidth - 1) * colStride;
+
       for (uint16_t y = 0; y < c->pageHeight; y++) {
+        const size_t byteInCol = y >> 3;
+        const uint8_t bitInByte = 7 - (y & 7);
+        const uint8_t* p1 = c->plane1 + initialOffset + byteInCol;
+        const uint8_t* p2 = c->plane2 + initialOffset + byteInCol;
+
         pw.beginRow(y);
         for (uint16_t x = 0; x < c->pageWidth; x++) {
-          const size_t colIndexInFile = c->pageWidth - 1 - x;
-          const size_t byteInCol = y / 8;
-          const size_t bitInByte = 7 - (y % 8);
-          const size_t byteOffset = colIndexInFile * c->colBytes + byteInCol;
-
-          const uint8_t b1 = (c->plane1[byteOffset] >> bitInByte) & 1;
-          const uint8_t b2 = (c->plane2[byteOffset] >> bitInByte) & 1;
-
+          const uint8_t b1 = (*p1 >> bitInByte) & 1;
+          const uint8_t b2 = (*p2 >> bitInByte) & 1;
           const uint8_t pv = 3 - ((b2 << 1) | b1);
           pw.writePixel(x, pv);
+          
+          p1 -= colStride;
+          p2 -= colStride;
         }
       }
     };

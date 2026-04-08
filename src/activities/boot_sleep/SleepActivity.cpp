@@ -319,27 +319,32 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
           c->file->read(plane1, planeSize);
           c->file->read(plane2, planeSize);
 
-          const size_t colBytes = (c->height + 7) / 8;
+          const size_t colStride = (c->height + 7) / 8;
+          const size_t initialOffset = (c->width - 1) * colStride;
+
           DirectPixelWriter pw;
           pw.init(r);
 
           for (int row = 0; row < c->height; row++) {
+            const size_t byteInCol = row >> 3;
+            const uint8_t bitInByte = 7 - (row & 7);
+            const uint8_t* p1 = plane1 + initialOffset + byteInCol;
+            const uint8_t* p2 = plane2 + initialOffset + byteInCol;
+
             pw.beginRow(row);
             for (int col = 0; col < c->width; col++) {
-              const size_t colIndexInFile = c->width - 1 - col;
-              const size_t byteInCol = row / 8;
-              const size_t bitInByte = 7 - (row % 8);
-              const size_t byteOffset = colIndexInFile * colBytes + byteInCol;
-
-              const uint8_t b1 = (plane1[byteOffset] >> bitInByte) & 1;
-              const uint8_t b2 = (plane2[byteOffset] >> bitInByte) & 1;
-              const uint8_t pv = 3 - ((b2 << 1) | b1); // Swapped and Inverted mapping
+              const uint8_t b1 = (*p1 >> bitInByte) & 1;
+              const uint8_t b2 = (*p2 >> bitInByte) & 1;
+              const uint8_t pv = 3 - ((b2 << 1) | b1);
               pw.writePixel(col, pv);
+              
+              p1 -= colStride;
+              p2 -= colStride;
             }
           }
+          free(plane1);
+          free(plane2);
         }
-        if (plane1) free(plane1);
-        if (plane2) free(plane2);
   };
 
   renderer.displayBuffer(HalDisplay::HALF_REFRESH); // FactoryQuality pre-flash

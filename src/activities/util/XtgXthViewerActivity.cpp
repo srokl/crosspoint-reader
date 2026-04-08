@@ -117,38 +117,41 @@ void XtgXthViewerActivity::onEnter() {
       const auto* c = static_cast<const XtgCtx*>(raw);
       
       const size_t planeSize = (static_cast<size_t>(c->header.width) * c->header.height + 7) / 8;
-        uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
-        uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
-        
-        if (plane1 && plane2) {
-          c->file->seek(c->dataOffset);
-          c->file->read(plane1, planeSize);
-          c->file->read(plane2, planeSize);
+      uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
+      uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
+      
+      if (plane1 && plane2) {
+        c->file->seek(c->dataOffset);
+        c->file->read(plane1, planeSize);
+        c->file->read(plane2, planeSize);
 
-          const size_t colBytes = (c->header.height + 7) / 8;
+        const size_t colStride = (c->header.height + 7) / 8;
+        const size_t initialOffset = (c->header.width - 1) * colStride;
 
-          DirectPixelWriter pw;
-          pw.init(r);
+        DirectPixelWriter pw;
+        pw.init(r);
 
-          for (int row = 0; row < c->header.height; row++) {
-            pw.beginRow(row);
-            for (int col = 0; col < c->header.width; col++) {
-              // Logic from XtcReaderActivity
-              const size_t colIndexInFile = c->header.width - 1 - col;
-              const size_t byteInCol = row / 8;
-              const size_t bitInByte = 7 - (row % 8);
-              const size_t byteOffset = colIndexInFile * colBytes + byteInCol;
+        for (int row = 0; row < c->header.height; row++) {
+          const size_t byteInCol = row >> 3;
+          const uint8_t bitInByte = 7 - (row & 7);
+          const uint8_t* p1 = plane1 + initialOffset + byteInCol;
+          const uint8_t* p2 = plane2 + initialOffset + byteInCol;
 
-              const uint8_t b1 = (plane1[byteOffset] >> bitInByte) & 1;
-              const uint8_t b2 = (plane2[byteOffset] >> bitInByte) & 1;
-              const uint8_t pv = 3 - ((b2 << 1) | b1); // Swapped and Inverted mapping
-  pw.writePixel(col, pv);
-            }
+          pw.beginRow(row);
+          for (int col = 0; col < c->header.width; col++) {
+            const uint8_t b1 = (*p1 >> bitInByte) & 1;
+            const uint8_t b2 = (*p2 >> bitInByte) & 1;
+            const uint8_t pv = 3 - ((b2 << 1) | b1);
+            pw.writePixel(col, pv);
+            
+            p1 -= colStride;
+            p2 -= colStride;
           }
         }
-        if (plane1) free(plane1);
-        if (plane2) free(plane2);
+        free(plane1);
+        free(plane2);
         GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
+      }
     };
 
     renderer.clearScreen();
