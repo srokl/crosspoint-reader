@@ -113,12 +113,10 @@ void XtgXthViewerActivity::onEnter() {
     // - Two bit planes
     // - Columns scanned right to left (x = width-1 down to 0)
     // - 8 vertical pixels per byte
-    renderer.renderGrayscale(
-      GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, void* raw) {
-        const auto* c = static_cast<const XtgCtx*>(raw);
-        
-        const size_t planeSize = (static_cast<size_t>(c->header.width) * c->header.height + 7) / 8;
+    const auto xtgGrayFn = [](GfxRenderer& r, void* raw) {
+      const auto* c = static_cast<const XtgCtx*>(raw);
+      
+      const size_t planeSize = (static_cast<size_t>(c->header.width) * c->header.height + 7) / 8;
         uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
         uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
         
@@ -151,8 +149,24 @@ void XtgXthViewerActivity::onEnter() {
         if (plane1) free(plane1);
         if (plane2) free(plane2);
         GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
-      },
-      &ctx);
+    };
+
+    renderer.clearScreen();
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH); // FactoryQuality pre-flash
+
+    renderer.clearScreen(0x00);
+    renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
+    xtgGrayFn(renderer, &ctx);
+    renderer.copyGrayscaleLsbBuffers();
+
+    renderer.clearScreen(0x00);
+    renderer.setRenderMode(GfxRenderer::GRAY2_MSB);
+    xtgGrayFn(renderer, &ctx);
+    renderer.copyGrayscaleMsbBuffers();
+
+    extern const unsigned char lut_factory_quality[];
+    renderer.displayGrayBuffer(lut_factory_quality, true);
+    renderer.setRenderMode(GfxRenderer::BW);
   }
 
   file.close();

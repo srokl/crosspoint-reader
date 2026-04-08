@@ -1177,7 +1177,7 @@ void GfxRenderer::copyGrayscaleMsbBuffers() const { display.copyGrayscaleMsbBuff
 void GfxRenderer::displayGrayBuffer(const unsigned char* lut, bool factoryMode) const { display.displayGrayBuffer(fadingFix, lut, factoryMode); }
 
 void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRenderer&, void*), void* ctx) {
-  if (mode == GrayscaleMode::FactoryQuality) {
+  if (mode == GrayscaleMode::FactoryFast || mode == GrayscaleMode::FactoryQuality) {
     // Pre-flash to white so the factory LUT can drive particles reliably from any prior state.
     // Without this, particles stranded at intermediate grays may not complete their transition:
     // from a known-white state only downward transitions are needed, which both LUTs handle cleanly.
@@ -1195,8 +1195,8 @@ void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRender
   const RenderMode msbMode = (mode == GrayscaleMode::Differential) ? GRAYSCALE_MSB : GRAY2_MSB;
   const bool factoryMode = (mode != GrayscaleMode::Differential);
   const unsigned char* lut = (mode == GrayscaleMode::FactoryFast)     ? lut_factory_fast
-                              : (mode == GrayscaleMode::FactoryQuality) ? lut_factory_quality
-                                                                        : nullptr;
+                             : (mode == GrayscaleMode::FactoryQuality) ? lut_factory_quality
+                                                                       : nullptr;
 
   clearScreen(0x00);
   setRenderMode(lsbMode);

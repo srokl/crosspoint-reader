@@ -322,7 +322,19 @@ void XtcReaderActivity::renderPage() {
     }
 
     if (useFactory) {
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryFast, xtcGrayFn, &xtcCtx);
+      renderer.clearScreen(0x00);
+      renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
+      xtcGrayFn(renderer, &xtcCtx);
+      renderer.copyGrayscaleLsbBuffers();
+
+      renderer.clearScreen(0x00);
+      renderer.setRenderMode(GfxRenderer::GRAY2_MSB);
+      xtcGrayFn(renderer, &xtcCtx);
+      renderer.copyGrayscaleMsbBuffers();
+
+      extern const unsigned char lut_factory_fast[];
+      renderer.displayGrayBuffer(lut_factory_fast, true);
+      renderer.setRenderMode(GfxRenderer::BW);
     } else {
       // Apply grayscale overlay Differential
       renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
@@ -368,8 +380,8 @@ void XtcReaderActivity::renderPage() {
 
   free(pageBuffer);
 
-  // XTC pages already have status bar pre-rendered, no need to add our own
-  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+  // Use refresh cycle: periodic HALF_REFRESH to clear ghosting per user setting
+  ReaderUtils::displayWithRefreshCycle(renderer, pagesUntilFullRefresh);
 
   LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
 }

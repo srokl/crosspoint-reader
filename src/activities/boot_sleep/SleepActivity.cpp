@@ -307,11 +307,9 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
   XthCtx ctx{&file, dataOffset, header.width, header.height};
 
   renderer.clearScreen();
-  renderer.renderGrayscale(
-      GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, void* raw) {
-        const auto* c = static_cast<const XthCtx*>(raw);
-        c->file->seek(c->dataOffset);
+  const auto xtgGrayFn = [](GfxRenderer& r, void* raw) {
+    const auto* c = static_cast<const XthCtx*>(raw);
+    c->file->seek(c->dataOffset);
 
         const size_t planeSize = (static_cast<size_t>(c->width) * c->height + 7) / 8;
         uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
@@ -342,8 +340,23 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
         }
         if (plane1) free(plane1);
         if (plane2) free(plane2);
-      },
-      &ctx);
+  };
+
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH); // FactoryQuality pre-flash
+
+  renderer.clearScreen(0x00);
+  renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
+  xtgGrayFn(renderer, &ctx);
+  renderer.copyGrayscaleLsbBuffers();
+
+  renderer.clearScreen(0x00);
+  renderer.setRenderMode(GfxRenderer::GRAY2_MSB);
+  xtgGrayFn(renderer, &ctx);
+  renderer.copyGrayscaleMsbBuffers();
+
+  extern const unsigned char lut_factory_quality[];
+  renderer.displayGrayBuffer(lut_factory_quality, true);
+  renderer.setRenderMode(GfxRenderer::BW);
   file.close();
 }
 
