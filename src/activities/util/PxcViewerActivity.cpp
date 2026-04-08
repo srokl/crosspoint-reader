@@ -64,10 +64,9 @@ void PxcViewerActivity::onEnter() {
   const auto labels = mappedInput.mapLabels(tr(STR_BACK), "", "", "");
   PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight, labels};
 
-  // cppcheck-suppress constParameterReference
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, const void* raw) {
+      [](const GfxRenderer& r, const void* raw) {
         const auto* c = static_cast<const PxcCtx*>(raw);
         c->file->seek(c->dataOffset);
 
@@ -91,7 +90,8 @@ void PxcViewerActivity::onEnter() {
         }
         free(rowBuf);
 
-        GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
+        GUI.drawButtonHints(const_cast<GfxRenderer&>(r), c->labels.btn1, c->labels.btn2, c->labels.btn3,
+                            c->labels.btn4);
       },
       &ctx);
 

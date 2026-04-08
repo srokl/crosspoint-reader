@@ -198,10 +198,9 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
   };
   PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
 
-  // cppcheck-suppress constParameterReference
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, const void* raw) {
+      [](const GfxRenderer& r, const void* raw) {
         const auto* c = static_cast<const PxcCtx*>(raw);
         c->file->seek(c->dataOffset);
 
@@ -291,8 +290,7 @@ void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
     BitmapGrayCtx grayCtx{&bitmap, x, y, pageWidth, pageHeight, cropX, cropY};
     renderer.renderGrayscale(
         GfxRenderer::GrayscaleMode::FactoryQuality,
-        // cppcheck-suppress constParameterReference
-        [](GfxRenderer& r, const void* raw) {
+        [](const GfxRenderer& r, const void* raw) {
           const auto* c = static_cast<const BitmapGrayCtx*>(raw);
           if (c->bitmap->rewindToData() != BmpReaderError::Ok) {
             LOG_ERR("SLP", "rewindToData failed in grayscale pass");
