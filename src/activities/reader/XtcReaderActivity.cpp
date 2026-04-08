@@ -382,14 +382,7 @@ void XtcReaderActivity::renderPage() {
   free(pageBuffer);
 
   // XTC pages already have status bar pre-rendered, no need to add our own
-
-  // --- Inversion Transition Start ---
-  renderer.invertScreen();
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-  vTaskDelay(pdMS_TO_TICKS(100)); // Stabilization delay
-  renderer.invertScreen();
-  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-  // --- Inversion Transition End ---
 
   LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
 }
