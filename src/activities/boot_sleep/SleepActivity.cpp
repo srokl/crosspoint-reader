@@ -335,7 +335,7 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
 
               const uint8_t b1 = (plane1[byteOffset] >> bitInByte) & 1;
               const uint8_t b2 = (plane2[byteOffset] >> bitInByte) & 1;
-              const uint8_t pv = ((b1 << 1) | b2); // Original mapping
+              const uint8_t pv = ((b2 << 1) | b1); // Swapped priority (P2=MSB, P1=LSB)
               pw.writePixel(col, pv);
             }
           }

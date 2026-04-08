@@ -266,7 +266,7 @@ void XtcReaderActivity::renderPage() {
       const size_t byteOffset = colIndex * colBytes + byteInCol;
       const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
       const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
-      return ((bit1 << 1) | bit2); // Original mapping (0=Black, 3=White expected)
+      return ((bit2 << 1) | bit1); // Swapped priority (P2=MSB, P1=LSB)
     };
 
     // Context + callback for renderGrayscale.
@@ -294,8 +294,8 @@ void XtcReaderActivity::renderPage() {
           const uint8_t b1 = (c->plane1[byteOff] >> bitPos) & 1;
           const uint8_t b2 = (c->plane2[byteOff] >> bitPos) & 1;
           
-          // Raw mapping for DirectPixelWriter
-          const uint8_t pv = ((b1 << 1) | b2);
+          // Swapped mapping for DirectPixelWriter
+          const uint8_t pv = ((b2 << 1) | b1);
           pw.writePixel(x, pv);
         }
       }
@@ -303,7 +303,10 @@ void XtcReaderActivity::renderPage() {
 
     const bool useFactory = SETTINGS.factoryLutImages;
 
-    // Fast Inversion Pass Logic
+    // Fast Inversion Pass Logic:
+    // For 2nd bit content, we follow PXC and only rely on FactoryQuality refresh (one high-quality cycle).
+    // For 1-bit content, we keep the manual flips for the "seamless" 1-bit look.
+    
     if (useFactory) {
       renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryQuality, xtcGrayFn, &xtcCtx);
     } else {
@@ -320,21 +323,14 @@ void XtcReaderActivity::renderPage() {
           }
         }
       }
+      
+      // Manual flip for Differential fallback
+      renderer.invertScreen();
+      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+      vTaskDelay(pdMS_TO_TICKS(100));
+      renderer.invertScreen();
+      renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     }
-
-    // --- Inversion Transition Start ---
-    renderer.invertScreen();
-    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-    
-    // Stabilization delay to prevent streaks
-    vTaskDelay(pdMS_TO_TICKS(100));
-    
-    renderer.invertScreen();
-    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-    
-    // Final stabilization before gray overlay
-    vTaskDelay(pdMS_TO_TICKS(50));
-    // --- Inversion Transition End ---
 
     if (!useFactory) {
       // Apply grayscale overlay after the 1st bit inversion flip is fully settled
