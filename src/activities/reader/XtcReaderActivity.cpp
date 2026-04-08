@@ -323,15 +323,6 @@ void XtcReaderActivity::renderPage() {
       }
     }
 
-    // --- Seamless Inversion Transition ---
-    renderer.invertScreen();
-    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-    vTaskDelay(pdMS_TO_TICKS(100));
-    renderer.invertScreen();
-    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-    vTaskDelay(pdMS_TO_TICKS(50));
-    // ------------------------------------
-
     if (useFactory) {
       renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryFast, xtcGrayFn, &xtcCtx);
     } else {
@@ -381,11 +372,6 @@ void XtcReaderActivity::renderPage() {
   free(pageBuffer);
 
   // XTC pages already have status bar pre-rendered, no need to add our own
-  // Seamless Inversion Transition for 1-bit
-  renderer.invertScreen();
-  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
-  vTaskDelay(pdMS_TO_TICKS(100));
-  renderer.invertScreen();
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
