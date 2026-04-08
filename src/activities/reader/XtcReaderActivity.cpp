@@ -266,7 +266,7 @@ void XtcReaderActivity::renderPage() {
       const size_t byteOffset = colIndex * colBytes + byteInCol;
       const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
       const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
-      return 3 - ((bit1 << 1) | bit2); // Invert so 0=Black, 3=White
+      return ((bit1 << 1) | bit2); // Original mapping (0=Black, 3=White expected)
     };
 
     // Context + callback for renderGrayscale.
@@ -294,8 +294,8 @@ void XtcReaderActivity::renderPage() {
           const uint8_t b1 = (c->plane1[byteOff] >> bitPos) & 1;
           const uint8_t b2 = (c->plane2[byteOff] >> bitPos) & 1;
           
-          // Map to 0=Black, 3=White for DirectPixelWriter
-          const uint8_t pv = 3 - ((b1 << 1) | b2);
+          // Raw mapping for DirectPixelWriter
+          const uint8_t pv = ((b1 << 1) | b2);
           pw.writePixel(x, pv);
         }
       }
@@ -305,7 +305,7 @@ void XtcReaderActivity::renderPage() {
 
     // Fast Inversion Pass Logic
     if (useFactory) {
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryQuality, xtcGrayFn, &xtcCtx);
     } else {
       // Manual 2-pass Differential rendering
       renderer.clearScreen();
@@ -338,7 +338,7 @@ void XtcReaderActivity::renderPage() {
 
     if (!useFactory) {
       // Apply grayscale overlay after the 1st bit inversion flip is fully settled
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
+      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryQuality, xtcGrayFn, &xtcCtx);
       
       // Re-render BW to framebuffer for next turn consistency
       renderer.clearScreen();
