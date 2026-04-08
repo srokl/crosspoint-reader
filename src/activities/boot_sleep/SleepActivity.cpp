@@ -190,41 +190,75 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
   }
 
   const uint32_t dataOffset = file.position();  // right after the 4-byte header
+  const auto filter = SETTINGS.sleepScreenCoverFilter;
+  const int bytesPerRow = (pxcWidth + 3) / 4;
 
-  struct PxcCtx {
-    FsFile* file;
-    uint32_t dataOffset;
-    int width, height;
-  };
-  PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
+  if (filter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::NO_FILTER) {
+    struct PxcCtx {
+      FsFile* file;
+      uint32_t dataOffset;
+      int width, height;
+    };
+    PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
 
-  renderer.renderGrayscale(
-      GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](const GfxRenderer& r, const void* raw) {
-        const auto* c = static_cast<const PxcCtx*>(raw);
-        c->file->seek(c->dataOffset);
+    renderer.renderGrayscale(
+        GfxRenderer::GrayscaleMode::FactoryQuality,
+        [](const GfxRenderer& r, const void* raw) {
+          const auto* c = static_cast<const PxcCtx*>(raw);
+          c->file->seek(c->dataOffset);
 
-        const int bytesPerRow = (c->width + 3) / 4;
-        uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
-        if (!rowBuf) {
-          LOG_ERR("SLP", "malloc failed for rowBuf (%d bytes, %dx%d)", bytesPerRow, c->width, c->height);
-          return;
-        }
-
-        DirectPixelWriter pw;
-        pw.init(r);
-
-        for (int row = 0; row < c->height; row++) {
-          if (c->file->read(rowBuf, bytesPerRow) != bytesPerRow) break;
-          pw.beginRow(row);
-          for (int col = 0; col < c->width; col++) {
-            const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
-            pw.writePixel(col, pv);
+          const int bpr = (c->width + 3) / 4;
+          uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bpr));
+          if (!rowBuf) {
+            LOG_ERR("SLP", "malloc failed for rowBuf (%d bytes, %dx%d)", bpr, c->width, c->height);
+            return;
           }
-        }
-        free(rowBuf);
-      },
-      &ctx);
+
+          DirectPixelWriter pw;
+          pw.init(r);
+
+          for (int row = 0; row < c->height; row++) {
+            if (c->file->read(rowBuf, bpr) != bpr) break;
+            pw.beginRow(row);
+            for (int col = 0; col < c->width; col++) {
+              const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
+              pw.writePixel(col, pv);
+            }
+          }
+          free(rowBuf);
+        },
+        &ctx);
+  } else {
+    // BLACK_AND_WHITE / INVERTED_BLACK_AND_WHITE: threshold PXC to 1-bit
+    // (pv 0=Black, 1=DarkGrey map to dark; 2=LightGrey, 3=White map to light)
+    renderer.clearScreen();
+    if (!file.seek(dataOffset)) {
+      LOG_ERR("SLP", "PXC seek failed: %s", path.c_str());
+      file.close();
+      return renderDefaultSleepScreen();
+    }
+
+    uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
+    if (!rowBuf) {
+      LOG_ERR("SLP", "PXC malloc failed");
+      file.close();
+      return renderDefaultSleepScreen();
+    }
+
+    for (int row = 0; row < pxcHeight; row++) {
+      if (file.read(rowBuf, bytesPerRow) != bytesPerRow) break;
+      for (int col = 0; col < pxcWidth; col++) {
+        const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
+        if (pv < 2) renderer.drawPixel(col, row, true);
+      }
+    }
+    free(rowBuf);
+
+    if (filter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::INVERTED_BLACK_AND_WHITE) {
+      renderer.invertScreen();
+    }
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+  }
 
   file.close();
 }
