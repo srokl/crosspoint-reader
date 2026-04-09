@@ -309,7 +309,7 @@ void XtcReaderActivity::renderPage() {
       }
     };
 
-    const bool useFactory = SETTINGS.factoryLutImages;
+    const bool useFactory = true; // Force-enabled for XTC/XTCH to avoid bugs
 
     // Fast Inversion Pass Logic:
     // We use the "Seamless" technique: a quick negative-positive flip to clear ghosting,
