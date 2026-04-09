@@ -454,7 +454,10 @@ ppem = size * 150.0 / 72.0
 kern_map = {}  # (leftCp, rightCp) -> adjust
 for face_idx, cps in face_idx_cps.items():
     font_path = args.fontstack[face_idx]
-    kern_map.update(extract_kerning_fonttools(font_path, cps, ppem))
+    try:
+        kern_map.update(extract_kerning_fonttools(font_path, cps, ppem))
+    except Exception as e:
+        print(f"WARNING: Failed to extract kerning from {font_path}: {e}", file=sys.stderr)
 
 print(f"kerning: {len(kern_map)} pairs extracted", file=sys.stderr)
 

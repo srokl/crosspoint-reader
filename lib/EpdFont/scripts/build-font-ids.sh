@@ -80,39 +80,39 @@ ruby -rdigest -e 'puts [
 ].map{|f| Digest::SHA256.hexdigest(File.read(f)).to_i(16) }.sum % (2 ** 32) - (2 ** 31)'
 ))"
 
-echo "#define OPENDYSLEXIC_8_FONT_ID ($(
+echo "#define KOBO_8_FONT_ID ($(
 ruby -rdigest -e 'puts [
-  "./opendyslexic_8_regular.h",
-  "./opendyslexic_8_bold.h",
-  "./opendyslexic_8_bolditalic.h",
-  "./opendyslexic_8_italic.h",
+  "./kobo_8_regular.h",
+  "./kobo_8_bold.h",
+  "./kobo_8_bolditalic.h",
+  "./kobo_8_italic.h",
 ].map{|f| Digest::SHA256.hexdigest(File.read(f)).to_i(16) }.sum % (2 ** 32) - (2 ** 31)'
 ))"
 
-echo "#define OPENDYSLEXIC_10_FONT_ID ($(
+echo "#define KOBO_10_FONT_ID ($(
 ruby -rdigest -e 'puts [
-  "./opendyslexic_10_regular.h",
-  "./opendyslexic_10_bold.h",
-  "./opendyslexic_10_bolditalic.h",
-  "./opendyslexic_10_italic.h",
+  "./kobo_10_regular.h",
+  "./kobo_10_bold.h",
+  "./kobo_10_bolditalic.h",
+  "./kobo_10_italic.h",
 ].map{|f| Digest::SHA256.hexdigest(File.read(f)).to_i(16) }.sum % (2 ** 32) - (2 ** 31)'
 ))"
 
-echo "#define OPENDYSLEXIC_12_FONT_ID ($(
+echo "#define KOBO_12_FONT_ID ($(
 ruby -rdigest -e 'puts [
-  "./opendyslexic_12_regular.h",
-  "./opendyslexic_12_bold.h",
-  "./opendyslexic_12_bolditalic.h",
-  "./opendyslexic_12_italic.h",
+  "./kobo_12_regular.h",
+  "./kobo_12_bold.h",
+  "./kobo_12_bolditalic.h",
+  "./kobo_12_italic.h",
 ].map{|f| Digest::SHA256.hexdigest(File.read(f)).to_i(16) }.sum % (2 ** 32) - (2 ** 31)'
 ))"
 
-echo "#define OPENDYSLEXIC_14_FONT_ID ($(
+echo "#define KOBO_14_FONT_ID ($(
 ruby -rdigest -e 'puts [
-  "./opendyslexic_14_regular.h",
-  "./opendyslexic_14_bold.h",
-  "./opendyslexic_14_bolditalic.h",
-  "./opendyslexic_14_italic.h",
+  "./kobo_14_regular.h",
+  "./kobo_14_bold.h",
+  "./kobo_14_bolditalic.h",
+  "./kobo_14_italic.h",
 ].map{|f| Digest::SHA256.hexdigest(File.read(f)).to_i(16) }.sum % (2 ** 32) - (2 ** 31)'
 ))"
 
