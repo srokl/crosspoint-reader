@@ -269,7 +269,12 @@ void XtcReaderActivity::renderPage() {
       return 3 - ((bit2 << 1) | bit1); // Total Inversion Fix
     };
 
-    // Context + callback for renderGrayscale.
+    // Context + callback for renderGrayscale. Pixel selection adapts to the render mode set
+    // by renderGrayscale before each pass:
+    //   GRAY2_LSB  (factory BW RAM):   pv>=2 — LightGrey(2) and Black(3) → bit1=1
+    //   GRAY2_MSB  (factory RED RAM):  pv&1  — DarkGrey(1) and Black(3)  → bit0=1
+    //   GRAYSCALE_LSB (diff BW RAM):   pv==1 — DarkGrey only
+    //   GRAYSCALE_MSB (diff RED RAM):  pv==1||pv==2 — DarkGrey and LightGrey
     struct XtcGrayCtx {
       const uint8_t* plane1;
       const uint8_t* plane2;
@@ -277,7 +282,7 @@ void XtcReaderActivity::renderPage() {
       size_t colBytes;
     };
     XtcGrayCtx xtcCtx{plane1, plane2, pageWidth, pageHeight, colBytes};
-    const auto xtcGrayFn = [](GfxRenderer& r, void* raw) {
+    const auto xtcGrayFn = [](const GfxRenderer& r, const void* raw) {
       const auto* c = static_cast<const XtcGrayCtx*>(raw);
       DirectPixelWriter pw;
       pw.init(r);
@@ -301,7 +306,6 @@ void XtcReaderActivity::renderPage() {
           p1 -= colStride;
           p2 -= colStride;
         }
-      }
     };
 
     const bool useFactory = SETTINGS.factoryLutImages;

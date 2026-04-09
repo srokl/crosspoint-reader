@@ -64,16 +64,18 @@ void PxcViewerActivity::onEnter() {
   const auto labels = mappedInput.mapLabels(tr(STR_BACK), "", "", "");
   PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight, labels};
 
-  renderer.clearScreen();
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, void* raw) {
+      [](const GfxRenderer& r, const void* raw) {
         const auto* c = static_cast<const PxcCtx*>(raw);
         c->file->seek(c->dataOffset);
 
         const int bytesPerRow = (c->width + 3) / 4;
         uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
-        if (!rowBuf) return;
+        if (!rowBuf) {
+          LOG_ERR("PXC", "malloc failed for rowBuf (%d bytes, %dx%d)", bytesPerRow, c->width, c->height);
+          return;
+        }
 
         DirectPixelWriter pw;
         pw.init(r);
@@ -88,11 +90,17 @@ void PxcViewerActivity::onEnter() {
         }
         free(rowBuf);
 
-        GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
+        GUI.drawButtonHints(const_cast<GfxRenderer&>(r), c->labels.btn1, c->labels.btn2, c->labels.btn3,
+                            c->labels.btn4);
       },
       &ctx);
 
   file.close();
+
+  // Sync BW framebuffer state after factory-gray render so onExit's FAST_REFRESH
+  // does a correct differential (controller BW state = white, not stale gray planes).
+  renderer.clearScreen();
+  renderer.cleanupGrayscaleWithFrameBuffer();
 }
 
 void PxcViewerActivity::onExit() {

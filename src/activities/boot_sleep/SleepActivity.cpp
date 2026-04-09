@@ -50,7 +50,7 @@ void SleepActivity::renderCustomSleepScreen() const {
   if (sleepDir) {
     std::vector<std::string> files;
     char name[500];
-    // collect all valid BMP files
+    // collect all valid image files
     for (auto file = dir.openNextFile(); file; file = dir.openNextFile()) {
       if (file.isDirectory()) {
         file.close();
@@ -77,6 +77,21 @@ void SleepActivity::renderCustomSleepScreen() const {
         Bitmap bitmap(file);
         if (bitmap.parseHeaders() != BmpReaderError::Ok) {
           LOG_DBG("SLP", "Skipping invalid BMP file: %s", name);
+          file.close();
+          continue;
+        }
+      }
+      if (isPxc) {
+        uint16_t w, h;
+        if (file.read(&w, 2) != 2 || file.read(&h, 2) != 2) {
+          LOG_DBG("SLP", "Skipping PXC with unreadable header: %s", name);
+          file.close();
+          continue;
+        }
+        const int sw = renderer.getScreenWidth();
+        const int sh = renderer.getScreenHeight();
+        if (abs(w - sw) > 1 || abs(h - sh) > 1) {
+          LOG_DBG("SLP", "Skipping PXC size mismatch %dx%d (screen %dx%d): %s", w, h, sw, sh, name);
           file.close();
           continue;
         }
@@ -127,7 +142,7 @@ void SleepActivity::renderCustomSleepScreen() const {
   }
   if (dir) dir.close();
 
-  // Check root for sleep.pxc (preferred) or sleep.bmp
+  // Check root for preferred images
   if (Storage.exists("/sleep.pxc")) {
     LOG_DBG("SLP", "Loading: /sleep.pxc");
     renderPxcSleepScreen("/sleep.pxc");
@@ -200,40 +215,75 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
     return renderDefaultSleepScreen();
   }
 
-  const uint32_t dataOffset = file.position();  // right after the 4-byte header
+  const uint32_t dataOffset = file.position();
+  const auto filter = SETTINGS.sleepScreenCoverFilter;
+  const int bytesPerRow = (pxcWidth + 3) / 4;
 
-  struct PxcCtx {
-    FsFile* file;
-    uint32_t dataOffset;
-    int width, height;
-  };
-  PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
+  if (filter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::NO_FILTER) {
+    struct PxcCtx {
+      FsFile* file;
+      uint32_t dataOffset;
+      int width, height;
+    };
+    PxcCtx ctx{&file, dataOffset, pxcWidth, pxcHeight};
 
-  renderer.clearScreen();
-  renderer.renderGrayscale(
-      GfxRenderer::GrayscaleMode::FactoryQuality,
-      [](GfxRenderer& r, void* raw) {
-        const auto* c = static_cast<const PxcCtx*>(raw);
-        c->file->seek(c->dataOffset);
+    renderer.renderGrayscale(
+        GfxRenderer::GrayscaleMode::FactoryQuality,
+        [](const GfxRenderer& r, const void* raw) {
+          const auto* c = static_cast<const PxcCtx*>(raw);
+          c->file->seek(c->dataOffset);
 
-        const int bytesPerRow = (c->width + 3) / 4;
-        uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
-        if (!rowBuf) return;
-
-        DirectPixelWriter pw;
-        pw.init(r);
-
-        for (int row = 0; row < c->height; row++) {
-          if (c->file->read(rowBuf, bytesPerRow) != bytesPerRow) break;
-          pw.beginRow(row);
-          for (int col = 0; col < c->width; col++) {
-            const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
-            pw.writePixel(col, pv);
+          const int bpr = (c->width + 3) / 4;
+          uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bpr));
+          if (!rowBuf) {
+            LOG_ERR("SLP", "malloc failed for rowBuf (%d bytes, %dx%d)", bpr, c->width, c->height);
+            return;
           }
-        }
-        free(rowBuf);
-      },
-      &ctx);
+
+          DirectPixelWriter pw;
+          pw.init(r);
+
+          for (int row = 0; row < c->height; row++) {
+            if (c->file->read(rowBuf, bpr) != bpr) break;
+            pw.beginRow(row);
+            for (int col = 0; col < c->width; col++) {
+              const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
+              pw.writePixel(col, pv);
+            }
+          }
+          free(rowBuf);
+        },
+        &ctx);
+  } else {
+    // BLACK_AND_WHITE / INVERTED_BLACK_AND_WHITE: threshold PXC to 1-bit
+    renderer.clearScreen();
+    if (!file.seek(dataOffset)) {
+      LOG_ERR("SLP", "PXC seek failed: %s", path.c_str());
+      file.close();
+      return renderDefaultSleepScreen();
+    }
+
+    uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
+    if (!rowBuf) {
+      LOG_ERR("SLP", "PXC malloc failed");
+      file.close();
+      return renderDefaultSleepScreen();
+    }
+
+    for (int row = 0; row < pxcHeight; row++) {
+      if (file.read(rowBuf, bytesPerRow) != bytesPerRow) break;
+      for (int col = 0; col < pxcWidth; col++) {
+        const uint8_t pv = (rowBuf[col >> 2] >> (6 - (col & 3) * 2)) & 0x03;
+        if (pv < 2) renderer.drawPixel(col, row, true);
+      }
+    }
+    free(rowBuf);
+
+    if (filter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::INVERTED_BLACK_AND_WHITE) {
+      renderer.invertScreen();
+    }
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+  }
 
   file.close();
 }
@@ -260,7 +310,7 @@ void SleepActivity::renderXtgSleepScreen(const std::string& path) const {
   renderer.clearScreen();
   renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryFast,
-      [](GfxRenderer& r, void* raw) {
+      [](const GfxRenderer& r, const void* raw) {
         const auto* c = static_cast<const XtgCtx*>(raw);
         c->file->seek(c->dataOffset);
 
@@ -276,7 +326,7 @@ void SleepActivity::renderXtgSleepScreen(const std::string& path) const {
           pw.beginRow(row);
           for (int col = 0; col < c->width; col++) {
             const bool pixel = (rowBuf[col >> 3] >> (7 - (col & 7))) & 1;
-            pw.writePixel(col, pixel ? 3 : 0); // 0=Black, 3=White. bit=1 is white in XTC
+            pw.writePixel(col, pixel ? 3 : 0);
           }
         }
         free(rowBuf);
@@ -297,57 +347,54 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
     return renderDefaultSleepScreen();
   }
 
-  const uint32_t dataOffset = file.position();
-
   struct XthCtx {
     FsFile* file;
     uint32_t dataOffset;
     int width, height;
   };
-  XthCtx ctx{&file, dataOffset, header.width, header.height};
+  XthCtx ctx{&file, (uint32_t)file.position(), header.width, header.height};
 
-  renderer.clearScreen();
-  const auto xtgGrayFn = [](GfxRenderer& r, void* raw) {
+  const auto xtgGrayFn = [](const GfxRenderer& r, const void* raw) {
     const auto* c = static_cast<const XthCtx*>(raw);
     c->file->seek(c->dataOffset);
 
-        const size_t planeSize = (static_cast<size_t>(c->width) * c->height + 7) / 8;
-        uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
-        uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
+    const size_t planeSize = (static_cast<size_t>(c->width) * c->height + 7) / 8;
+    uint8_t* plane1 = static_cast<uint8_t*>(malloc(planeSize));
+    uint8_t* plane2 = static_cast<uint8_t*>(malloc(planeSize));
 
-        if (plane1 && plane2) {
-          c->file->read(plane1, planeSize);
-          c->file->read(plane2, planeSize);
+    if (plane1 && plane2) {
+      c->file->read(plane1, planeSize);
+      c->file->read(plane2, planeSize);
 
-          const size_t colStride = (c->height + 7) / 8;
-          const size_t initialOffset = (c->width - 1) * colStride;
+      const size_t colStride = (c->height + 7) / 8;
+      const size_t initialOffset = (c->width - 1) * colStride;
 
-          DirectPixelWriter pw;
-          pw.init(r);
+      DirectPixelWriter pw;
+      pw.init(r);
 
-          for (int row = 0; row < c->height; row++) {
-            const size_t byteInCol = row >> 3;
-            const uint8_t bitInByte = 7 - (row & 7);
-            const uint8_t* p1 = plane1 + initialOffset + byteInCol;
-            const uint8_t* p2 = plane2 + initialOffset + byteInCol;
+      for (int row = 0; row < c->height; row++) {
+        const size_t byteInCol = row >> 3;
+        const uint8_t bitInByte = 7 - (row & 7);
+        const uint8_t* p1 = plane1 + initialOffset + byteInCol;
+        const uint8_t* p2 = plane2 + initialOffset + byteInCol;
 
-            pw.beginRow(row);
-            for (int col = 0; col < c->width; col++) {
-              const uint8_t b1 = (*p1 >> bitInByte) & 1;
-              const uint8_t b2 = (*p2 >> bitInByte) & 1;
-              const uint8_t pv = 3 - ((b2 << 1) | b1);
-              pw.writePixel(col, pv);
-              
-              p1 -= colStride;
-              p2 -= colStride;
-            }
-          }
-          free(plane1);
-          free(plane2);
+        pw.beginRow(row);
+        for (int col = 0; col < c->width; col++) {
+          const uint8_t b1 = (*p1 >> bitInByte) & 1;
+          const uint8_t b2 = (*p2 >> bitInByte) & 1;
+          const uint8_t pv = 3 - ((b2 << 1) | b1);
+          pw.writePixel(col, pv);
+          
+          p1 -= colStride;
+          p2 -= colStride;
         }
+      }
+      free(plane1);
+      free(plane2);
+    }
   };
 
-  renderer.displayBuffer(HalDisplay::HALF_REFRESH); // FactoryQuality pre-flash
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
 
   renderer.clearScreen(0x00);
   renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
@@ -362,6 +409,7 @@ void SleepActivity::renderXthSleepScreen(const std::string& path) const {
   extern const unsigned char lut_factory_quality[];
   renderer.displayGrayBuffer(lut_factory_quality, true);
   renderer.setRenderMode(GfxRenderer::BW);
+
   file.close();
 }
 
@@ -371,43 +419,31 @@ void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
   const auto pageHeight = renderer.getScreenHeight();
   float cropX = 0, cropY = 0;
 
-  LOG_DBG("SLP", "bitmap %d x %d, screen %d x %d", bitmap.getWidth(), bitmap.getHeight(), pageWidth, pageHeight);
   if (bitmap.getWidth() > pageWidth || bitmap.getHeight() > pageHeight) {
-    // image will scale, make sure placement is right
     float ratio = static_cast<float>(bitmap.getWidth()) / static_cast<float>(bitmap.getHeight());
     const float screenRatio = static_cast<float>(pageWidth) / static_cast<float>(pageHeight);
 
-    LOG_DBG("SLP", "bitmap ratio: %f, screen ratio: %f", ratio, screenRatio);
     if (ratio > screenRatio) {
-      // image wider than viewport ratio, scaled down image needs to be centered vertically
       if (SETTINGS.sleepScreenCoverMode == CrossPointSettings::SLEEP_SCREEN_COVER_MODE::CROP) {
         cropX = 1.0f - (screenRatio / ratio);
-        LOG_DBG("SLP", "Cropping bitmap x: %f", cropX);
         ratio = (1.0f - cropX) * static_cast<float>(bitmap.getWidth()) / static_cast<float>(bitmap.getHeight());
       }
       x = 0;
       y = std::round((static_cast<float>(pageHeight) - static_cast<float>(pageWidth) / ratio) / 2);
-      LOG_DBG("SLP", "Centering with ratio %f to y=%d", ratio, y);
     } else {
-      // image taller than viewport ratio, scaled down image needs to be centered horizontally
       if (SETTINGS.sleepScreenCoverMode == CrossPointSettings::SLEEP_SCREEN_COVER_MODE::CROP) {
         cropY = 1.0f - (ratio / screenRatio);
-        LOG_DBG("SLP", "Cropping bitmap y: %f", cropY);
         ratio = static_cast<float>(bitmap.getWidth()) / ((1.0f - cropY) * static_cast<float>(bitmap.getHeight()));
       }
       x = std::round((static_cast<float>(pageWidth) - static_cast<float>(pageHeight) * ratio) / 2);
       y = 0;
-      LOG_DBG("SLP", "Centering with ratio %f to x=%d", ratio, x);
     }
   } else {
-    // center the image
     x = (pageWidth - bitmap.getWidth()) / 2;
     y = (pageHeight - bitmap.getHeight()) / 2;
   }
 
-  LOG_DBG("SLP", "drawing to %d x %d", x, y);
   renderer.clearScreen();
-
   const bool hasGreyscale = bitmap.hasGreyscale() &&
                             SETTINGS.sleepScreenCoverFilter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::NO_FILTER;
 
@@ -426,9 +462,12 @@ void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
     BitmapGrayCtx grayCtx{&bitmap, x, y, pageWidth, pageHeight, cropX, cropY};
     renderer.renderGrayscale(
         GfxRenderer::GrayscaleMode::FactoryQuality,
-        [](GfxRenderer& r, void* raw) {
+        [](const GfxRenderer& r, const void* raw) {
           const auto* c = static_cast<const BitmapGrayCtx*>(raw);
-          c->bitmap->rewindToData();
+          if (c->bitmap->rewindToData() != BmpReaderError::Ok) {
+            LOG_ERR("SLP", "rewindToData failed in grayscale pass");
+            return;
+          }
           r.drawBitmap(*c->bitmap, c->x, c->y, c->maxWidth, c->maxHeight, c->cropX, c->cropY);
         },
         &grayCtx);
@@ -455,49 +494,32 @@ void SleepActivity::renderCoverSleepScreen() const {
   std::string coverBmpPath;
   bool cropped = SETTINGS.sleepScreenCoverMode == CrossPointSettings::SLEEP_SCREEN_COVER_MODE::CROP;
 
-  // Check if the current book is XTC, TXT, or EPUB
   if (FsHelpers::hasXtcExtension(APP_STATE.openEpubPath)) {
-    // Handle XTC file
     Xtc lastXtc(APP_STATE.openEpubPath, "/.crosspoint");
     if (!lastXtc.load()) {
-      LOG_ERR("SLP", "Failed to load last XTC");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     if (!lastXtc.generateCoverBmp()) {
-      LOG_ERR("SLP", "Failed to generate XTC cover bmp");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     coverBmpPath = lastXtc.getCoverBmpPath();
   } else if (FsHelpers::hasTxtExtension(APP_STATE.openEpubPath)) {
-    // Handle TXT file - looks for cover image in the same folder
     Txt lastTxt(APP_STATE.openEpubPath, "/.crosspoint");
     if (!lastTxt.load()) {
-      LOG_ERR("SLP", "Failed to load last TXT");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     if (!lastTxt.generateCoverBmp()) {
-      LOG_ERR("SLP", "No cover image found for TXT file");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     coverBmpPath = lastTxt.getCoverBmpPath();
   } else if (FsHelpers::hasEpubExtension(APP_STATE.openEpubPath)) {
-    // Handle EPUB file
     Epub lastEpub(APP_STATE.openEpubPath, "/.crosspoint");
-    // Skip loading css since we only need metadata here
     if (!lastEpub.load(true, true)) {
-      LOG_ERR("SLP", "Failed to load last epub");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     if (!lastEpub.generateCoverBmp(cropped)) {
-      LOG_ERR("SLP", "Failed to generate cover bmp");
       return (this->*renderNoCoverSleepScreen)();
     }
-
     coverBmpPath = lastEpub.getCoverBmpPath(cropped);
   } else {
     return (this->*renderNoCoverSleepScreen)();
@@ -507,7 +529,6 @@ void SleepActivity::renderCoverSleepScreen() const {
   if (Storage.openFileForRead("SLP", coverBmpPath, file)) {
     Bitmap bitmap(file);
     if (bitmap.parseHeaders() == BmpReaderError::Ok) {
-      LOG_DBG("SLP", "Rendering sleep cover: %s", coverBmpPath.c_str());
       renderBitmapSleepScreen(bitmap);
       file.close();
       return;

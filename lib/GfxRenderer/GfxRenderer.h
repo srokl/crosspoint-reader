@@ -22,8 +22,8 @@ class GfxRenderer {
     BW,             // 1-bit black/white
     GRAYSCALE_LSB,  // Differential gray: mark pixels for LSB plane (clearScreen(0x00) + drawPixel(false))
     GRAYSCALE_MSB,  // Differential gray: mark pixels for MSB plane (clearScreen(0x00) + drawPixel(false))
-    GRAY2_LSB,      // Factory absolute gray: encode BW RAM = bit0 (clearScreen(0xFF) + drawPixel(true))
-    GRAY2_MSB,      // Factory absolute gray: encode RED RAM = bit1 (clearScreen(0xFF) + drawPixel(true))
+    GRAY2_LSB,      // Factory absolute gray: encode BW RAM = bit0 (clearScreen(0x00) + drawPixel(false))
+    GRAY2_MSB,      // Factory absolute gray: encode RED RAM = bit1 (clearScreen(0x00) + drawPixel(false))
   };
 
   // Logical screen orientation from the perspective of callers
@@ -169,7 +169,7 @@ class GfxRenderer {
   // handles pre-flash (FactoryFast only), clearScreen, setRenderMode, buffer copies,
   // displayGrayBuffer, and resets renderMode to BW on completion.
   // storeBwBuffer / restoreBwBuffer remain the caller's responsibility.
-  void renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRenderer&, void*), void* ctx);
+  void renderGrayscale(GrayscaleMode mode, void (*renderFn)(const GfxRenderer&, const void*), const void* ctx);
 
   // Font helpers
   const uint8_t* getGlyphBitmap(const EpdFontData* fontData, const EpdGlyph* glyph) const;

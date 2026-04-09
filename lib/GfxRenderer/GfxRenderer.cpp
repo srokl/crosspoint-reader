@@ -168,7 +168,11 @@ static void renderCharImpl(const GfxRenderer& renderer, GfxRenderer::RenderMode 
           const uint8_t bit_index = 7 - (pixelPosition & 7);
 
           if ((byte >> bit_index) & 1) {
-            renderer.drawPixel(screenX, screenY, pixelState);
+            // In GRAY2 modes the framebuffer convention is inverted vs BW: clearScreen(0x00) is
+            // background and drawPixel(false) marks active pixels. BW-convention callers pass
+            // pixelState=true for "black" — invert here so 1-bit UI glyphs stay visible.
+            const bool gray2 = renderMode == GfxRenderer::GRAY2_LSB || renderMode == GfxRenderer::GRAY2_MSB;
+            renderer.drawPixel(screenX, screenY, gray2 ? !pixelState : pixelState);
           }
         }
       }
@@ -223,10 +227,10 @@ void GfxRenderer::drawCenteredText(const int fontId, const int y, const char* te
 void GfxRenderer::drawText(const int fontId, const int x, const int y, const char* text, const bool black,
                            const EpdFontFamily::Style style) const {
   const int yPos = y + getFontAscenderSize(fontId);
-  int32_t xPosFP = fp4::fromPixel(x);  // 12.4 fixed-point accumulator
   int lastBaseX = x;
   int lastBaseAdvanceFP = 0;  // 12.4 fixed-point
   int lastBaseTop = 0;
+  int32_t prevAdvanceFP = 0;  // 12.4 fixed-point: prev glyph's advance + next kern for snap
 
   // cannot draw a NULL / empty string
   if (text == nullptr || *text == '\0') {
@@ -266,19 +270,22 @@ void GfxRenderer::drawText(const int fontId, const int x, const int y, const cha
     }
 
     cp = font.applyLigatures(cp, text, style);
-    const int kernFP = (prevCp != 0) ? font.getKerning(prevCp, cp, style) : 0;  // 4.4 fixed-point kern
-    xPosFP += kernFP;
 
-    lastBaseX = fp4::toPixel(xPosFP);  // snap 12.4 fixed-point to nearest pixel
+    // Differential rounding: snap (previous advance + current kern) as one unit so
+    // identical character pairs always produce the same pixel step regardless of
+    // where they fall on the line.
+    if (prevCp != 0) {
+      const auto kernFP = font.getKerning(prevCp, cp, style);  // 4.4 fixed-point kern
+      lastBaseX += fp4::toPixel(prevAdvanceFP + kernFP);       // snap 12.4 fixed-point to nearest pixel
+    }
+
     const EpdGlyph* glyph = font.getGlyph(cp, style);
 
     lastBaseAdvanceFP = glyph ? glyph->advanceX : 0;
     lastBaseTop = glyph ? glyph->top : 0;
+    prevAdvanceFP = lastBaseAdvanceFP;
 
     renderCharImpl<TextRotation::None>(*this, renderMode, font, cp, lastBaseX, yPos, black, style);
-    if (glyph) {
-      xPosFP += glyph->advanceX;  // 12.4 fixed-point advance
-    }
     prevCp = cp;
   }
 }
@@ -287,13 +294,16 @@ void GfxRenderer::drawLine(int x1, int y1, int x2, int y2, const bool state) con
   if (fontCacheManager_ && fontCacheManager_->isScanning()) return;
   const int sw = getScreenWidth();
   const int sh = getScreenHeight();
+  // In GRAY2 modes the framebuffer convention is inverted vs BW: clearScreen(0x00) is background
+  // and drawPixel(false) marks active pixels. BW-convention callers pass state=true for "black".
+  const bool s = (renderMode == GRAY2_LSB || renderMode == GRAY2_MSB) ? !state : state;
   if (x1 == x2) {
     if (x1 < 0 || x1 >= sw) return;
     if (y2 < y1) std::swap(y1, y2);
     y1 = std::max(y1, 0);
     y2 = std::min(y2, sh - 1);
     for (int y = y1; y <= y2; y++) {
-      drawPixel(x1, y, state);
+      drawPixel(x1, y, s);
     }
   } else if (y1 == y2) {
     if (y1 < 0 || y1 >= sh) return;
@@ -301,7 +311,7 @@ void GfxRenderer::drawLine(int x1, int y1, int x2, int y2, const bool state) con
     x1 = std::max(x1, 0);
     x2 = std::min(x2, sw - 1);
     for (int x = x1; x <= x2; x++) {
-      drawPixel(x, y1, state);
+      drawPixel(x, y1, s);
     }
   } else {
     // Bresenham's line algorithm — integer arithmetic only
@@ -314,7 +324,7 @@ void GfxRenderer::drawLine(int x1, int y1, int x2, int y2, const bool state) con
 
     int err = dx - dy;
     while (true) {
-      drawPixel(x1, y1, state);
+      drawPixel(x1, y1, s);
       if (x1 == x2 && y1 == y2) break;
       int e2 = 2 * err;
       if (e2 > -dy) {
@@ -361,6 +371,7 @@ void GfxRenderer::drawArc(const int maxRadius, const int cx, const int cy, const
   const int innerRadiusSq = innerRadius * innerRadius;
   const int sw = getScreenWidth();
   const int sh = getScreenHeight();
+  const bool s = (renderMode == GRAY2_LSB || renderMode == GRAY2_MSB) ? !state : state;
   for (int dy = 0; dy <= maxRadius; ++dy) {
     for (int dx = 0; dx <= maxRadius; ++dx) {
       const int distSq = dx * dx + dy * dy;
@@ -368,7 +379,7 @@ void GfxRenderer::drawArc(const int maxRadius, const int cx, const int cy, const
       const int px = cx + xDir * dx;
       const int py = cy + yDir * dy;
       if (px < 0 || px >= sw || py < 0 || py >= sh) continue;
-      drawPixel(px, py, state);
+      drawPixel(px, py, s);
     }
   }
 };
@@ -446,22 +457,28 @@ void GfxRenderer::drawPixelDither<Color::Clear>(const int x, const int y) const 
 
 template <>
 void GfxRenderer::drawPixelDither<Color::Black>(const int x, const int y) const {
-  drawPixel(x, y, true);
+  const bool gray2 = renderMode == GRAY2_LSB || renderMode == GRAY2_MSB;
+  drawPixel(x, y, !gray2);
 }
 
 template <>
 void GfxRenderer::drawPixelDither<Color::White>(const int x, const int y) const {
-  drawPixel(x, y, false);
+  const bool gray2 = renderMode == GRAY2_LSB || renderMode == GRAY2_MSB;
+  drawPixel(x, y, gray2);
 }
 
 template <>
 void GfxRenderer::drawPixelDither<Color::LightGray>(const int x, const int y) const {
-  drawPixel(x, y, x % 2 == 0 && y % 2 == 0);
+  const bool pix = x % 2 == 0 && y % 2 == 0;
+  const bool gray2 = renderMode == GRAY2_LSB || renderMode == GRAY2_MSB;
+  drawPixel(x, y, gray2 ? !pix : pix);
 }
 
 template <>
 void GfxRenderer::drawPixelDither<Color::DarkGray>(const int x, const int y) const {
-  drawPixel(x, y, (x + y) % 2 == 0);  // TODO: maybe find a better pattern?
+  const bool pix = (x + y) % 2 == 0;  // TODO: maybe find a better pattern?
+  const bool gray2 = renderMode == GRAY2_LSB || renderMode == GRAY2_MSB;
+  drawPixel(x, y, gray2 ? !pix : pix);
 }
 
 void GfxRenderer::fillRectDither(const int x, const int y, const int width, const int height, Color color) const {
@@ -802,10 +819,13 @@ void GfxRenderer::drawBitmap1Bit(const Bitmap& bitmap, const int x, const int y,
       // Get 2-bit value (result of readNextRow quantization)
       const uint8_t val = outputRow[bmpX / 4] >> (6 - ((bmpX * 2) % 8)) & 0x3;
 
-      // For 1-bit source: 0 or 1 -> map to black (0,1,2) or white (3)
-      // val < 3 means black pixel (draw it)
+      // For 1-bit source: val < 3 = black, val == 3 = white
       if (val < 3) {
-        drawPixel(screenX, screenY, true);
+        if (renderMode == GRAY2_LSB || renderMode == GRAY2_MSB) {
+          drawPixel(screenX, screenY, false);
+        } else {
+          drawPixel(screenX, screenY, true);
+        }
       }
       // White pixels (val == 3) are not drawn (leave background)
     }
@@ -1058,21 +1078,28 @@ int GfxRenderer::getTextAdvanceX(const int fontId, const char* text, EpdFontFami
 
   uint32_t cp;
   uint32_t prevCp = 0;
-  int32_t widthFP = 0;  // 12.4 fixed-point accumulator
+  int widthPx = 0;
+  int32_t prevAdvanceFP = 0;  // 12.4 fixed-point: prev glyph's advance + next kern for snap
   const auto& font = fontIt->second;
   while ((cp = utf8NextCodepoint(reinterpret_cast<const uint8_t**>(&text)))) {
     if (utf8IsCombiningMark(cp)) {
       continue;
     }
     cp = font.applyLigatures(cp, text, style);
+
+    // Differential rounding: snap (previous advance + current kern) together,
+    // matching drawText so measurement and rendering agree exactly.
     if (prevCp != 0) {
-      widthFP += font.getKerning(prevCp, cp, style);  // 4.4 fixed-point kern
+      const auto kernFP = font.getKerning(prevCp, cp, style);  // 4.4 fixed-point kern
+      widthPx += fp4::toPixel(prevAdvanceFP + kernFP);         // snap 12.4 fixed-point to nearest pixel
     }
+
     const EpdGlyph* glyph = font.getGlyph(cp, style);
-    if (glyph) widthFP += glyph->advanceX;  // 12.4 fixed-point advance
+    prevAdvanceFP = glyph ? glyph->advanceX : 0;
     prevCp = cp;
   }
-  return fp4::toPixel(widthFP);  // snap 12.4 fixed-point to nearest pixel
+  widthPx += fp4::toPixel(prevAdvanceFP);  // final glyph's advance
+  return widthPx;
 }
 
 int GfxRenderer::getFontAscenderSize(const int fontId) const {
@@ -1119,10 +1146,10 @@ void GfxRenderer::drawTextRotated90CW(const int fontId, const int x, const int y
 
   const auto& font = fontIt->second;
 
-  int32_t yPosFP = fp4::fromPixel(y);  // 12.4 fixed-point accumulator
   int lastBaseY = y;
   int lastBaseAdvanceFP = 0;  // 12.4 fixed-point
   int lastBaseTop = 0;
+  int32_t prevAdvanceFP = 0;  // 12.4 fixed-point: prev glyph's advance + next kern for snap
   constexpr int MIN_COMBINING_GAP_PX = 1;
 
   uint32_t cp;
@@ -1145,20 +1172,21 @@ void GfxRenderer::drawTextRotated90CW(const int fontId, const int x, const int y
     }
 
     cp = font.applyLigatures(cp, text, style);
+
+    // Differential rounding: snap (previous advance + current kern) as one unit,
+    // subtracting for the rotated coordinate direction.
     if (prevCp != 0) {
-      yPosFP -= font.getKerning(prevCp, cp, style);  // 4.4 fixed-point kern (subtract for rotated)
+      const auto kernFP = font.getKerning(prevCp, cp, style);  // 4.4 fixed-point kern
+      lastBaseY -= fp4::toPixel(prevAdvanceFP + kernFP);       // snap 12.4 fixed-point to nearest pixel
     }
 
-    lastBaseY = fp4::toPixel(yPosFP);  // snap 12.4 fixed-point to nearest pixel
     const EpdGlyph* glyph = font.getGlyph(cp, style);
 
     lastBaseAdvanceFP = glyph ? glyph->advanceX : 0;  // 12.4 fixed-point
     lastBaseTop = glyph ? glyph->top : 0;
+    prevAdvanceFP = lastBaseAdvanceFP;
 
     renderCharImpl<TextRotation::Rotated90CW>(*this, renderMode, font, cp, x, lastBaseY, black, style);
-    if (glyph) {
-      yPosFP -= glyph->advanceX;  // 12.4 fixed-point advance (subtract for rotated)
-    }
     prevCp = cp;
   }
 }
@@ -1174,9 +1202,12 @@ void GfxRenderer::copyGrayscaleLsbBuffers() const { display.copyGrayscaleLsbBuff
 
 void GfxRenderer::copyGrayscaleMsbBuffers() const { display.copyGrayscaleMsbBuffers(frameBuffer); }
 
-void GfxRenderer::displayGrayBuffer(const unsigned char* lut, bool factoryMode) const { display.displayGrayBuffer(fadingFix, lut, factoryMode); }
+void GfxRenderer::displayGrayBuffer(const unsigned char* lut, bool factoryMode) const {
+  display.displayGrayBuffer(fadingFix, lut, factoryMode);
+}
 
-void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRenderer&, void*), void* ctx) {
+void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(const GfxRenderer&, const void*),
+                                  const void* ctx) {
   if (mode == GrayscaleMode::FactoryFast || mode == GrayscaleMode::FactoryQuality) {
     // Pre-flash to white so the factory LUT can drive particles reliably from any prior state.
     // Without this, particles stranded at intermediate grays may not complete their transition:
@@ -1194,7 +1225,7 @@ void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(GfxRender
   const RenderMode lsbMode = (mode == GrayscaleMode::Differential) ? GRAYSCALE_LSB : GRAY2_LSB;
   const RenderMode msbMode = (mode == GrayscaleMode::Differential) ? GRAYSCALE_MSB : GRAY2_MSB;
   const bool factoryMode = (mode != GrayscaleMode::Differential);
-  const unsigned char* lut = (mode == GrayscaleMode::FactoryFast)     ? lut_factory_fast
+  const unsigned char* lut = (mode == GrayscaleMode::FactoryFast)      ? lut_factory_fast
                              : (mode == GrayscaleMode::FactoryQuality) ? lut_factory_quality
                                                                        : nullptr;
 
