@@ -213,49 +213,49 @@ void XtcReaderActivity::renderPage() {
       return (bit1 << 1) | bit2;
     };
 
-    // Context + callback for renderGrayscale. Pixel selection adapts to the render mode set
-    // by renderGrayscale before each pass:
-    //   GRAY2_LSB  (factory BW RAM):   pv>=2 — LightGrey(2) and Black(3) → bit1=1
-    //   GRAY2_MSB  (factory RED RAM):  pv&1  — DarkGrey(1) and Black(3)  → bit0=1
-    //   GRAYSCALE_LSB (diff BW RAM):   pv==1 — DarkGrey only
-    //   GRAYSCALE_MSB (diff RED RAM):  pv==1||pv==2 — DarkGrey and LightGrey
-    struct XtcGrayCtx {
-      const uint8_t* plane1;
-      const uint8_t* plane2;
-      uint16_t pageWidth, pageHeight;
-      size_t colBytes;
-    };
-    XtcGrayCtx xtcCtx{plane1, plane2, pageWidth, pageHeight, colBytes};
-    const auto xtcGrayFn = [](const GfxRenderer& r, const void* raw) {
-      const auto* c = static_cast<const XtcGrayCtx*>(raw);
-      const auto mode = r.getRenderMode();
-      for (uint16_t y = 0; y < c->pageHeight; y++) {
-        for (uint16_t x = 0; x < c->pageWidth; x++) {
-          const size_t colIdx = c->pageWidth - 1 - x;
-          const size_t byteOff = colIdx * c->colBytes + y / 8;
-          const size_t bitPos = 7 - (y % 8);
-          const uint8_t pv = (((c->plane1[byteOff] >> bitPos) & 1) << 1) | ((c->plane2[byteOff] >> bitPos) & 1);
-          bool draw;
-          switch (mode) {
-            case GfxRenderer::GRAY2_LSB:
-              draw = (pv >= 2);
-              break;
-            case GfxRenderer::GRAY2_MSB:
-              draw = (pv == 1 || pv == 3);
-              break;
-            case GfxRenderer::GRAYSCALE_LSB:
-              draw = (pv == 1);
-              break;
-            default:
-              draw = (pv == 1 || pv == 2);
-              break;
-          }
-          if (draw) r.drawPixel(x, y, false);
+    // Pre-flash to white (same as renderGrayscale does for FactoryFast).
+    // HALF_REFRESH bypasses RED RAM so the flash is clean regardless of prior gray state.
+    renderer.clearScreen();
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+    renderer.cleanupGrayscaleWithFrameBuffer();
+
+    // Direct plane-to-framebuffer blit for factory 2-bit gray.
+    // XTC column c maps directly to physical scanline c in Portrait mode:
+    //   XTC col 0 = rightmost logical column (logicalX=479) → phyY = 479-479 = 0 → scanline 0
+    //   XTC col 479 = leftmost logical column (logicalX=0) → phyY = 479-0 = 479 → scanline 479
+    // Byte b within column → byte b within scanline (logicalY → phyX identity).
+    // Plane data encoding matches GRAY2 framebuffer convention directly (bit=1 = active dark pixel
+    // after clearScreen(0x00)), so no inversion is needed.
+    {
+      uint8_t* fb = renderer.getFrameBuffer();
+      const uint16_t fbStride = renderer.getDisplayWidthBytes();
+
+      // Pass 1: plane1 → BW RAM (LSB): bit=1 where pv>=2 (LightGrey or Black)
+      renderer.clearScreen(0x00);
+      for (uint16_t c = 0; c < pageWidth; c++) {
+        const uint8_t* srcCol = plane1 + static_cast<uint32_t>(c) * colBytes;
+        uint8_t* dstRow = fb + static_cast<uint32_t>(c) * fbStride;
+        for (uint16_t b = 0; b < colBytes; b++) {
+          dstRow[b] = srcCol[b];
         }
       }
-    };
+      renderer.copyGrayscaleLsbBuffers();
 
-    renderer.renderGrayscale(GfxRenderer::GrayscaleMode::FactoryFast, xtcGrayFn, &xtcCtx);
+      // Pass 2: plane2 → RED RAM (MSB): bit=1 where pv&1 (DarkGrey or Black)
+      renderer.clearScreen(0x00);
+      for (uint16_t c = 0; c < pageWidth; c++) {
+        const uint8_t* srcCol = plane2 + static_cast<uint32_t>(c) * colBytes;
+        uint8_t* dstRow = fb + static_cast<uint32_t>(c) * fbStride;
+        for (uint16_t b = 0; b < colBytes; b++) {
+          dstRow[b] = srcCol[b];
+        }
+      }
+      renderer.copyGrayscaleMsbBuffers();
+    }
+
+    extern const unsigned char lut_factory_fast[];
+    renderer.displayGrayBuffer(lut_factory_fast, true);
+    renderer.setRenderMode(GfxRenderer::BW);
 
     // Re-render BW to framebuffer (restores display state for next frame / next BW page turn)
     renderer.clearScreen();
