@@ -29,8 +29,10 @@
 #define BQ27220_VOLT_REG 0x08  // Voltage() command code (mV)
 
 // Analog DS3231 RTC I2C
-#define I2C_ADDR_DS3231 0x68  // RTC I2C address
-#define DS3231_SEC_REG 0x00   // Seconds command code (BCD)
+#define I2C_ADDR_DS3231 0x68    // RTC I2C address
+#define DS3231_SEC_REG 0x00     // Seconds (BCD); bit 7 reserved, always 0
+#define DS3231_MIN_REG 0x01     // Minutes (BCD); bit 7 reserved, always 0
+#define DS3231_STATUS_REG 0x0F  // Status; bits [6:4] reserved, always 0
 
 // QST QMI8658 IMU I2C
 #define I2C_ADDR_QMI8658 0x6B        // IMU I2C address
