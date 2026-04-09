@@ -343,15 +343,39 @@ void XtcReaderActivity::renderPage() {
         pagesUntilFullRefresh--;
       }
 
-      renderer.clearScreen(0x00);
-      renderer.setRenderMode(GfxRenderer::GRAY2_LSB);
-      xtcGrayFn(renderer, &xtcCtx);
-      renderer.copyGrayscaleLsbBuffers();
+      // Direct plane-to-framebuffer for Factory grayscale.
+      // XTC column-major layout maps directly to Portrait scanlines:
+      //   XTC colIndex (= pageWidth-1-logicalX) → physical scanline phyY (= 479-logicalX = colIndex)
+      //   XTC byte-in-column → physical byte-in-scanline
+      // The `3-pv` inversion at pixel level is equivalent to `~byte` at byte level.
+      {
+        uint8_t* fb = renderer.getFrameBuffer();
+        const uint16_t fbStride = display.getDisplayWidthBytes(); // 100 for X4
 
-      renderer.clearScreen(0x00);
-      renderer.setRenderMode(GfxRenderer::GRAY2_MSB);
-      xtcGrayFn(renderer, &xtcCtx);
-      renderer.copyGrayscaleMsbBuffers();
+        // Pass 1: plane1 → BW RAM (LSB)
+        renderer.clearScreen(0x00);
+        for (uint16_t col = 0; col < pageWidth; col++) {
+          const uint16_t colIndex = pageWidth - 1 - col;
+          const uint8_t* srcCol = plane1 + (uint32_t)colIndex * colBytes;
+          uint8_t* dstRow = fb + (uint32_t)col * fbStride;
+          for (uint16_t b = 0; b < colBytes; b++) {
+            dstRow[b] = ~srcCol[b];
+          }
+        }
+        renderer.copyGrayscaleLsbBuffers();
+
+        // Pass 2: plane2 → RED RAM (MSB)
+        renderer.clearScreen(0x00);
+        for (uint16_t col = 0; col < pageWidth; col++) {
+          const uint16_t colIndex = pageWidth - 1 - col;
+          const uint8_t* srcCol = plane2 + (uint32_t)colIndex * colBytes;
+          uint8_t* dstRow = fb + (uint32_t)col * fbStride;
+          for (uint16_t b = 0; b < colBytes; b++) {
+            dstRow[b] = ~srcCol[b];
+          }
+        }
+        renderer.copyGrayscaleMsbBuffers();
+      }
 
       extern const unsigned char lut_factory_fast[];
       extern const unsigned char lut_factory_quality[];
