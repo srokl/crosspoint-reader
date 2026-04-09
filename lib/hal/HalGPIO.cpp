@@ -80,10 +80,36 @@ bool probeDS3231Signature() {
   if (!readI2CReg8(I2C_ADDR_DS3231, DS3231_SEC_REG, &sec)) {
     return false;
   }
-  const uint8_t tensDigit = (sec >> 4) & 0x07;
-  const uint8_t onesDigit = sec & 0x0F;
+  // Bit 7 is reserved and always 0 in a real DS3231
+  if (sec & 0x80) {
+    return false;
+  }
+  if (((sec >> 4) & 0x07) > 5 || (sec & 0x0F) > 9) {
+    return false;
+  }
 
-  return tensDigit <= 5 && onesDigit <= 9;
+  uint8_t min = 0;
+  if (!readI2CReg8(I2C_ADDR_DS3231, DS3231_MIN_REG, &min)) {
+    return false;
+  }
+  // Bit 7 is reserved and always 0 in a real DS3231
+  if (min & 0x80) {
+    return false;
+  }
+  if (((min >> 4) & 0x07) > 5 || (min & 0x0F) > 9) {
+    return false;
+  }
+
+  uint8_t status = 0;
+  if (!readI2CReg8(I2C_ADDR_DS3231, DS3231_STATUS_REG, &status)) {
+    return false;
+  }
+  // Bits [6:4] are reserved and always 0 in a real DS3231
+  if (status & 0x70) {
+    return false;
+  }
+
+  return true;
 }
 
 bool probeQMI8658Signature() {
@@ -118,6 +144,8 @@ namespace {
 constexpr char HW_NAMESPACE[] = "cphw";
 constexpr char NVS_KEY_DEV_OVERRIDE[] = "dev_ovr";  // 0=auto, 1=x4, 2=x3
 constexpr char NVS_KEY_DEV_CACHED[] = "dev_det";    // 0=unknown, 1=x4, 2=x3
+constexpr char NVS_KEY_PROBE_VER[] = "probe_ver";   // bumped when probe logic changes
+constexpr uint8_t PROBE_VERSION = 2;                // v1=seconds-only; v2=sec+min+status
 
 enum class NvsDeviceValue : uint8_t { Unknown = 0, X4 = 1, X3 = 2 };
 
@@ -154,6 +182,20 @@ HalGPIO::DeviceType detectDeviceTypeWithFingerprint() {
   if (overrideValue == NvsDeviceValue::X3 || overrideValue == NvsDeviceValue::X4) {
     LOG_INF("HW", "Device override active: %s", overrideValue == NvsDeviceValue::X3 ? "X3" : "X4");
     return nvsToDeviceType(overrideValue);
+  }
+
+  // Invalidate cache if probe logic was updated (prevents stale false-positive X3 detections).
+  {
+    Preferences prefs;
+    if (prefs.begin(HW_NAMESPACE, false)) {
+      const uint8_t storedVer = prefs.getUChar(NVS_KEY_PROBE_VER, 0);
+      if (storedVer != PROBE_VERSION) {
+        LOG_INF("HW", "Probe version changed (%u->%u), clearing device cache", storedVer, PROBE_VERSION);
+        prefs.putUChar(NVS_KEY_DEV_CACHED, static_cast<uint8_t>(NvsDeviceValue::Unknown));
+        prefs.putUChar(NVS_KEY_PROBE_VER, PROBE_VERSION);
+      }
+      prefs.end();
+    }
   }
 
   const NvsDeviceValue cachedValue = readNvsDeviceValue(NVS_KEY_DEV_CACHED, NvsDeviceValue::Unknown);

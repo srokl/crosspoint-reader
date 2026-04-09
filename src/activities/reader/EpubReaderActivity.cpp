@@ -255,11 +255,15 @@ void EpubReaderActivity::loop() {
     return;
   }
 
-  // any botton press when at end of the book goes back to the last page
+  // At end of the book, forward button goes home and back button returns to last page
   if (currentSpineIndex > 0 && currentSpineIndex >= epub->getSpineItemsCount()) {
-    currentSpineIndex = epub->getSpineItemsCount() - 1;
-    nextPageNumber = UINT16_MAX;
-    requestUpdate();
+    if (nextTriggered) {
+      onGoHome();
+    } else {
+      currentSpineIndex = epub->getSpineItemsCount() - 1;
+      nextPageNumber = UINT16_MAX;
+      requestUpdate();
+    }
     return;
   }
 
@@ -822,22 +826,26 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
     };
 
     const auto tGrayStart = millis();
-    const auto grayMode = useFactoryGray ? GfxRenderer::GrayscaleMode::FactoryFast
-                                         : GfxRenderer::GrayscaleMode::Differential;
+    const auto grayMode =
+        useFactoryGray ? GfxRenderer::GrayscaleMode::FactoryFast : GfxRenderer::GrayscaleMode::Differential;
     renderer.renderGrayscale(grayMode, grayFn, &grayCtx);
     const auto tGrayEnd = millis();
     fcm->logStats(useFactoryGray ? "gray_factory" : "gray");
 
     renderer.restoreBwBuffer();
+    if (useFactoryGray) {
+      // Factory LUT leaves RED RAM in gray-encoded state; sync controller to the
+      // restored BW framebuffer so subsequent BW page turns render cleanly.
+      renderer.cleanupGrayscaleWithFrameBuffer();
+    }
     const auto tBwRestore = millis();
 
     const auto tEnd = millis();
     LOG_DBG("ERS",
             "Page render (%s): prewarm=%lums bw_render=%lums display=%lums bw_store=%lums "
             "gray=%lums bw_restore=%lums total=%lums",
-            useFactoryGray ? "factory" : "diff",
-            tPrewarm - t0, tBwRender - tPrewarm, tDisplay - tBwRender, tBwStore - tDisplay,
-            tGrayEnd - tGrayStart, tBwRestore - tGrayEnd, tEnd - t0);
+            useFactoryGray ? "factory" : "diff", tPrewarm - t0, tBwRender - tPrewarm, tDisplay - tBwRender,
+            tBwStore - tDisplay, tGrayEnd - tGrayStart, tBwRestore - tGrayEnd, tEnd - t0);
   } else {
     // restore the bw data
     renderer.restoreBwBuffer();

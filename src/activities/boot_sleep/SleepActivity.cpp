@@ -12,6 +12,7 @@
 
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
+#include "Epub/converters/DirectPixelWriter.h"
 #include "components/UITheme.h"
 #include "fontIds.h"
 #include "images/Logo120.h"
@@ -160,7 +161,6 @@ void SleepActivity::renderCustomSleepScreen() const {
     renderXthSleepScreen("/sleep.xth");
     return;
   }
-
   FsFile file;
   if (Storage.openFileForRead("SLP", "/sleep.bmp", file)) {
     Bitmap bitmap(file, true);
@@ -256,6 +256,7 @@ void SleepActivity::renderPxcSleepScreen(const std::string& path) const {
         &ctx);
   } else {
     // BLACK_AND_WHITE / INVERTED_BLACK_AND_WHITE: threshold PXC to 1-bit
+    // (pv 0=Black, 1=DarkGrey map to dark; 2=LightGrey, 3=White map to light)
     renderer.clearScreen();
     if (!file.seek(dataOffset)) {
       LOG_ERR("SLP", "PXC seek failed: %s", path.c_str());

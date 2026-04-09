@@ -167,10 +167,14 @@ void XtcReaderActivity::loop() {
     return;
   }
 
-  // Handle end of book
+  // At end of the book, forward button goes home and back button returns to last page
   if (currentPage >= xtc->getPageCount()) {
-    currentPage = xtc->getPageCount() - 1;
-    requestUpdate();
+    if (nextTriggered) {
+      onGoHome();
+    } else {
+      currentPage = xtc->getPageCount() - 1;
+      requestUpdate();
+    }
     return;
   }
 
@@ -269,68 +273,8 @@ void XtcReaderActivity::renderPage() {
       return 3 - ((bit2 << 1) | bit1); // Total Inversion Fix
     };
 
-    // Context + callback for renderGrayscale. Pixel selection adapts to the render mode set
-    // by renderGrayscale before each pass:
-    //   GRAY2_LSB  (factory BW RAM):   pv>=2 — LightGrey(2) and Black(3) → bit1=1
-    //   GRAY2_MSB  (factory RED RAM):  pv&1  — DarkGrey(1) and Black(3)  → bit0=1
-    //   GRAYSCALE_LSB (diff BW RAM):   pv==1 — DarkGrey only
-    //   GRAYSCALE_MSB (diff RED RAM):  pv==1||pv==2 — DarkGrey and LightGrey
-    struct XtcGrayCtx {
-      const uint8_t* plane1;
-      const uint8_t* plane2;
-      uint16_t pageWidth, pageHeight;
-      size_t colBytes;
-    };
-    XtcGrayCtx xtcCtx{plane1, plane2, pageWidth, pageHeight, colBytes};
-    const auto xtcGrayFn = [](const GfxRenderer& r, const void* raw) {
-      const auto* c = static_cast<const XtcGrayCtx*>(raw);
-      DirectPixelWriter pw;
-      pw.init(r);
-
-      const size_t colStride = c->colBytes;
-      const size_t initialOffset = (c->pageWidth - 1) * colStride;
-
-      for (uint16_t y = 0; y < c->pageHeight; y++) {
-        const size_t byteInCol = y >> 3;
-        const uint8_t bitInByte = 7 - (y & 7);
-        const uint8_t* p1 = c->plane1 + initialOffset + byteInCol;
-        const uint8_t* p2 = c->plane2 + initialOffset + byteInCol;
-
-        pw.beginRow(y);
-        for (uint16_t x = 0; x < c->pageWidth; x++) {
-          const uint8_t b1 = (*p1 >> bitInByte) & 1;
-          const uint8_t b2 = (*p2 >> bitInByte) & 1;
-          const uint8_t pv = 3 - ((b2 << 1) | b1);
-          pw.writePixel(x, pv);
-          
-          p1 -= colStride;
-          p2 -= colStride;
-        }
-      }
-    };
-
     const bool useFactory = true; // Force-enabled for XTC/XTCH to avoid bugs
-
-    // Fast Inversion Pass Logic:
-    // We use the "Seamless" technique: a quick negative-positive flip to clear ghosting,
-    // followed by a high-speed grayscale overlay using the FactoryFast LUT (no white flash).
     
-    if (useFactory) {
-      // 1. Show next page BW base
-      // (Already in framebuffer via renderGrayscale calls below or manual draw)
-    } else {
-      // Manual 2-pass Differential rendering logic...
-      renderer.clearScreen();
-      DirectPixelWriter pw;
-      pw.init(renderer);
-      for (uint16_t y = 0; y < pageHeight; y++) {
-        pw.beginRow(y);
-        for (uint16_t x = 0; x < pageWidth; x++) {
-          if (getPixelValue(x, y) < 3) pw.writePixel(x, 0);
-        }
-      }
-    }
-
     if (useFactory) {
       const bool fullRefresh = (pagesUntilFullRefresh <= 1);
       
@@ -351,7 +295,7 @@ void XtcReaderActivity::renderPage() {
       // Byte b within column → byte b within scanline (logicalY → phyX identity).
       {
         uint8_t* fb = renderer.getFrameBuffer();
-        const uint16_t fbStride = display.getDisplayWidthBytes(); // 100 for X4
+        const uint16_t fbStride = renderer.getDisplayWidthBytes();
 
         // Pass 1: plane1 → BW RAM (LSB)
         renderer.clearScreen(0x00);
@@ -381,26 +325,30 @@ void XtcReaderActivity::renderPage() {
       renderer.displayGrayBuffer(fullRefresh ? lut_factory_quality : lut_factory_fast, true);
       renderer.cleanupGrayscaleWithFrameBuffer();
       renderer.setRenderMode(GfxRenderer::BW);
-    } else {
-      // Apply grayscale overlay Differential
-      renderer.renderGrayscale(GfxRenderer::GrayscaleMode::Differential, xtcGrayFn, &xtcCtx);
-      
+
       // Re-render BW to framebuffer for next turn consistency
       renderer.clearScreen();
-      DirectPixelWriter pw;
-      pw.init(renderer);
       for (uint16_t y = 0; y < pageHeight; y++) {
-        pw.beginRow(y);
         for (uint16_t x = 0; x < pageWidth; x++) {
-          if (getPixelValue(x, y) < 3) pw.writePixel(x, 0);
+          if (getPixelValue(x, y) >= 1) {
+            renderer.drawPixel(x, y, true);
+          }
         }
       }
       renderer.cleanupGrayscaleWithFrameBuffer();
+    } else {
+      // (Legacy differential rendering path removed to favor direct blitting)
+      renderer.clearScreen();
+      for (uint16_t y = 0; y < pageHeight; y++) {
+        for (uint16_t x = 0; x < pageWidth; x++) {
+          if (getPixelValue(x, y) < 3) renderer.drawPixel(x, y, true);
+        }
+      }
+      renderer.displayBuffer(HalDisplay::FULL_REFRESH);
     }
 
     free(pageBuffer);
-    LOG_DBG("XTR", "Rendered page %lu/%lu (2-bit %s)", currentPage + 1, xtc->getPageCount(),
-            useFactory ? "factory" : "differential");
+    LOG_DBG("XTR", "Rendered page %lu/%lu (2-bit factory)", currentPage + 1, xtc->getPageCount());
     return;
   } else {
     // 1-bit mode: 8 pixels per byte, MSB first

@@ -19,6 +19,5 @@ class SleepActivity final : public Activity {
   void renderPxcSleepScreen(const std::string& path) const;
   void renderXtgSleepScreen(const std::string& path) const;
   void renderXthSleepScreen(const std::string& path) const;
-
   void renderBlankSleepScreen() const;
 };
