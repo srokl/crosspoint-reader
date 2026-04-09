@@ -795,6 +795,7 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
       renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     } else {
       renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+      renderer.cleanupGrayscaleWithFrameBuffer();
     }
   } else {
     // Text-only AA or no AA: BW display with refresh cadence

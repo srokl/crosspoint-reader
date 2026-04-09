@@ -338,6 +338,7 @@ void XtcReaderActivity::renderPage() {
         // Pre-flash to white to guarantee clean starting state for quality LUT
         renderer.clearScreen();
         renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+        renderer.cleanupGrayscaleWithFrameBuffer();
         pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
       } else {
         pagesUntilFullRefresh--;
