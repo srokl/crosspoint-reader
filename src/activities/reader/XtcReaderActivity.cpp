@@ -190,82 +190,11 @@ void XtcReaderActivity::renderPage() {
   const uint16_t maxSrcY = pageHeight;
 
   if (bitDepth == 2) {
-    // XTH 2-bit mode: Two bit planes, column-major order
-    // - Columns scanned right to left (x = width-1 down to 0)
-    // - 8 vertical pixels per byte (MSB = topmost pixel in group)
-    // - First plane: Bit1, Second plane: Bit2
-    // - Pixel value = (bit1 << 1) | bit2
-    // - Grayscale: 0=White, 1=Dark Grey, 2=Light Grey, 3=Black
-
     const size_t planeSize = (static_cast<size_t>(pageWidth) * pageHeight + 7) / 8;
-    const uint8_t* plane1 = pageBuffer;              // Bit1 plane
-    const uint8_t* plane2 = pageBuffer + planeSize;  // Bit2 plane
-    const size_t colBytes = (pageHeight + 7) / 8;    // Bytes per column (100 for 800 height)
+    const uint8_t* plane1 = pageBuffer;              // Bit1 plane (BW RAM / LSB)
+    const uint8_t* plane2 = pageBuffer + planeSize;  // Bit2 plane (RED RAM / MSB)
 
-    // Lambda to get pixel value at (x, y) — used for BW render and debug stats
-    auto getPixelValue = [&](uint16_t x, uint16_t y) -> uint8_t {
-      const size_t colIndex = pageWidth - 1 - x;
-      const size_t byteInCol = y / 8;
-      const size_t bitInByte = 7 - (y % 8);
-      const size_t byteOffset = colIndex * colBytes + byteInCol;
-      const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
-      const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
-      return (bit1 << 1) | bit2;
-    };
-
-    // Pre-flash to white (same as renderGrayscale does for FactoryFast).
-    // HALF_REFRESH bypasses RED RAM so the flash is clean regardless of prior gray state.
-    renderer.clearScreen();
-    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
-    renderer.cleanupGrayscaleWithFrameBuffer();
-
-    // Direct plane-to-framebuffer blit for factory 2-bit gray.
-    // XTC column c maps directly to physical scanline c in Portrait mode:
-    //   XTC col 0 = rightmost logical column (logicalX=479) → phyY = 479-479 = 0 → scanline 0
-    //   XTC col 479 = leftmost logical column (logicalX=0) → phyY = 479-0 = 479 → scanline 479
-    // Byte b within column → byte b within scanline (logicalY → phyX identity).
-    // Plane data encoding matches GRAY2 framebuffer convention directly (bit=1 = active dark pixel
-    // after clearScreen(0x00)), so no inversion is needed.
-    {
-      uint8_t* fb = renderer.getFrameBuffer();
-      const uint16_t fbStride = renderer.getDisplayWidthBytes();
-
-      // Pass 1: plane1 → BW RAM (LSB): bit=1 where pv>=2 (LightGrey or Black)
-      renderer.clearScreen(0x00);
-      for (uint16_t c = 0; c < pageWidth; c++) {
-        const uint8_t* srcCol = plane1 + static_cast<uint32_t>(c) * colBytes;
-        uint8_t* dstRow = fb + static_cast<uint32_t>(c) * fbStride;
-        for (uint16_t b = 0; b < colBytes; b++) {
-          dstRow[b] = srcCol[b];
-        }
-      }
-      renderer.copyGrayscaleLsbBuffers();
-
-      // Pass 2: plane2 → RED RAM (MSB): bit=1 where pv&1 (DarkGrey or Black)
-      renderer.clearScreen(0x00);
-      for (uint16_t c = 0; c < pageWidth; c++) {
-        const uint8_t* srcCol = plane2 + static_cast<uint32_t>(c) * colBytes;
-        uint8_t* dstRow = fb + static_cast<uint32_t>(c) * fbStride;
-        for (uint16_t b = 0; b < colBytes; b++) {
-          dstRow[b] = srcCol[b];
-        }
-      }
-      renderer.copyGrayscaleMsbBuffers();
-    }
-
-    renderer.displayGrayBuffer(lut_factory_fast, true);
-    renderer.setRenderMode(GfxRenderer::BW);
-
-    // Re-render BW to framebuffer (restores display state for next frame / next BW page turn)
-    renderer.clearScreen();
-    for (uint16_t y = 0; y < pageHeight; y++) {
-      for (uint16_t x = 0; x < pageWidth; x++) {
-        if (getPixelValue(x, y) >= 1) {
-          renderer.drawPixel(x, y, true);
-        }
-      }
-    }
-    renderer.cleanupGrayscaleWithFrameBuffer();
+    renderer.displayXtchPlanes(plane1, plane2, pageWidth, pageHeight);
 
     free(pageBuffer);
 
