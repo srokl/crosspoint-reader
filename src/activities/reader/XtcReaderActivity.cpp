@@ -13,6 +13,7 @@
 #include <I18n.h>
 
 #include "CrossPointSettings.h"
+#include "ReaderUtils.h"
 #include "CrossPointState.h"
 #include <Epub.h>
 #include <Epub/converters/DirectPixelWriter.h>
@@ -46,6 +47,9 @@ void XtcReaderActivity::onEnter() {
 
   // Load saved progress
   loadProgress();
+
+  ReaderUtils::applyOrientation(renderer, SETTINGS.orientation);
+  pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
 
   // Save current XTC as last opened book and add to recent books
   APP_STATE.openEpubPath = xtc->getPath();
@@ -247,12 +251,16 @@ void XtcReaderActivity::renderPage() {
     const uint8_t* plane2 = pageBuffer + (pageBufferSize / 2);
     renderer.displayXtchPlanes(plane1, plane2, pageWidth, pageHeight);
 
+    ReaderUtils::displayWithRefreshCycle(renderer, pagesUntilFullRefresh);
 
     free(pageBuffer);
     LOG_DBG("XTR", "Rendered page %lu/%lu (2-bit factory)", currentPage + 1, xtc->getPageCount());
     return;
   } else {
     renderer.displayXtcBwPage(pageBuffer, pageWidth, pageHeight);
+
+    ReaderUtils::displayWithRefreshCycle(renderer, pagesUntilFullRefresh);
+
     free(pageBuffer);
     LOG_DBG("XTR", "Rendered page %lu/%lu (1-bit)", currentPage + 1, xtc->getPageCount());
     return;
