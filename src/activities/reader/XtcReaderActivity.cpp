@@ -253,7 +253,6 @@ void XtcReaderActivity::renderPage() {
       renderer.copyGrayscaleMsbBuffers();
     }
 
-    extern const unsigned char lut_factory_fast[];
     renderer.displayGrayBuffer(lut_factory_fast, true);
     renderer.setRenderMode(GfxRenderer::BW);
 
