@@ -1246,11 +1246,6 @@ void GfxRenderer::renderGrayscale(GrayscaleMode mode, void (*renderFn)(const Gfx
 
 void GfxRenderer::displayXtchPlanes(const uint8_t* plane1, const uint8_t* plane2, const uint16_t pageWidth,
                                     const uint16_t pageHeight) {
-  // Pre-flash to white. Mirrors renderGrayscale's factory pre-flash exactly — no cleanup after
-  // HALF_REFRESH, as we are about to rewrite both BW RAM and RED RAM completely before firing the LUT.
-  clearScreen();
-  displayBuffer(HalDisplay::HALF_REFRESH);
-
   const size_t colBytes = (pageHeight + 7) / 8;
   const uint16_t fbStride = panelWidthBytes;
 
@@ -1291,6 +1286,40 @@ void GfxRenderer::displayXtchPlanes(const uint8_t* plane1, const uint8_t* plane2
       const uint8_t bit1 = (plane1[byteOffset] >> bitInByte) & 1;
       const uint8_t bit2 = (plane2[byteOffset] >> bitInByte) & 1;
       if (((bit1 << 1) | bit2) >= 1) {
+        drawPixel(x, y, true);
+      }
+    }
+  }
+  cleanupGrayscaleWithFrameBuffer();
+}
+
+void GfxRenderer::displayXtcBwPage(const uint8_t* pageBuffer, const uint16_t pageWidth, const uint16_t pageHeight) {
+  const size_t srcRowBytes = (pageWidth + 7) / 8;
+
+  // LSB pass: black pixels → active (bit=1 in GRAY2 convention).
+  clearScreen(0x00);
+  setRenderMode(GRAY2_LSB);
+  for (uint16_t y = 0; y < pageHeight; y++) {
+    for (uint16_t x = 0; x < pageWidth; x++) {
+      const bool isBlack = !((pageBuffer[y * srcRowBytes + x / 8] >> (7 - (x % 8))) & 1);
+      if (isBlack) {
+        drawPixel(x, y, false);
+      }
+    }
+  }
+  copyGrayscaleLsbBuffers();
+
+  // MSB pass: same data — 1-bit has no intermediate grays, BW RAM and RED RAM are identical.
+  copyGrayscaleMsbBuffers();
+
+  displayGrayBuffer(lut_factory_fast, true);
+  setRenderMode(BW);
+
+  // Re-render BW into framebuffer to sync controller RED RAM for subsequent page turns.
+  clearScreen();
+  for (uint16_t y = 0; y < pageHeight; y++) {
+    for (uint16_t x = 0; x < pageWidth; x++) {
+      if (!((pageBuffer[y * srcRowBytes + x / 8] >> (7 - (x % 8))) & 1)) {
         drawPixel(x, y, true);
       }
     }

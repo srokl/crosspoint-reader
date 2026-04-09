@@ -242,13 +242,6 @@ void XtcReaderActivity::renderPage() {
     return;
   }
 
-  // Clear screen first
-  renderer.clearScreen();
-
-  // Copy page bitmap using GfxRenderer's drawPixel
-  // XTC/XTCH pages are pre-rendered with status bar included, so render full page
-  const uint16_t maxSrcY = pageHeight;
-
   if (bitDepth == 2) {
     renderer.displayXtchPlanes(plane1, plane2, pageWidth, pageHeight);
 
@@ -257,33 +250,12 @@ void XtcReaderActivity::renderPage() {
     LOG_DBG("XTR", "Rendered page %lu/%lu (2-bit factory)", currentPage + 1, xtc->getPageCount());
     return;
   } else {
-    // 1-bit mode: 8 pixels per byte, MSB first
-    const size_t srcRowBytes = (pageWidth + 7) / 8;
-
-    DirectPixelWriter pw;
-    pw.init(renderer);
-    for (uint16_t srcY = 0; srcY < maxSrcY; srcY++) {
-      const size_t srcRowStart = srcY * srcRowBytes;
-      pw.beginRow(srcY);
-      for (uint16_t srcX = 0; srcX < pageWidth; srcX++) {
-        const size_t srcByte = srcRowStart + srcX / 8;
-        const size_t srcBit = 7 - (srcX % 8);
-        const bool isBlack = !((pageBuffer[srcByte] >> srcBit) & 1);
-
-        if (isBlack) {
-          pw.writePixel(srcX, 0); // Black
-        }
-      }
-    }
+    renderer.displayXtcBwPage(pageBuffer, pageWidth, pageHeight);
+    free(pageBuffer);
+    LOG_DBG("XTR", "Rendered page %lu/%lu (1-bit)", currentPage + 1, xtc->getPageCount());
+    return;
   }
-  // White pixels are already cleared by clearScreen()
 
-  free(pageBuffer);
-
-  // Use refresh cycle: periodic HALF_REFRESH to clear ghosting per user setting
-  ReaderUtils::displayWithRefreshCycle(renderer, pagesUntilFullRefresh);
-
-  LOG_DBG("XTR", "Rendered page %lu/%lu (%u-bit)", currentPage + 1, xtc->getPageCount(), bitDepth);
 }
 
 void XtcReaderActivity::saveProgress() const {
