@@ -379,6 +379,7 @@ void XtcReaderActivity::renderPage() {
       extern const unsigned char lut_factory_fast[];
       extern const unsigned char lut_factory_quality[];
       renderer.displayGrayBuffer(fullRefresh ? lut_factory_quality : lut_factory_fast, true);
+      renderer.cleanupGrayscaleWithFrameBuffer();
       renderer.setRenderMode(GfxRenderer::BW);
     } else {
       // Apply grayscale overlay Differential
