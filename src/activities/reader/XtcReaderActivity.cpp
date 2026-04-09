@@ -344,34 +344,32 @@ void XtcReaderActivity::renderPage() {
       }
 
       // Direct plane-to-framebuffer for Factory grayscale.
-      // XTC column-major layout maps directly to Portrait scanlines:
-      //   XTC colIndex (= pageWidth-1-logicalX) → physical scanline phyY (= 479-logicalX = colIndex)
-      //   XTC byte-in-column → physical byte-in-scanline
-      // The `3-pv` inversion at pixel level is equivalent to `~byte` at byte level.
+      // XTC column c maps directly to physical scanline c in Portrait mode:
+      //   XTC col 0 = rightmost logical column (logicalX=479) → phyY = 479-479 = 0 → scanline 0
+      //   XTC col 479 = leftmost logical column (logicalX=0) → phyY = 479-0 = 479 → scanline 479
+      // Byte b within column → byte b within scanline (logicalY → phyX identity).
       {
         uint8_t* fb = renderer.getFrameBuffer();
         const uint16_t fbStride = display.getDisplayWidthBytes(); // 100 for X4
 
         // Pass 1: plane1 → BW RAM (LSB)
         renderer.clearScreen(0x00);
-        for (uint16_t col = 0; col < pageWidth; col++) {
-          const uint16_t colIndex = pageWidth - 1 - col;
-          const uint8_t* srcCol = plane1 + (uint32_t)colIndex * colBytes;
-          uint8_t* dstRow = fb + (uint32_t)col * fbStride;
+        for (uint16_t c = 0; c < pageWidth; c++) {
+          const uint8_t* srcCol = plane1 + (uint32_t)c * colBytes;
+          uint8_t* dstRow = fb + (uint32_t)c * fbStride;
           for (uint16_t b = 0; b < colBytes; b++) {
-            dstRow[b] = ~srcCol[b];
+            dstRow[b] = srcCol[b];
           }
         }
         renderer.copyGrayscaleLsbBuffers();
 
         // Pass 2: plane2 → RED RAM (MSB)
         renderer.clearScreen(0x00);
-        for (uint16_t col = 0; col < pageWidth; col++) {
-          const uint16_t colIndex = pageWidth - 1 - col;
-          const uint8_t* srcCol = plane2 + (uint32_t)colIndex * colBytes;
-          uint8_t* dstRow = fb + (uint32_t)col * fbStride;
+        for (uint16_t c = 0; c < pageWidth; c++) {
+          const uint8_t* srcCol = plane2 + (uint32_t)c * colBytes;
+          uint8_t* dstRow = fb + (uint32_t)c * fbStride;
           for (uint16_t b = 0; b < colBytes; b++) {
-            dstRow[b] = ~srcCol[b];
+            dstRow[b] = srcCol[b];
           }
         }
         renderer.copyGrayscaleMsbBuffers();
