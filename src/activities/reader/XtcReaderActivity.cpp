@@ -306,6 +306,7 @@ void XtcReaderActivity::renderPage() {
           p1 -= colStride;
           p2 -= colStride;
         }
+      }
     };
 
     const bool useFactory = SETTINGS.factoryLutImages;

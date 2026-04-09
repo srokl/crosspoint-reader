@@ -85,17 +85,17 @@ void XtgXthViewerActivity::onEnter() {
     // 1-bit rendering (XTG): Row-major, 8 pixels per byte, MSB first
     renderer.renderGrayscale(
       GfxRenderer::GrayscaleMode::FactoryFast,
-      [](GfxRenderer& r, void* raw) {
+      [](const GfxRenderer& r, const void* raw) {
         const auto* c = static_cast<const XtgCtx*>(raw);
         c->file->seek(c->dataOffset);
-
+ 
         const int bytesPerRow = (c->header.width + 7) / 8;
         uint8_t* rowBuf = static_cast<uint8_t*>(malloc(bytesPerRow));
         if (!rowBuf) return;
-
+ 
         DirectPixelWriter pw;
-        pw.init(r);
-
+        pw.init(const_cast<GfxRenderer&>(r));
+ 
         for (int row = 0; row < c->header.height; row++) {
           if (c->file->read(rowBuf, bytesPerRow) != bytesPerRow) break;
           pw.beginRow(row);
@@ -105,7 +105,7 @@ void XtgXthViewerActivity::onEnter() {
           }
         }
         free(rowBuf);
-        GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
+        GUI.drawButtonHints(const_cast<GfxRenderer&>(r), c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
       },
       &ctx);
   } else {
@@ -113,7 +113,7 @@ void XtgXthViewerActivity::onEnter() {
     // - Two bit planes
     // - Columns scanned right to left (x = width-1 down to 0)
     // - 8 vertical pixels per byte
-    const auto xtgGrayFn = [](GfxRenderer& r, void* raw) {
+    const auto xtgGrayFn = [](const GfxRenderer& r, const void* raw) {
       const auto* c = static_cast<const XtgCtx*>(raw);
       
       const size_t planeSize = (static_cast<size_t>(c->header.width) * c->header.height + 7) / 8;
@@ -124,19 +124,19 @@ void XtgXthViewerActivity::onEnter() {
         c->file->seek(c->dataOffset);
         c->file->read(plane1, planeSize);
         c->file->read(plane2, planeSize);
-
+ 
         const size_t colStride = (c->header.height + 7) / 8;
         const size_t initialOffset = (c->header.width - 1) * colStride;
-
+ 
         DirectPixelWriter pw;
-        pw.init(r);
-
+        pw.init(const_cast<GfxRenderer&>(r));
+ 
         for (int row = 0; row < c->header.height; row++) {
           const size_t byteInCol = row >> 3;
           const uint8_t bitInByte = 7 - (row & 7);
           const uint8_t* p1 = plane1 + initialOffset + byteInCol;
           const uint8_t* p2 = plane2 + initialOffset + byteInCol;
-
+ 
           pw.beginRow(row);
           for (int col = 0; col < c->header.width; col++) {
             const uint8_t b1 = (*p1 >> bitInByte) & 1;
@@ -150,7 +150,7 @@ void XtgXthViewerActivity::onEnter() {
         }
         free(plane1);
         free(plane2);
-        GUI.drawButtonHints(r, c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
+        GUI.drawButtonHints(const_cast<GfxRenderer&>(r), c->labels.btn1, c->labels.btn2, c->labels.btn3, c->labels.btn4);
       }
     };
 

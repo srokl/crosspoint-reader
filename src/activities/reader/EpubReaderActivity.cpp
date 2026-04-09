@@ -811,9 +811,6 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
     struct PageRenderCtx {
       Page* page;
       int fontId, left, top;
-    struct PageRenderCtx {
-      Page* page;
-      int fontId, left, top;
       const EpubReaderActivity* activity;
     };
     PageRenderCtx grayCtx{page.get(), SETTINGS.getReaderFontId(), orientedMarginLeft, orientedMarginTop, this};
