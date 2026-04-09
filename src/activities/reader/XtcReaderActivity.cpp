@@ -243,6 +243,8 @@ void XtcReaderActivity::renderPage() {
   }
 
   if (bitDepth == 2) {
+    const uint8_t* plane1 = pageBuffer;
+    const uint8_t* plane2 = pageBuffer + (pageBufferSize / 2);
     renderer.displayXtchPlanes(plane1, plane2, pageWidth, pageHeight);
 
 
